@@ -7,7 +7,7 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 }
 
 Tale::~Tale() {
-	delete root;
+	root.reset();
 	m_pImageFactory.Reset();
 	m_pDWriteFactory.Reset();
 	m_pDirect2dFactory.Reset();
@@ -136,10 +136,12 @@ bool Tale::initRootScene() {
 		return false;
 	Element::Brush b(Element::BrushType::solid, temp);
 	root = Element::createElement(b, position);
+	
 	position.left = 40;
 	position.right = 60;
 	position.top = 30;
 	position.bottom = 70;
+	
 	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::MediumSpringGreen), &temp)))
 		return false;
@@ -171,7 +173,9 @@ void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {
 	COORD position;
 	position.X = GET_X_LPARAM(lParam);
 	position.Y = GET_Y_LPARAM(lParam);
-	root->update(Element::MouseMessage(Element::Event::MouseMove, position),screenSize);
+	if (root) {
+		root->update(Element::MouseMessage(Element::Event::MouseMove, position), screenSize);
+	}
 }
 
 void Tale::OnResize(int width, int height) {

@@ -9,8 +9,8 @@ void Button::onPressDown(Button::CallbackFunction f) {
 		f(this);
 }
 
-Button* Button::createButton(Element::Brush b, D2D1_RECT_F position, CallbackFunction f, wstring c) {
-	auto ret = new Button();
+shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, CallbackFunction f, wstring c) {
+	auto ret = make_shared<Button>();
 	ret->setBrush(b);
 	ret->setPosition(position);
 	ret->setCallbackFunction(f);

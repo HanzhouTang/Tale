@@ -12,7 +12,7 @@ public:
 
 protected:
 	std::wstring fps;
-	Element* root;
+	shared_ptr<Element> root;
 	D2D1_RECT_F screenSize;
 	ComPtr<ID2D1Factory> m_pDirect2dFactory;
 	ComPtr<IDWriteFactory> m_pDWriteFactory;

@@ -63,18 +63,18 @@ void Element::preDraw(){}
 void Element::postDraw() {}
 void Element::onMouseMoveOn(){}
 void Element::onPressLeftButton(){}
-void Element::addChild(Element* t) {
+void Element::addChild(const shared_ptr<Element>& t) {
 	children.push_back(t);
 }
 
 Element::~Element() {
 	for (auto& x : children) {
-		delete x;
+		x.reset();
 	}
 	brush.m_brush.Reset();
 }
-Element* Element::createElement(Brush b, D2D1_RECT_F position) {
-	auto ret = new Element();
+shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
+	auto ret = make_unique<Element>();
 	ret->setBrush(b);
 	ret->setPosition(position);
 	return ret;

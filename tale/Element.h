@@ -1,6 +1,7 @@
 #pragma once
 #include"d2dutil.h"
 #include<vector>
+#include<memory>
 using namespace std;
 using namespace Microsoft::WRL;
 struct Element {
@@ -30,7 +31,7 @@ public:
 	};
 	virtual void update(MouseMessage,D2D1_RECT_F);
 	static const float MaximumRealtiveRatio;
-	vector<Element*> children;
+	vector<shared_ptr<Element>> children;
 	D2D1_RECT_F position;
 	static ComPtr<ID2D1HwndRenderTarget> renderTarget;
 	Brush brush;
@@ -44,8 +45,7 @@ public:
 	void setPosition(D2D1_RECT_F);
 	void setBrush(Brush b);
 	static void setRenderTarget(ComPtr<ID2D1HwndRenderTarget>);
-	void addChild(Element*);
-	static Element* createElement(Brush, D2D1_RECT_F);
-protected:
+	void addChild(const shared_ptr<Element>&);
+	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	Element();
 };
