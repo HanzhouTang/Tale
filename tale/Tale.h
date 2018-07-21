@@ -1,7 +1,6 @@
 #pragma once
 #include"AppBase.h"
 #include"Element.h"
-#include"DirectInput.h"
 class Tale:public AppBase {
 public:
 	Tale(int height, int width, HINSTANCE hinstance,
