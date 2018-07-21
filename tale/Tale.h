@@ -1,6 +1,7 @@
 #pragma once
 #include"AppBase.h"
 #include"Element.h"
+#include"Button.h"
 class Tale:public AppBase {
 public:
 	Tale(int height, int width, HINSTANCE hinstance,
@@ -23,5 +24,6 @@ protected:
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
 	virtual void OnDraw() override;
+	virtual void OnMouseMove(WPARAM, LPARAM) override;
 
 };

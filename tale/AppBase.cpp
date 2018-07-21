@@ -124,14 +124,10 @@ LRESULT AppBase::RealWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
-	/*case WM_DISPLAYCHANGE:
-		InvalidateRect(hwnd, NULL, FALSE);
+	case WM_MOUSEMOVE:
+		OnMouseMove(wParam, lParam);
 		return 0;
-	case WM_PAINT:
-		OnDraw();
-		ValidateRect(hwnd, NULL);
-		return 0;
-		*/
+
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}

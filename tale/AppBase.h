@@ -25,6 +25,7 @@ protected:
 	int windowHeight;
 	int windowWidth;
 	virtual void OnDraw() {}
+	virtual void OnMouseMove(WPARAM,LPARAM){}
 	virtual void OnResize(int width, int height);
 };
 

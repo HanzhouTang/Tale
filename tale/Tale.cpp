@@ -1,5 +1,5 @@
 #include"Tale.h"
-
+#include<windowsx.h>
 
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
 	:AppBase(height, width, hinstance, fullScreen, caption)
@@ -76,15 +76,11 @@ bool Tale::InitD2d()
 		return false;
 	if (!CreateDependentRescource())
 		return false;
-
 	auto size = m_pRenderTarget->GetSize();
 	screenSize.left = 0;
 	screenSize.top = 0;
 	screenSize.right = size.width;
 	screenSize.bottom = size.height;
-
-
-
 	return true;
 }
 //When resize, autoscaling the whole scene? Direct2d natively support?
@@ -138,7 +134,8 @@ bool Tale::initRootScene() {
 	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Gold), &temp)))
 		return false;
-	root = Element::createElement(Element::BrushType::solid, temp, position);
+	Element::Brush b(Element::BrushType::solid, temp);
+	root = Element::createElement(b, position);
 	position.left = 40;
 	position.right = 60;
 	position.top = 30;
@@ -146,7 +143,14 @@ bool Tale::initRootScene() {
 	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::MediumSpringGreen), &temp)))
 		return false;
-	root->addChild(Element::createElement(Element::BrushType::solid, temp, position));
+	Element::Brush b1(Element::BrushType::solid, temp);
+	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Blue), &temp)))
+		return false;
+	Element::Brush b2(Element::BrushType::solid, temp);
+	auto button = Button::createButton(b1, position);
+	button->setmouseHoverBrush(b2);
+	root->addChild(button);
 	return true;
 }
 
@@ -161,4 +165,11 @@ void Tale::OnDraw() {
 	);
 	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat, rect, m_pTextBrush);
 	m_pRenderTarget->EndDraw();
+}
+
+void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {
+	COORD position;
+	position.X = GET_X_LPARAM(lParam);
+	position.Y = GET_Y_LPARAM(lParam);
+	root->update(Element::MouseMessage(Element::Event::MouseMove, position),screenSize);
 }

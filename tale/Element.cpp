@@ -10,8 +10,8 @@ void Element::setPosition(D2D1_RECT_F p) {
 
 const float Element::MaximumRealtiveRatio = 100.0f;
 
-void Element::onDraw(D2D1_RECT_F parentPosition) {
-	preDraw();
+
+D2D1_RECT_F Element::getRealPosition(D2D1_RECT_F parentPosition) {
 	auto realPosition = parentPosition;
 	auto relativeWidth = (position.right - position.left) / MaximumRealtiveRatio;
 	auto relativeHeight = (position.bottom - position.top) / MaximumRealtiveRatio;
@@ -19,12 +19,18 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	auto width = realPosition.right - realPosition.left;
 	realPosition.top = (position.top / MaximumRealtiveRatio)*height + realPosition.top;
 	realPosition.left = (position.left / MaximumRealtiveRatio)*width + realPosition.left;
-	realPosition.bottom = height*relativeHeight + realPosition.top;
-	realPosition.right = width*relativeWidth + realPosition.left;
+	realPosition.bottom = height * relativeHeight + realPosition.top;
+	realPosition.right = width * relativeWidth + realPosition.left;
+	return realPosition;
+}
+
+void Element::onDraw(D2D1_RECT_F parentPosition) {
+	preDraw();
+	auto realPosition = getRealPosition(parentPosition);
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
-	switch (brushType) {
+	switch (brush.brushType) {
 	case solid:
-		ID2D1SolidColorBrush * solidbrush = (ID2D1SolidColorBrush*)brush;
+		ID2D1SolidColorBrush * solidbrush = (ID2D1SolidColorBrush*)brush.m_brush;
 		renderTarget->FillRectangle(&realPosition, solidbrush);
 		break;
 	}
@@ -34,12 +40,20 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	postDraw();
 }
 
+void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition){
+	auto realPosition = getRealPosition(parentPosition);
+	for (auto& x : children) {
+		x->update(message, realPosition);
+	}
+}
+
+
+
 void Element::setRenderTarget(ID2D1HwndRenderTarget* target) {
 	renderTarget = target;
 }
 
-void Element::setBrush(Element::BrushType t, ID2D1Brush* b) {
-	brushType = t;
+void Element::setBrush(Brush b) {
 	brush = b;
 }
 
@@ -57,11 +71,11 @@ Element::~Element() {
 	for (auto& x : children) {
 		delete x;
 	}
-	ReleaseCOM(brush);
+	ReleaseCOM(brush.m_brush);
 }
-Element* Element::createElement(BrushType type, ID2D1Brush* brush, D2D1_RECT_F position) {
+Element* Element::createElement(Brush b, D2D1_RECT_F position) {
 	auto ret = new Element();
-	ret->setBrush(type, brush);
+	ret->setBrush(b);
 	ret->setPosition(position);
 	return ret;
 }
