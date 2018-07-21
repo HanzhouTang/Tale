@@ -173,3 +173,11 @@ void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {
 	position.Y = GET_Y_LPARAM(lParam);
 	root->update(Element::MouseMessage(Element::Event::MouseMove, position),screenSize);
 }
+
+void Tale::OnResize(int width, int height) {
+	AppBase::OnResize(width, height);
+	D2D1_SIZE_U size;
+	size.height = height;
+	size.width = width;
+	m_pRenderTarget->Resize(size);
+}

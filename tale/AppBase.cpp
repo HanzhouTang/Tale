@@ -52,7 +52,7 @@ bool AppBase::InitApp()
 	mainWindow = CreateWindow(
 		windowClassName.c_str(),
 		caption.c_str(),
-		WS_OVERLAPPEDWINDOW,
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		windowWidth, windowHeight,
 		NULL,

@@ -24,6 +24,7 @@ protected:
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
 	virtual void OnDraw() override;
+	virtual void OnResize(int width, int height) override;
 	virtual void OnMouseMove(WPARAM, LPARAM) override;
 
 };

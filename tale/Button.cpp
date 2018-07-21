@@ -42,3 +42,8 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 		x->update(message, realPosition);
 	}
 }
+Button::~Button() {
+	ReleaseCOM(defaultBrush.m_brush);
+	ReleaseCOM(mouseHoverBrush.m_brush);
+	ReleaseCOM(textFormat);
+}
