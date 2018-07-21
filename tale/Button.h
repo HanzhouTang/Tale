@@ -3,7 +3,7 @@
 struct Button : public Element {
 public:
 	wstring caption;
-	IDWriteTextFormat* textFormat;
+	ComPtr<IDWriteTextFormat> textFormat;
 	Brush defaultBrush;
 	Brush mouseHoverBrush;
 	typedef void(*CallbackFunction)(Button*);

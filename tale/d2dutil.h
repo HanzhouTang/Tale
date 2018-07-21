@@ -8,4 +8,5 @@
 #include <d2d1helper.h>
 #include <dwrite.h>
 #include<DirectXMath.h>
-#define ReleaseCOM(x) { if(x){ x->Release();x = 0; } }
+#include<wrl/client.h>
+//#define ReleaseCOM(x) { if(x){ x->Release();x = 0; } }

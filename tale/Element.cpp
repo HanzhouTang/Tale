@@ -30,7 +30,7 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
 	switch (brush.brushType) {
 	case solid:
-		ID2D1SolidColorBrush * solidbrush = (ID2D1SolidColorBrush*)brush.m_brush;
+		ID2D1SolidColorBrush * solidbrush = (ID2D1SolidColorBrush*)brush.m_brush.Get();
 		renderTarget->FillRectangle(&realPosition, solidbrush);
 		break;
 	}
@@ -49,7 +49,7 @@ void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition){
 
 
 
-void Element::setRenderTarget(ID2D1HwndRenderTarget* target) {
+void Element::setRenderTarget(ComPtr<ID2D1HwndRenderTarget> target) {
 	renderTarget = target;
 }
 
@@ -57,7 +57,7 @@ void Element::setBrush(Brush b) {
 	brush = b;
 }
 
-ID2D1HwndRenderTarget* Element::renderTarget = NULL;
+ComPtr<ID2D1HwndRenderTarget> Element::renderTarget = nullptr;
 
 void Element::preDraw(){}
 void Element::postDraw() {}
@@ -71,7 +71,7 @@ Element::~Element() {
 	for (auto& x : children) {
 		delete x;
 	}
-	ReleaseCOM(brush.m_brush);
+	brush.m_brush.Reset();
 }
 Element* Element::createElement(Brush b, D2D1_RECT_F position) {
 	auto ret = new Element();

@@ -8,12 +8,12 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 
 Tale::~Tale() {
 	delete root;
-	ReleaseCOM(m_pImageFactory);
-	ReleaseCOM(m_pDWriteFactory);
-	ReleaseCOM(m_pDirect2dFactory);
-	ReleaseCOM(m_pRenderTarget);
-	ReleaseCOM(m_pTextFormat);
-	ReleaseCOM(m_pTextBrush);
+	m_pImageFactory.Reset();
+	m_pDWriteFactory.Reset();
+	m_pDirect2dFactory.Reset();
+	m_pRenderTarget.Reset();
+	m_pTextFormat.Reset();
+	m_pTextBrush.Reset();
 }
 
 
@@ -69,10 +69,10 @@ bool Tale::InitD2d()
 		CLSCTX_INPROC_SERVER,
 		IID_PPV_ARGS(&m_pImageFactory))))
 		return false;
-	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pDirect2dFactory)))
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_pDirect2dFactory.GetAddressOf())))
 		return false;
 	if (FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(&m_pDWriteFactory))))
+		reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf()))))
 		return false;
 	if (!CreateDependentRescource())
 		return false;
@@ -103,7 +103,7 @@ bool Tale::CreateDependentRescource()
 		{
 			return false;
 		}
-		Element::setRenderTarget(m_pRenderTarget);
+		Element::setRenderTarget(m_pRenderTarget.Get());
 		if (FAILED(m_pDWriteFactory->CreateTextFormat(
 			L"Gabriola",                // Font family name.
 			NULL,                       // Font collection (NULL sets it to use the system font collection).
@@ -130,7 +130,7 @@ bool Tale::CreateDependentRescource()
 bool Tale::initRootScene() {
 
 	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
-	ID2D1SolidColorBrush* temp;
+	ComPtr<ID2D1SolidColorBrush> temp;
 	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Gold), &temp)))
 		return false;
@@ -163,7 +163,7 @@ void Tale::OnDraw() {
 	D2D1_RECT_F rect = D2D1::RectF(
 		0, 0, 50, 3
 	);
-	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat, rect, m_pTextBrush);
+	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
 	m_pRenderTarget->EndDraw();
 }
 

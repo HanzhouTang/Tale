@@ -43,7 +43,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 	}
 }
 Button::~Button() {
-	ReleaseCOM(defaultBrush.m_brush);
-	ReleaseCOM(mouseHoverBrush.m_brush);
-	ReleaseCOM(textFormat);
+	defaultBrush.m_brush.Reset();
+	mouseHoverBrush.m_brush.Reset();
+	textFormat.Reset();
 }
