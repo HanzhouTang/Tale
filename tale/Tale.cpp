@@ -277,3 +277,5 @@ void Tale::OnResize(int width, int height) {
 	size.width = width;
 	m_pRenderTarget->Resize(size);
 }
+
+//TODO bitmap brush auto scale 
