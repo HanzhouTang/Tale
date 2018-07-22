@@ -55,6 +55,6 @@ void Button::postDraw(D2D1_RECT_F realPosition) {
 	
 	if (textFormat != nullptr && textBrush.m_brush!=nullptr) {
 		
-		renderTarget->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
+		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
 	}
 }

@@ -33,7 +33,7 @@ public:
 	static const float MaximumRealtiveRatio;
 	vector<shared_ptr<Element>> children;
 	D2D1_RECT_F position;
-	static ComPtr<ID2D1HwndRenderTarget> renderTarget;
+	static ComPtr<ID2D1DeviceContext> d2dContext;
 	Brush brush;
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	virtual ~Element();
@@ -44,7 +44,7 @@ public:
 	virtual void onMouseMoveOn();
 	void setPosition(D2D1_RECT_F);
 	void setBrush(Brush b);
-	static void setRenderTarget(ComPtr<ID2D1HwndRenderTarget>);
+	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	void addChild(const shared_ptr<Element>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	Element();

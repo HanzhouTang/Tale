@@ -33,7 +33,7 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	case transparent:
 		break;
 	default:
-		renderTarget->FillRectangle(&realPosition, brush.m_brush.Get());
+		d2dContext->FillRectangle(&realPosition, brush.m_brush.Get());
 		break;
 
 	}
@@ -53,15 +53,15 @@ void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition) 
 
 
 
-void Element::setRenderTarget(ComPtr<ID2D1HwndRenderTarget> target) {
-	renderTarget = target;
+void Element::setD2dContext(ComPtr<ID2D1DeviceContext> target) {
+	d2dContext = target;
 }
 
 void Element::setBrush(Brush b) {
 	brush = b;
 }
 
-ComPtr<ID2D1HwndRenderTarget> Element::renderTarget = nullptr;
+ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
 
 void Element::preDraw(D2D1_RECT_F) {}
 void Element::postDraw(D2D1_RECT_F) {}

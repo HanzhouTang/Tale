@@ -11,7 +11,6 @@ Tale::~Tale() {
 	m_pImageFactory.Reset();
 	m_pDWriteFactory.Reset();
 	m_pDirect2dFactory.Reset();
-	m_pRenderTarget.Reset();
 	m_pTextFormat.Reset();
 	m_pTextBrush.Reset();
 }
@@ -60,7 +59,7 @@ void Tale::StartMessageLoop() {
 }
 
 
-bool Tale::InitD2d()
+/*bool Tale::InitD2d()
 {
 	CoInitialize(NULL);
 	if (FAILED(CoCreateInstance(
@@ -76,7 +75,7 @@ bool Tale::InitD2d()
 		return false;
 	if (!CreateDependentRescource())
 		return false;
-	if (FAILED(LoadBitmapFromFile(m_pRenderTarget.Get(), m_pImageFactory.Get(), 
+	if (FAILED(LoadBitmapFromFile(m_pRenderTarget.Get(), m_pImageFactory.Get(),
 		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
 		return false;
 	}
@@ -85,7 +84,115 @@ bool Tale::InitD2d()
 	screenSize.top = 0;
 	screenSize.right = size.width;
 	screenSize.bottom = size.height;
-	
+
+	return true;
+}
+*/
+
+bool Tale::InitD3d11()
+{
+	CoInitialize(NULL);
+	if (FAILED(CoCreateInstance(
+		CLSID_WICImagingFactory,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(&m_pImageFactory))))
+		return false;
+	if (FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
+		reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf()))))
+		return false;
+	UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+	D3D_FEATURE_LEVEL featureLevels[] =
+	{
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1,
+		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_2,
+		D3D_FEATURE_LEVEL_9_1
+	};
+	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0,
+		creationFlags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
+		&m_pD3dDevice, NULL, &m_pD3dContext))) {
+		return false;
+	}
+	if (FAILED(m_pD3dDevice.As(&m_pDxgiDevice))) {
+		return false;
+	}
+	D2D1_FACTORY_OPTIONS options;
+	ZeroMemory(&options, sizeof(D2D1_FACTORY_OPTIONS));
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED,
+		__uuidof(ID2D1Factory1), &options, &m_pDirect2dFactory))) {
+		return false;
+	}
+	if (FAILED(m_pDirect2dFactory->CreateDevice(m_pDxgiDevice.Get(), &m_pD2dDevice))) {
+		return false;
+	}
+	if (FAILED(m_pD2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &m_pD2dContext))) {
+		return false;
+	}
+	if (FAILED(m_pDxgiDevice->GetAdapter(&m_pDxgiAdapter))) {
+		return false;
+	}
+	if (FAILED(m_pDxgiAdapter->GetParent(IID_PPV_ARGS(&m_pDxgiFactory)))) {
+		return false;
+	}
+	// Describe Windows 7-compatible Windowed swap chain
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+	swapChainDesc.Width = 0;
+	swapChainDesc.Height = 0;
+	swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapChainDesc.Stereo = false;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.SampleDesc.Quality = 0;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 2;
+	swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapChainDesc.Flags = 0;
+	if (FAILED(m_pDxgiFactory->CreateSwapChainForHwnd(m_pD3dDevice.Get(),AppBase::GetMainWindow(),
+		&swapChainDesc, nullptr, nullptr, &m_pSwapChain)))
+	{
+		return false;
+	}
+	if (FAILED(m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&m_pBackBuffer)))) {
+		return false;
+	}
+	FLOAT dpiX, dpiY;
+	m_pDirect2dFactory->GetDesktopDpi(&dpiX, &dpiY);
+	D2D1_BITMAP_PROPERTIES1 bitmapProperties =
+		D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE), dpiX, dpiY);
+	if (FAILED(m_pD2dContext->CreateBitmapFromDxgiSurface(m_pBackBuffer.Get()
+		, &bitmapProperties, &m_pD2dBackBuffer))) {
+		return false;
+	}
+	m_pD2dContext->SetTarget(m_pD2dBackBuffer.Get());
+	if (!CreateDependentRescource())
+		return false;
+	if (FAILED(LoadBitmapFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),
+		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
+		return false;
+	}
+	RECT rc;
+	::GetClientRect(GetMainWindow(), &rc);
+	screenSize = D2D1::RectF(
+		0, 0,
+		rc.right - rc.left,
+		rc.bottom - rc.top
+	);
+	/*	auto size = m_pRenderTarget->GetSize();
+	screenSize.left = 0;
+	screenSize.top = 0;
+	screenSize.right = size.width;
+	screenSize.bottom = size.height;
+	*/
+	parameters.DirtyRectsCount = 0;
+	parameters.pDirtyRects = nullptr;
+	parameters.pScrollRect = nullptr;
+	parameters.pScrollOffset = nullptr;
+
 	return true;
 }
 //need refactor this function !!!
@@ -95,7 +202,7 @@ bool Tale::InitD2d()
 //When resize, autoscaling the whole scene? Direct2d natively support?
 
 HRESULT Tale::LoadBitmapFromFile(
-	ID2D1RenderTarget *pRenderTarget,
+	ID2D1DeviceContext *pD2dContext,
 	IWICImagingFactory *pIWICFactory,
 	PCWSTR uri,
 	ID2D1Bitmap **ppBitmap
@@ -114,7 +221,7 @@ HRESULT Tale::LoadBitmapFromFile(
 		WICDecodeMetadataCacheOnLoad,
 		&pDecoder
 	);
-	
+
 	if (SUCCEEDED(hr))
 	{
 		// Create the initial frame.
@@ -144,14 +251,14 @@ HRESULT Tale::LoadBitmapFromFile(
 	{
 
 		// Create a Direct2D bitmap from the WIC bitmap.
-		hr = pRenderTarget->CreateBitmapFromWicBitmap(
+		hr = pD2dContext->CreateBitmapFromWicBitmap(
 			pConverter.Get(),
 			NULL,
 			ppBitmap
 		);
 	}
 
-    pDecoder.Reset();
+	pDecoder.Reset();
 	pSource.Reset();
 	pStream.Reset();
 	pConverter.Reset();
@@ -165,45 +272,40 @@ HRESULT Tale::LoadBitmapFromFile(
 bool Tale::CreateDependentRescource()
 {
 
-	if (!m_pRenderTarget) {
-		RECT rc;
-		::GetClientRect(GetMainWindow(), &rc);
-		D2D1_SIZE_U size = D2D1::SizeU(
-			rc.right - rc.left,
-			rc.bottom - rc.top
-		);
-		HRESULT hr;
-		if (FAILED(hr = m_pDirect2dFactory->CreateHwndRenderTarget(
-			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(GetMainWindow(), size),
-			&m_pRenderTarget)))
-		{
-			return false;
-		}
-		Element::setRenderTarget(m_pRenderTarget.Get());
-		if (FAILED(m_pDWriteFactory->CreateTextFormat(
-			L"Gabriola",                // Font family name.
-			NULL,                       // Font collection (NULL sets it to use the system font collection).
-			DWRITE_FONT_WEIGHT_MEDIUM,
-			DWRITE_FONT_STYLE_NORMAL,
-			DWRITE_FONT_STRETCH_MEDIUM,
-			21.0f,
-			L"en-us",
-			&m_pTextFormat)))
-			return false;
-		m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-		m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-		if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::Red),
-			&m_pTextBrush)))
-			return false;
+	/*HRESULT hr;
+	if (FAILED(hr = m_pDirect2dFactory->CreateHwndRenderTarget(
+		D2D1::RenderTargetProperties(),
+		D2D1::HwndRenderTargetProperties(GetMainWindow(), size),
+		&m_pRenderTarget)))
+	{
+		return false;
 	}
+	Element::setD2dContext(m_pRenderTarget.Get());*/
+
+	if (FAILED(m_pDWriteFactory->CreateTextFormat(
+		L"Gabriola",                // Font family name.
+		NULL,                       // Font collection (NULL sets it to use the system font collection).
+		DWRITE_FONT_WEIGHT_MEDIUM,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_MEDIUM,
+		21.0f,
+		L"en-us",
+		&m_pTextFormat)))
+		return false;
+	m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Red),
+		&m_pTextBrush)))
+		return false;
+
 	return true;
 }
 
 bool Tale::initRootScene() {
+	Element::setD2dContext(m_pD2dContext.Get());
 	ComPtr<ID2D1BitmapBrush> bitmap;
-	if (FAILED(m_pRenderTarget->CreateBitmapBrush(m_pBitmpmapTest.Get(), bitmap.GetAddressOf()))) {
+	if (FAILED(m_pD2dContext->CreateBitmapBrush(m_pBitmpmapTest.Get(), bitmap.GetAddressOf()))) {
 		return false;
 	}
 	Element::Brush b(Element::BrushType::image, bitmap);
@@ -215,19 +317,19 @@ bool Tale::initRootScene() {
 	position.bottom = 70;
 
 	ComPtr<ID2D1SolidColorBrush> temp;
-	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
+	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::MediumSpringGreen), &temp)))
 		return false;
 	Element::Brush b1(Element::BrushType::solid, temp);
-	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
+	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Blue), &temp)))
 		return false;
 	Element::Brush b2(Element::BrushType::solid, temp);
-	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
+	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Black), &temp)))
 		return false;
 	Element::Brush b3(Element::BrushType::solid, temp);
-	auto button = Button::createButton(b1,b3,position,m_pTextFormat);
+	auto button = Button::createButton(b1, b3, position, m_pTextFormat);
 	button->setCaption(L"a simple test");
 	button->setmouseHoverBrush(b2);
 	root->addChild(button);
@@ -236,17 +338,18 @@ bool Tale::initRootScene() {
 
 void Tale::OnDraw() {
 	HRESULT result;
-	m_pRenderTarget->BeginDraw();
-	m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
+	m_pD2dContext->BeginDraw();
+	m_pD2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 	if (root) {
 		root->onDraw(screenSize);
 	}
-	
+
 	D2D1_RECT_F rect = D2D1::RectF(
 		0, 0, 100, 100
 	);
-	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
-	if (FAILED( result = m_pRenderTarget->EndDraw())) {
+	m_pD2dContext->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
+	m_pSwapChain->Present1(1, 0, &parameters);
+	if (FAILED(result = m_pD2dContext->EndDraw())) {
 		cout << "drawing fault" << endl;
 		assert(1 == 2);
 	}
@@ -270,12 +373,14 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 	}
 }
 
-void Tale::OnResize(int width, int height) {
+/*void Tale::OnResize(int width, int height) {
 	AppBase::OnResize(width, height);
 	D2D1_SIZE_U size;
 	size.height = height;
 	size.width = width;
 	m_pRenderTarget->Resize(size);
-}
+}*/
+
+
 
 //TODO bitmap brush auto scale 
