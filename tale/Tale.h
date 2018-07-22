@@ -7,7 +7,7 @@ public:
 	Tale(int height, int width, HINSTANCE hinstance,
 		bool fullScreen = false, std::wstring caption = L"Tale");
 	virtual ~Tale();
-	bool InitD3d11();
+	bool InitDirectX();
 	virtual void StartMessageLoop() override;
 	bool initRootScene();
 protected:
@@ -34,7 +34,6 @@ protected:
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
 	virtual void OnDraw() override;
-	//virtual void OnResize(int width, int height) override;
 	virtual void OnMouseMove(WPARAM, LPARAM) override;
 	virtual void OnLButtonDown(WPARAM, LPARAM) override;
 	HRESULT LoadBitmapFromFile(

@@ -58,38 +58,7 @@ void Tale::StartMessageLoop() {
 	}
 }
 
-
-/*bool Tale::InitD2d()
-{
-	CoInitialize(NULL);
-	if (FAILED(CoCreateInstance(
-		CLSID_WICImagingFactory,
-		NULL,
-		CLSCTX_INPROC_SERVER,
-		IID_PPV_ARGS(&m_pImageFactory))))
-		return false;
-	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_pDirect2dFactory.GetAddressOf())))
-		return false;
-	if (FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf()))))
-		return false;
-	if (!CreateDependentRescource())
-		return false;
-	if (FAILED(LoadBitmapFromFile(m_pRenderTarget.Get(), m_pImageFactory.Get(),
-		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
-		return false;
-	}
-	auto size = m_pRenderTarget->GetSize();
-	screenSize.left = 0;
-	screenSize.top = 0;
-	screenSize.right = size.width;
-	screenSize.bottom = size.height;
-
-	return true;
-}
-*/
-
-bool Tale::InitD3d11()
+bool Tale::InitDirectX()
 {
 	CoInitialize(NULL);
 	if (FAILED(CoCreateInstance(
@@ -182,12 +151,7 @@ bool Tale::InitD3d11()
 		rc.right - rc.left,
 		rc.bottom - rc.top
 	);
-	/*	auto size = m_pRenderTarget->GetSize();
-	screenSize.left = 0;
-	screenSize.top = 0;
-	screenSize.right = size.width;
-	screenSize.bottom = size.height;
-	*/
+
 	parameters.DirtyRectsCount = 0;
 	parameters.pDirtyRects = nullptr;
 	parameters.pScrollRect = nullptr;
@@ -199,7 +163,7 @@ bool Tale::InitD3d11()
 
 
 
-//When resize, autoscaling the whole scene? Direct2d natively support?
+
 
 HRESULT Tale::LoadBitmapFromFile(
 	ID2D1DeviceContext *pD2dContext,
@@ -272,15 +236,6 @@ HRESULT Tale::LoadBitmapFromFile(
 bool Tale::CreateDependentRescource()
 {
 
-	/*HRESULT hr;
-	if (FAILED(hr = m_pDirect2dFactory->CreateHwndRenderTarget(
-		D2D1::RenderTargetProperties(),
-		D2D1::HwndRenderTargetProperties(GetMainWindow(), size),
-		&m_pRenderTarget)))
-	{
-		return false;
-	}
-	Element::setD2dContext(m_pRenderTarget.Get());*/
 
 	if (FAILED(m_pDWriteFactory->CreateTextFormat(
 		L"Gabriola",                // Font family name.
@@ -372,14 +327,6 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 		root->update(Element::MouseMessage(Element::Event::LButtonDown, position), screenSize);
 	}
 }
-
-/*void Tale::OnResize(int width, int height) {
-	AppBase::OnResize(width, height);
-	D2D1_SIZE_U size;
-	size.height = height;
-	size.width = width;
-	m_pRenderTarget->Resize(size);
-}*/
 
 
 
