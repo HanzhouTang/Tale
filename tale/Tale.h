@@ -26,5 +26,6 @@ protected:
 	virtual void OnDraw() override;
 	virtual void OnResize(int width, int height) override;
 	virtual void OnMouseMove(WPARAM, LPARAM) override;
+	virtual void OnLButtonDown(WPARAM, LPARAM) override;
 
 };

@@ -25,8 +25,9 @@ D2D1_RECT_F Element::getRealPosition(D2D1_RECT_F parentPosition) {
 }
 
 void Element::onDraw(D2D1_RECT_F parentPosition) {
-	preDraw();
+
 	auto realPosition = getRealPosition(parentPosition);
+	preDraw(realPosition);
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
 	switch (brush.brushType) {
 	case solid:
@@ -34,10 +35,11 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 		renderTarget->FillRectangle(&realPosition, solidbrush);
 		break;
 	}
+	postDraw(realPosition);
 	for (auto& x : children) {
 		x->onDraw(realPosition);
 	}
-	postDraw();
+
 }
 
 void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition){
@@ -59,8 +61,8 @@ void Element::setBrush(Brush b) {
 
 ComPtr<ID2D1HwndRenderTarget> Element::renderTarget = nullptr;
 
-void Element::preDraw(){}
-void Element::postDraw() {}
+void Element::preDraw(D2D1_RECT_F){}
+void Element::postDraw(D2D1_RECT_F) {}
 void Element::onMouseMoveOn(){}
 void Element::onPressLeftButton(){}
 void Element::addChild(const shared_ptr<Element>& t) {

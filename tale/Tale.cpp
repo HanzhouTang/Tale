@@ -107,15 +107,15 @@ bool Tale::CreateDependentRescource()
 		if (FAILED(m_pDWriteFactory->CreateTextFormat(
 			L"Gabriola",                // Font family name.
 			NULL,                       // Font collection (NULL sets it to use the system font collection).
-			DWRITE_FONT_WEIGHT_REGULAR,
+			DWRITE_FONT_WEIGHT_MEDIUM,
 			DWRITE_FONT_STYLE_NORMAL,
-			DWRITE_FONT_STRETCH_NORMAL,
-			16.0f,
+			DWRITE_FONT_STRETCH_MEDIUM,
+			21.0f,
 			L"en-us",
 			&m_pTextFormat)))
 			return false;
-		m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
-		m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+		m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 		if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::White),
 			&m_pTextBrush)))
@@ -150,7 +150,13 @@ bool Tale::initRootScene() {
 		D2D1::ColorF(D2D1::ColorF::Blue), &temp)))
 		return false;
 	Element::Brush b2(Element::BrushType::solid, temp);
-	auto button = Button::createButton(b1, position);
+	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(D2D1::ColorF::Black), &temp)))
+		return false;
+	Element::Brush b3(Element::BrushType::solid, temp);
+	auto button = Button::createButton(b1,b3,position,m_pTextFormat);
+	button->setCaption(L"a simple test");
+	//button->setCallbackFunction([&](Button*) {MessageBox(GetMainWindow(), L"A test of button", L"Test", 0); });
 	button->setmouseHoverBrush(b2);
 	root->addChild(button);
 	return true;
@@ -163,7 +169,7 @@ void Tale::OnDraw() {
 		root->onDraw(screenSize);
 	}
 	D2D1_RECT_F rect = D2D1::RectF(
-		0, 0, 50, 3
+		0, 0, 100, 100
 	);
 	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
 	m_pRenderTarget->EndDraw();
@@ -175,6 +181,15 @@ void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {
 	position.Y = GET_Y_LPARAM(lParam);
 	if (root) {
 		root->update(Element::MouseMessage(Element::Event::MouseMove, position), screenSize);
+	}
+}
+
+void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
+	COORD position;
+	position.X = GET_X_LPARAM(lParam);
+	position.Y = GET_Y_LPARAM(lParam);
+	if (root) {
+		root->update(Element::MouseMessage(Element::Event::LButtonDown, position), screenSize);
 	}
 }
 

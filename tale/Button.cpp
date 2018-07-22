@@ -9,10 +9,12 @@ void Button::onPressDown(Button::CallbackFunction f) {
 		f(this);
 }
 
-shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, CallbackFunction f, wstring c) {
+shared_ptr<Button> Button::createButton(Element::Brush b,Element::Brush bText, D2D1_RECT_F position, ComPtr<IDWriteTextFormat> foramt, CallbackFunction f, wstring c) {
 	auto ret = make_shared<Button>();
 	ret->setBrush(b);
+	ret->setTextBrush(bText);
 	ret->setPosition(position);
+	ret->setTextFormat(foramt);
 	ret->setCallbackFunction(f);
 	ret->setCaption(c);
 	ret->setDefaultBrush(b);
@@ -45,5 +47,21 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 Button::~Button() {
 	defaultBrush.m_brush.Reset();
 	mouseHoverBrush.m_brush.Reset();
+	textBrush.m_brush.Reset();
 	textFormat.Reset();
+}
+
+void Button::postDraw(D2D1_RECT_F realPosition) {
+	/*cout << "button postdraw()" << endl;
+	if (textFormat == nullptr) {
+		cout << "textFormat null" << endl;
+	}
+	if (textBrush.m_brush == nullptr) {
+		cout << "textBrush null" << endl;
+	}
+	*/
+	if (textFormat != nullptr && textBrush.m_brush!=nullptr) {
+		
+		renderTarget->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
+	}
 }

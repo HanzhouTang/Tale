@@ -127,7 +127,8 @@ LRESULT AppBase::RealWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 	case WM_MOUSEMOVE:
 		OnMouseMove(wParam, lParam);
 		return 0;
-
+	case WM_LBUTTONDOWN:
+		OnLButtonDown(wParam, lParam);
 	default:
 		return DefWindowProc(hwnd, message, wParam, lParam);
 	}

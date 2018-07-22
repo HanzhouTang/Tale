@@ -38,8 +38,8 @@ public:
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	virtual ~Element();
 	void onDraw(D2D1_RECT_F);
-	virtual void preDraw();
-	virtual void postDraw();
+	virtual void preDraw(D2D1_RECT_F);
+	virtual void postDraw(D2D1_RECT_F);
 	virtual void onPressLeftButton();
 	virtual void onMouseMoveOn();
 	void setPosition(D2D1_RECT_F);
