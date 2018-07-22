@@ -52,14 +52,7 @@ Button::~Button() {
 }
 
 void Button::postDraw(D2D1_RECT_F realPosition) {
-	/*cout << "button postdraw()" << endl;
-	if (textFormat == nullptr) {
-		cout << "textFormat null" << endl;
-	}
-	if (textBrush.m_brush == nullptr) {
-		cout << "textBrush null" << endl;
-	}
-	*/
+	
 	if (textFormat != nullptr && textBrush.m_brush!=nullptr) {
 		
 		renderTarget->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());

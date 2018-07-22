@@ -76,14 +76,91 @@ bool Tale::InitD2d()
 		return false;
 	if (!CreateDependentRescource())
 		return false;
+	if (FAILED(LoadBitmapFromFile(m_pRenderTarget.Get(), m_pImageFactory.Get(), 
+		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
+		return false;
+	}
 	auto size = m_pRenderTarget->GetSize();
 	screenSize.left = 0;
 	screenSize.top = 0;
 	screenSize.right = size.width;
 	screenSize.bottom = size.height;
+	
 	return true;
 }
+//need refactor this function !!!
+
+
+
 //When resize, autoscaling the whole scene? Direct2d natively support?
+
+HRESULT Tale::LoadBitmapFromFile(
+	ID2D1RenderTarget *pRenderTarget,
+	IWICImagingFactory *pIWICFactory,
+	PCWSTR uri,
+	ID2D1Bitmap **ppBitmap
+)
+{
+	ComPtr<IWICBitmapDecoder> pDecoder = NULL;
+	ComPtr<IWICBitmapFrameDecode> pSource = NULL;
+	ComPtr<IWICStream> pStream = NULL;
+	ComPtr<IWICFormatConverter> pConverter = NULL;
+	ComPtr<IWICBitmapScaler> pScaler = NULL;
+
+	HRESULT hr = pIWICFactory->CreateDecoderFromFilename(
+		uri,
+		NULL,
+		GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad,
+		&pDecoder
+	);
+	
+	if (SUCCEEDED(hr))
+	{
+		// Create the initial frame.
+		hr = pDecoder->GetFrame(0, &pSource);
+	}
+	if (SUCCEEDED(hr))
+	{
+
+		// Convert the image format to 32bppPBGRA
+		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
+		hr = pIWICFactory->CreateFormatConverter(&pConverter);
+
+	}
+
+
+	if (SUCCEEDED(hr))
+	{
+		hr = pConverter->Initialize(
+			pSource.Get(),
+			GUID_WICPixelFormat32bppPBGRA,
+			WICBitmapDitherTypeNone,
+			NULL,
+			0.f,
+			WICBitmapPaletteTypeMedianCut
+		);
+	}   if (SUCCEEDED(hr))
+	{
+
+		// Create a Direct2D bitmap from the WIC bitmap.
+		hr = pRenderTarget->CreateBitmapFromWicBitmap(
+			pConverter.Get(),
+			NULL,
+			ppBitmap
+		);
+	}
+
+    pDecoder.Reset();
+	pSource.Reset();
+	pStream.Reset();
+	pConverter.Reset();
+	pScaler.Reset();
+	return hr;
+}
+
+
+
 
 bool Tale::CreateDependentRescource()
 {
@@ -117,31 +194,27 @@ bool Tale::CreateDependentRescource()
 		m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 		m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 		if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::White),
+			D2D1::ColorF(D2D1::ColorF::Red),
 			&m_pTextBrush)))
 			return false;
-		if (!initRootScene()) {
-			return false;
-		}
 	}
 	return true;
 }
 
 bool Tale::initRootScene() {
-
-	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
-	ComPtr<ID2D1SolidColorBrush> temp;
-	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Gold), &temp)))
+	ComPtr<ID2D1BitmapBrush> bitmap;
+	if (FAILED(m_pRenderTarget->CreateBitmapBrush(m_pBitmpmapTest.Get(), bitmap.GetAddressOf()))) {
 		return false;
-	Element::Brush b(Element::BrushType::solid, temp);
+	}
+	Element::Brush b(Element::BrushType::image, bitmap);
+	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
 	root = Element::createElement(b, position);
-	
 	position.left = 40;
 	position.right = 60;
 	position.top = 30;
 	position.bottom = 70;
-	
+
+	ComPtr<ID2D1SolidColorBrush> temp;
 	if (FAILED(m_pRenderTarget->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::MediumSpringGreen), &temp)))
 		return false;
@@ -156,23 +229,27 @@ bool Tale::initRootScene() {
 	Element::Brush b3(Element::BrushType::solid, temp);
 	auto button = Button::createButton(b1,b3,position,m_pTextFormat);
 	button->setCaption(L"a simple test");
-	//button->setCallbackFunction([&](Button*) {MessageBox(GetMainWindow(), L"A test of button", L"Test", 0); });
 	button->setmouseHoverBrush(b2);
 	root->addChild(button);
 	return true;
 }
 
 void Tale::OnDraw() {
+	HRESULT result;
 	m_pRenderTarget->BeginDraw();
 	m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 	if (root) {
 		root->onDraw(screenSize);
 	}
+	
 	D2D1_RECT_F rect = D2D1::RectF(
 		0, 0, 100, 100
 	);
 	m_pRenderTarget->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
-	m_pRenderTarget->EndDraw();
+	if (FAILED( result = m_pRenderTarget->EndDraw())) {
+		cout << "drawing fault" << endl;
+		assert(1 == 2);
+	}
 }
 
 void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {

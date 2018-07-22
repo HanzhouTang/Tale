@@ -136,5 +136,3 @@ LRESULT AppBase::RealWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 }
 
 
-
-//先解决此处的问题

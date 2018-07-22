@@ -6,7 +6,7 @@ using namespace std;
 using namespace Microsoft::WRL;
 struct Element {
 public:
-	enum BrushType { solid, linear, radial, image };
+	enum BrushType { solid, linear, radial, image,transparent};
 	enum Event {LButtonDown,LButtonUp,RButtonDown,RButtonUp,MouseMove};
 	struct Brush {
 		BrushType brushType;
@@ -15,7 +15,7 @@ public:
 			brushType = b.brushType;
 			m_brush = b.m_brush;
 		}
-		Brush(BrushType type, ComPtr<ID2D1Brush> b) {
+		Brush(BrushType type, const ComPtr<ID2D1Brush>& b) {
 			brushType = type;
 			m_brush = b;
 		}

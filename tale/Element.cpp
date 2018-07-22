@@ -1,6 +1,6 @@
 #include"Element.h"
 
-Element::Element(){}
+Element::Element() {}
 
 void Element::setPosition(D2D1_RECT_F p) {
 	assert(p.left >= 0 && p.top >= 0);
@@ -30,10 +30,12 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	preDraw(realPosition);
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
 	switch (brush.brushType) {
-	case solid:
-		ID2D1SolidColorBrush * solidbrush = (ID2D1SolidColorBrush*)brush.m_brush.Get();
-		renderTarget->FillRectangle(&realPosition, solidbrush);
+	case transparent:
 		break;
+	default:
+		renderTarget->FillRectangle(&realPosition, brush.m_brush.Get());
+		break;
+
 	}
 	postDraw(realPosition);
 	for (auto& x : children) {
@@ -42,7 +44,7 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 
 }
 
-void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition){
+void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition) {
 	auto realPosition = getRealPosition(parentPosition);
 	for (auto& x : children) {
 		x->update(message, realPosition);
@@ -61,10 +63,10 @@ void Element::setBrush(Brush b) {
 
 ComPtr<ID2D1HwndRenderTarget> Element::renderTarget = nullptr;
 
-void Element::preDraw(D2D1_RECT_F){}
+void Element::preDraw(D2D1_RECT_F) {}
 void Element::postDraw(D2D1_RECT_F) {}
-void Element::onMouseMoveOn(){}
-void Element::onPressLeftButton(){}
+void Element::onMouseMoveOn() {}
+void Element::onPressLeftButton() {}
 void Element::addChild(const shared_ptr<Element>& t) {
 	children.push_back(t);
 }

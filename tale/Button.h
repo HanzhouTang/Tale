@@ -26,3 +26,4 @@ public:
 protected:
 	inline void setDefaultBrush(Brush b) { defaultBrush = b; }
 };
+//TODO bitmap brush

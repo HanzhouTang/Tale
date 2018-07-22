@@ -9,7 +9,7 @@ public:
 	virtual ~Tale();
 	bool InitD2d();
 	virtual void StartMessageLoop() override;
-
+	bool initRootScene();
 protected:
 	std::wstring fps;
 	shared_ptr<Element> root;
@@ -20,12 +20,18 @@ protected:
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
-	bool initRootScene();
+	ComPtr<ID2D1Bitmap>     m_pBitmpmapTest;
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
 	virtual void OnDraw() override;
 	virtual void OnResize(int width, int height) override;
 	virtual void OnMouseMove(WPARAM, LPARAM) override;
 	virtual void OnLButtonDown(WPARAM, LPARAM) override;
+	HRESULT LoadBitmapFromFile(
+		ID2D1RenderTarget *pRenderTarget,
+		IWICImagingFactory *pIWICFactory,
+		PCWSTR uri,
+		ID2D1Bitmap **ppBitmap
+	);
 
 };
