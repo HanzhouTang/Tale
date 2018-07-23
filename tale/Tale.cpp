@@ -1,4 +1,4 @@
-#include"Tale.h"
+﻿#include"Tale.h"
 #include<windowsx.h>
 
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
@@ -83,7 +83,7 @@ bool Tale::InitDirectX()
 		reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf()))))
 		return false;
 	UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-	D3D_FEATURE_LEVEL featureLevels[] =
+	const D3D_FEATURE_LEVEL featureLevels[] =
 	{
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
