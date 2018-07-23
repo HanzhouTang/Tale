@@ -6,8 +6,20 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 {
 }
 
+
+
 Tale::~Tale() {
 	root.reset();
+	m_pD3dDevice.Reset();
+	m_pD3dContext.Reset();
+	m_pD2dDevice.Reset();
+	m_pD2dContext.Reset();
+	m_pDxgiAdapter.Reset();
+	m_pDxgiDevice.Reset();
+	m_pDxgiFactory.Reset();
+	m_pBackBuffer.Reset();
+	m_pD2dBackBuffer.Reset();
+	m_pSwapChain.Reset();
 	m_pImageFactory.Reset();
 	m_pDWriteFactory.Reset();
 	m_pDirect2dFactory.Reset();
