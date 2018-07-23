@@ -42,5 +42,6 @@ protected:
 		PCWSTR uri,
 		ID2D1Bitmap **ppBitmap
 	);
+	ID2D1BitmapBrush* CreateBitmapBrushFromFile(PCWSTR url);
 
 };

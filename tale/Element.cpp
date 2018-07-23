@@ -32,6 +32,22 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 	switch (brush.brushType) {
 	case transparent:
 		break;
+
+		
+	case bitmap:
+	{
+		ComPtr<ID2D1BitmapBrush> bitmapBrush(reinterpret_cast<ID2D1BitmapBrush*>(brush.m_brush.Get()));
+		ComPtr<ID2D1Bitmap> bitmap;
+		bitmapBrush->GetBitmap(bitmap.GetAddressOf());
+		auto size = bitmap->GetPixelSize();
+		float width = realPosition.right - realPosition.left;
+		float height = realPosition.bottom - realPosition.top;
+		auto translation = D2D1::Matrix3x2F::Translation(realPosition.left, realPosition.top);
+		auto scale = D2D1::Matrix3x2F::Scale(width / size.width, height / size.height);
+		brush.m_brush->SetTransform(scale*translation);
+		d2dContext->FillRectangle(&realPosition, brush.m_brush.Get());
+		break;
+	}
 	default:
 		d2dContext->FillRectangle(&realPosition, brush.m_brush.Get());
 		break;
@@ -83,3 +99,4 @@ shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
 	ret->setPosition(position);
 	return ret;
 }
+

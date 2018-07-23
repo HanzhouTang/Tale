@@ -6,7 +6,7 @@ using namespace std;
 using namespace Microsoft::WRL;
 struct Element {
 public:
-	enum BrushType { solid, linear, radial, image,transparent};
+	enum BrushType { solid, linear, radial, bitmap,transparent};
 	enum Event {LButtonDown,LButtonUp,RButtonDown,RButtonUp,MouseMove};
 	struct Brush {
 		BrushType brushType;
@@ -29,6 +29,7 @@ public:
 			position = p;
 		}
 	};
+
 	virtual void update(MouseMessage,D2D1_RECT_F);
 	static const float MaximumRealtiveRatio;
 	vector<shared_ptr<Element>> children;

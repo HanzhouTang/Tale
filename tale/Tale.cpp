@@ -206,7 +206,7 @@ HRESULT Tale::LoadBitmapFromFile(
 	if (SUCCEEDED(hr))
 	{
 
-		// Convert the image format to 32bppPBGRA
+		// Convert the bitmap format to 32bppPBGRA
 		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
 		hr = pIWICFactory->CreateFormatConverter(&pConverter);
 
@@ -271,11 +271,12 @@ bool Tale::CreateDependentRescource()
 
 bool Tale::initRootScene() {
 	Element::setD2dContext(m_pD2dContext.Get());
+	
 	ComPtr<ID2D1BitmapBrush> bitmap;
 	if (FAILED(m_pD2dContext->CreateBitmapBrush(m_pBitmpmapTest.Get(), bitmap.GetAddressOf()))) {
 		return false;
 	}
-	Element::Brush b(Element::BrushType::image, bitmap);
+	Element::Brush b(Element::BrushType::bitmap, bitmap);
 	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
 	root = Element::createElement(b, position);
 	position.left = 40;
@@ -283,11 +284,9 @@ bool Tale::initRootScene() {
 	position.top = 30;
 	position.bottom = 70;
 
+	ComPtr<ID2D1BitmapBrush> brush(CreateBitmapBrushFromFile(L"Resource\\Image\\flower.jpg"));
+	Element::Brush b1(Element::BrushType::bitmap, brush);
 	ComPtr<ID2D1SolidColorBrush> temp;
-	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::MediumSpringGreen), &temp)))
-		return false;
-	Element::Brush b1(Element::BrushType::solid, temp);
 	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Blue), &temp)))
 		return false;
@@ -340,6 +339,20 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 	}
 }
 
+ID2D1BitmapBrush* Tale::CreateBitmapBrushFromFile(PCWSTR url) {
+	ComPtr<ID2D1Bitmap> temp;
+	if (FAILED(LoadBitmapFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),
+		url, temp.GetAddressOf()))) {
+		assert(1 == 2);
+		return nullptr;
+	}
+	ID2D1BitmapBrush* bitmap;
+	if (FAILED(m_pD2dContext->CreateBitmapBrush(temp.Get(), &bitmap))) {
+		assert(1 == 2);
+		return nullptr;
+	}
+	return bitmap;
+}
 
 
 //TODO bitmap brush auto scale 
