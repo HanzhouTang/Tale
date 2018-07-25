@@ -156,6 +156,8 @@ bool Tale::InitDirectX()
 		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
 		return false;
 	}
+	
+
 	RECT rc;
 	::GetClientRect(GetMainWindow(), &rc);
 	screenSize = D2D1::RectF(

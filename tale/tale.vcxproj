@@ -149,6 +149,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="d2dutil.h" />
     <ClInclude Include="Element.h" />
+    <ClInclude Include="RescourceManagerBase.h" />
     <ClInclude Include="Tale.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
