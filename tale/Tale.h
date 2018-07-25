@@ -16,13 +16,13 @@ protected:
 	D2D1_RECT_F screenSize;
 	ComPtr<ID3D11Device> m_pD3dDevice;
 	ComPtr<ID3D11DeviceContext> m_pD3dContext;
-	ComPtr<ID2D1Device> m_pD2dDevice;
-	ComPtr<ID2D1DeviceContext> m_pD2dContext;
+	ComPtr<ID2D1Device3> m_pD2dDevice;
+	ComPtr<ID2D1DeviceContext3> m_pD2dContext;
 	ComPtr<IDXGIAdapter> m_pDxgiAdapter;
 	ComPtr<IDXGIDevice> m_pDxgiDevice; 
 	ComPtr<IDXGISurface> m_pBackBuffer;
 	ComPtr<ID2D1Bitmap1> m_pD2dBackBuffer;
-	ComPtr<ID2D1Factory1> m_pDirect2dFactory;
+	ComPtr<ID2D1Factory4> m_pDirect2dFactory;
 	ComPtr<IDWriteFactory> m_pDWriteFactory;
 	ComPtr<IDXGIFactory2> m_pDxgiFactory;
 	ComPtr<IDXGISwapChain1> m_pSwapChain;
