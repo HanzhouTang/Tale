@@ -3,8 +3,7 @@
 #include<tchar.h>
 #include<string>
 #include<iostream>
-#include <d2d1.h>
-#include<d2d1_1.h>
+#include<d2d1_3.h>
 #include<dxgi1_2.h>
 #include<wincodec.h>
 #include <d2d1helper.h>
