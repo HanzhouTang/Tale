@@ -62,7 +62,7 @@ void Tale::StartMessageLoop() {
 		{
 			__int64 currTimeStamp = 0;
 			QueryPerformanceCounter((LARGE_INTEGER*)&currTimeStamp);
-			float dt = (currTimeStamp - prevTimeStamp)*secsPerCnt;
+			dt = (currTimeStamp - prevTimeStamp)*secsPerCnt;
 			updateScene(dt);
 			OnDraw();
 			prevTimeStamp = currTimeStamp;
@@ -117,6 +117,9 @@ bool Tale::InitDirectX()
 		return false;
 	}
 	if (FAILED(m_pDxgiAdapter->GetParent(IID_PPV_ARGS(&m_pDxgiFactory)))) {
+		return false;
+	}
+	if (FAILED(m_pD2dContext->CreateSpriteBatch(m_pSpriteBatch.GetAddressOf()))) {
 		return false;
 	}
 	// Describe Windows 7-compatible Windowed swap chain
@@ -281,11 +284,7 @@ bool Tale::initRootScene() {
 	Element::Brush b(Element::BrushType::bitmap, bitmap);
 	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
 	root = Element::createElement(b, position);
-	position.left = 40;
-	position.right = 60;
-	position.top = 30;
-	position.bottom = 70;
-
+	
 	ComPtr<ID2D1BitmapBrush> brush(CreateBitmapBrushFromFile(L"Resource\\Image\\flower.jpg"));
 	Element::Brush b1(Element::BrushType::bitmap, brush);
 	ComPtr<ID2D1SolidColorBrush> temp;
@@ -297,10 +296,13 @@ bool Tale::initRootScene() {
 		D2D1::ColorF(D2D1::ColorF::Black), &temp)))
 		return false;
 	Element::Brush b3(Element::BrushType::solid, temp);
-	auto button = Button::createButton(b1, b3, position, m_pTextFormat);
+	auto button = Button::createButton(b1, b3, D2D1::RectF(40,30,60,70), m_pTextFormat);
 	button->setCaption(L"a simple test");
 	button->setmouseHoverBrush(b2);
 	root->addChild(button);
+	auto sprite = Sprite::createSprite(D2D1::RectF(10, 10, 30, 30), 0.5,b);
+	sprite->addBrush(b1);
+	root->addChild(sprite);
 	return true;
 }
 
@@ -309,7 +311,7 @@ void Tale::OnDraw() {
 	m_pD2dContext->BeginDraw();
 	m_pD2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 	if (root) {
-		root->onDraw(screenSize);
+		root->onDraw(screenSize,dt);
 	}
 
 	D2D1_RECT_F rect = D2D1::RectF(

@@ -20,7 +20,7 @@ public:
 	inline void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	inline void setTextBrush(const Element::Brush& b) { textBrush = b; }
 	virtual void update(MouseMessage, D2D1_RECT_F) override;
-	virtual void postDraw(D2D1_RECT_F) override;
+	virtual void postDraw(D2D1_RECT_F,float) override;
 	virtual ~Button();
 	Button();
 protected:

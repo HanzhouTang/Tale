@@ -24,10 +24,10 @@ D2D1_RECT_F Element::getRealPosition(D2D1_RECT_F parentPosition) {
 	return realPosition;
 }
 
-void Element::onDraw(D2D1_RECT_F parentPosition) {
+void Element::onDraw(D2D1_RECT_F parentPosition,float dt) {
 
 	auto realPosition = getRealPosition(parentPosition);
-	preDraw(realPosition);
+	preDraw(realPosition,dt);
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
 	switch (brush.brushType) {
 	case transparent:
@@ -53,9 +53,9 @@ void Element::onDraw(D2D1_RECT_F parentPosition) {
 		break;
 
 	}
-	postDraw(realPosition);
+	postDraw(realPosition,dt);
 	for (auto& x : children) {
-		x->onDraw(realPosition);
+		x->onDraw(realPosition,dt);
 	}
 
 }
@@ -79,8 +79,8 @@ void Element::setBrush(Brush b) {
 
 ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
 
-void Element::preDraw(D2D1_RECT_F) {}
-void Element::postDraw(D2D1_RECT_F) {}
+void Element::preDraw(D2D1_RECT_F,float) {}
+void Element::postDraw(D2D1_RECT_F,float) {}
 void Element::onMouseMoveOn() {}
 void Element::onPressLeftButton() {}
 void Element::addChild(const shared_ptr<Element>& t) {

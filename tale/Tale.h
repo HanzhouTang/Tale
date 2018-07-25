@@ -2,6 +2,7 @@
 #include"AppBase.h"
 #include"Element.h"
 #include"Button.h"
+#include"Sprite.h"
 class Tale:public AppBase {
 public:
 	Tale(int height, int width, HINSTANCE hinstance,
@@ -10,6 +11,7 @@ public:
 	bool InitDirectX();
 	virtual void StartMessageLoop() override;
 	bool initRootScene();
+	float dt;
 protected:
 	std::wstring fps;
 	shared_ptr<Element> root;
@@ -26,6 +28,7 @@ protected:
 	ComPtr<IDWriteFactory> m_pDWriteFactory;
 	ComPtr<IDXGIFactory2> m_pDxgiFactory;
 	ComPtr<IDXGISwapChain1> m_pSwapChain;
+	ComPtr<ID2D1SpriteBatch> m_pSpriteBatch;
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;

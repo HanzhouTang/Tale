@@ -51,7 +51,7 @@ Button::~Button() {
 	textFormat.Reset();
 }
 
-void Button::postDraw(D2D1_RECT_F realPosition) {
+void Button::postDraw(D2D1_RECT_F realPosition,float dt) {
 	
 	if (textFormat != nullptr && textBrush.m_brush!=nullptr) {
 		
