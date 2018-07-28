@@ -46,7 +46,7 @@ public:
 	void setPosition(D2D1_RECT_F);
 	void setBrush(Brush b);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
-	void addChild(const shared_ptr<Element>&);
+	virtual void addChild(const shared_ptr<Element>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	Element();
 };

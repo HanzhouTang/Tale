@@ -155,11 +155,7 @@ bool Tale::InitDirectX()
 	m_pD2dContext->SetTarget(m_pD2dBackBuffer.Get());
 	if (!CreateDependentRescource())
 		return false;
-	if (FAILED(LoadBitmapFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),
-		L"Resource\\Image\\Test.jpg", m_pBitmpmapTest.GetAddressOf()))) {
-		return false;
-	}
-	
+
 
 	RECT rc;
 	::GetClientRect(GetMainWindow(), &rc);
@@ -276,15 +272,11 @@ bool Tale::CreateDependentRescource()
 
 bool Tale::initRootScene() {
 	Element::setD2dContext(m_pD2dContext.Get());
-	
-	ComPtr<ID2D1BitmapBrush> bitmap;
-	if (FAILED(m_pD2dContext->CreateBitmapBrush(m_pBitmpmapTest.Get(), bitmap.GetAddressOf()))) {
-		return false;
-	}
-	Element::Brush b(Element::BrushType::bitmap, bitmap);
+	ComPtr<ID2D1BitmapBrush> background(CreateBitmapBrushFromFile(L"Resource\\Image\\background\\bg_06a.jpg"));
 	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
-	root = Element::createElement(b, position);
-	
+	Element::Brush bBackground(Element::BrushType::bitmap, background);
+	root = Element::createElement(bBackground, position);
+	/*
 	ComPtr<ID2D1BitmapBrush> brush(CreateBitmapBrushFromFile(L"Resource\\Image\\flower.jpg"));
 	Element::Brush b1(Element::BrushType::bitmap, brush);
 	ComPtr<ID2D1SolidColorBrush> temp;
@@ -300,9 +292,10 @@ bool Tale::initRootScene() {
 	button->setCaption(L"a simple test");
 	button->setmouseHoverBrush(b2);
 	root->addChild(button);
-	auto sprite = Sprite::createSprite(D2D1::RectF(10, 10, 30, 30), 0.5,b);
+	auto sprite = Sprite::createSprite(D2D1::RectF(10, 10, 30, 30), 0.5,bBackground);
 	sprite->addBrush(b1);
 	root->addChild(sprite);
+	*/
 	return true;
 }
 

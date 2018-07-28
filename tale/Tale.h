@@ -32,7 +32,6 @@ protected:
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
-	ComPtr<ID2D1Bitmap>     m_pBitmpmapTest;
 	DXGI_PRESENT_PARAMETERS parameters={0};
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
