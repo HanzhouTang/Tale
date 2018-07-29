@@ -5,7 +5,7 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 	:AppBase(height, width, hinstance, fullScreen, caption)
 {
 	std::wcout.imbue(std::locale("chs"));
-	system("chcp 936");
+	SetConsoleOutputCP(936);//gb2312
 }
 
 

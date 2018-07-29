@@ -4,7 +4,7 @@ int main() {
 	if (app->InitApp()) {
 		if(app->InitDirectX())
 		{
-			wcout << app->readFile(L"test.xml");
+			wcout << app->readFile(L"Resource\\xml\\test.xml");
 			if (app->initRootScene()) {
 				if (app->ShowWindow(SW_SHOW)) {
 					app->StartMessageLoop();
