@@ -4,12 +4,15 @@
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
 	:AppBase(height, width, hinstance, fullScreen, caption)
 {
+	std::wcout.imbue(std::locale("chs"));
+	system("chcp 936");
 }
 
 
 
 Tale::~Tale() {
 	root.reset();
+	xmlParser.reset();
 	m_pD3dDevice.Reset();
 	m_pD3dContext.Reset();
 	m_pD2dDevice.Reset();
@@ -390,5 +393,15 @@ ID2D1BitmapBrush* Tale::CreateBitmapBrushFromFile(PCWSTR url) {
 	return bitmap;
 }
 
+wstring Tale::readFile(wstring filename) {
+	std::wifstream read(filename, std::ios::binary);
+	read.imbue(std::locale(std::locale("chs"),
+		new std::codecvt_utf16<wchar_t, 0x10ffff, std::consume_header>));
+	if (!read.is_open()) {
+		wcout << "cannot opend file " << filename << endl;
+		assert(1 == 2);
+	}
+	return wstring(istreambuf_iterator<wchar_t>(read), istreambuf_iterator<wchar_t>());
+}
 
-//TODO bitmap brush auto scale 
+//TODO bitmap brush auto scale finished!

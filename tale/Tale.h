@@ -4,6 +4,10 @@
 #include"Button.h"
 #include"Sprite.h"
 #include"StackPanel.h"
+#include"XMLParser.h"
+#include<fstream>
+#include<cwctype>
+#include<codecvt>
 class Tale:public AppBase {
 public:
 	Tale(int height, int width, HINSTANCE hinstance,
@@ -12,6 +16,7 @@ public:
 	bool InitDirectX();
 	virtual void StartMessageLoop() override;
 	bool initRootScene();
+	wstring readFile(wstring filename);
 	float dt;
 protected:
 	std::wstring fps;
@@ -33,6 +38,7 @@ protected:
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
+	unique_ptr<XMLParser> xmlParser = make_unique<XMLParser>();
 	DXGI_PRESENT_PARAMETERS parameters={0};
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();
