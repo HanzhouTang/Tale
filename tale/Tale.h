@@ -3,6 +3,7 @@
 #include"Element.h"
 #include"Button.h"
 #include"Sprite.h"
+#include"StackPanel.h"
 class Tale:public AppBase {
 public:
 	Tale(int height, int width, HINSTANCE hinstance,

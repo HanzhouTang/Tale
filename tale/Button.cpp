@@ -9,7 +9,7 @@ void Button::onPressDown(Button::CallbackFunction f) {
 		f(this);
 }
 
-shared_ptr<Button> Button::createButton(Element::Brush b,Element::Brush bText, D2D1_RECT_F position, ComPtr<IDWriteTextFormat> foramt, CallbackFunction f, wstring c) {
+shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, Element::Brush bText, ComPtr<IDWriteTextFormat> foramt, CallbackFunction f, wstring c) {
 	auto ret = make_shared<Button>();
 	ret->setBrush(b);
 	ret->setTextBrush(bText);

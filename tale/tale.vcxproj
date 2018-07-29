@@ -143,6 +143,7 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Tale.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="RescourceManagerBase.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Tale.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

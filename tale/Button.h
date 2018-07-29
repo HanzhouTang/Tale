@@ -12,7 +12,7 @@ public:
 	typedef function<void(Button*)> CallbackFunction;
 	CallbackFunction action;
 	virtual void onPressDown(CallbackFunction f);
-	static shared_ptr<Button> createButton(Element::Brush,  Element::Brush, D2D1_RECT_F, ComPtr<IDWriteTextFormat>,CallbackFunction f=nullptr, wstring=L"");
+	static shared_ptr<Button> createButton(Element::Brush, D2D1_RECT_F, Element::Brush=Brush(), ComPtr<IDWriteTextFormat> = ComPtr<IDWriteTextFormat>(nullptr),CallbackFunction f=nullptr, wstring=L"");
 	void setCallbackFunction(CallbackFunction f) { action = f; }
 	inline void setCaption(wstring s) { caption = s; }
 	inline void setmouseHoverBrush(Brush b) { mouseHoverBrush = b; }

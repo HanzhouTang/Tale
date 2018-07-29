@@ -94,7 +94,7 @@ Element::~Element() {
 	brush.m_brush.Reset();
 }
 shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
-	auto ret = make_unique<Element>();
+	auto ret = make_shared<Element>();
 	ret->setBrush(b);
 	ret->setPosition(position);
 	return ret;

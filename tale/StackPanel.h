@@ -2,10 +2,18 @@
 #include"Element.h"
 #include<memory>
 #include<vector>
-struct StackPanel
+struct StackPanel:Element
 {
 	enum Orientation{horizontal, vertical};
-	Orientation orientation;
-	StackPanel(Orientation o) : orientation(o) {};
+	Orientation orientation = horizontal;
+	float padding = 1.0f;
+	StackPanel() {
+		setBrush(Element::Brush(Element::BrushType::transparent, ComPtr<ID2D1Brush>(nullptr)));
+	};
+	void setPadding(float p);
+	void setOrientation(Orientation o); 
+	void setBackground(Element::Brush b) { setBrush(b); };
+	void rearrangement();
 	virtual void addChild(const shared_ptr<Element>&) override;
+	static shared_ptr<StackPanel> createStackPanel(D2D1_RECT_F, Orientation = horizontal, float =1.0f);
 };
