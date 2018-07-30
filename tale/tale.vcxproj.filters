@@ -45,7 +45,7 @@
     <ClCompile Include="Node.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
-    <ClCompile Include="Parser.cpp">
+    <ClCompile Include="XMLParser.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
   </ItemGroup>

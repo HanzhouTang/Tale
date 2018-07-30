@@ -16,6 +16,7 @@ public:
 	bool InitDirectX();
 	virtual void StartMessageLoop() override;
 	bool initRootScene();
+	void parse(wstring content) { xmlParser->parse(content); }
 	wstring readFile(wstring filename);
 	float dt;
 protected:
