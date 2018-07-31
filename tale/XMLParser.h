@@ -6,7 +6,7 @@ class XMLParser {
 	shared_ptr<Node> root;
 public:
 	enum Token{STRING,QUOTE,DQUOTE,ASSIGN,TAGBEGIN,TAGEND,
-		SLASH,MIUNS,END,INVALID};
+		SLASH,MIUNS,END,INVALID,COMENTEND,COMMENTBEGIN,TAGENDWITHSLASH,TAGBEGINWITHSLASH};
 	enum State{inString,noString,endString};
 	struct Lexer {
 		wstring::iterator index0, index1;
@@ -29,7 +29,7 @@ public:
 		return !isWhiteSpace(ch);
 	}
 	static bool isWhiteSpace(wchar_t ch) {
-		return  ch == CSPACE || ch == CTAB || ch == CNEWLINE;
+		return  ch == CSPACE || ch == CTAB || ch == CNEWLINE||ch==CRETURN;
 	}
 	wstring getTokenName(Token token);
 	const static wchar_t COPEN = L'<';
@@ -40,7 +40,8 @@ public:
 	const static wchar_t CDQUOTE = L'\"';
 	const static wchar_t CTAB = L'\t';
 	const static wchar_t CASSIGN = L'=';
-	const static wchar_t CNEWLINE = L'\n';
+	const static wchar_t CNEWLINE = 10;
 	const static wchar_t CEXCLAMATION = L'!';
 	const static wchar_t CMINUS = L'-';
+	const static wchar_t CRETURN = 13;
 };

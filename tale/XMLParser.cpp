@@ -6,7 +6,7 @@ void XMLParser::parse(wstring str) {
 	resetLexer();
 	Token token = getNextToken();
 	while (token != Token::END) {
-		wcout << getTokenName(token)<<" : "<<lexer.currentLexeme<< endl;
+		wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 		token = getNextToken();
 	}
 }
@@ -17,7 +17,7 @@ XMLParser::Token XMLParser::getNextToken() {
 	if (lexer.index0 == content.end()) return Token::END;
 	if (lexer.state == inString) {
 		wstring temp;
-		for (; lexer.index1 != content.end() && * (lexer.index1) != CQUOTE && *(lexer.index1) != CDQUOTE;lexer.index1++) {
+		for (; lexer.index1 != content.end() && * (lexer.index1) != CQUOTE && *(lexer.index1) != CDQUOTE; lexer.index1++) {
 			if (*(lexer.index1) == L'\\') {
 				lexer.index1++;
 			}
@@ -32,7 +32,10 @@ XMLParser::Token XMLParser::getNextToken() {
 	}
 	lexer.index0 = find_if(lexer.index0, content.end(), isNotWhiteSpace);
 	lexer.index1 = find_if(lexer.index0, content.end(), isDelimiter);
+	//cout << "index0(" <<*(lexer.index0)<<")"<<" index1("<<*(lexer.index1)<<")"<< endl;
+	if (lexer.index1 == content.end()) return Token::END;
 	if (lexer.index0 == lexer.index1) {
+		//cout << "point to the same character" << endl;
 		lexer.index1++;
 		switch (*(lexer.index0))
 		{
@@ -57,17 +60,50 @@ XMLParser::Token XMLParser::getNextToken() {
 				lexer.state = noString;
 			}
 			break;
-		case CMINUS:
-			token = Token::MIUNS;
+		case CMINUS: 
+		{
+			auto tempIndex = lexer.index1;
+			if (*(lexer.index1) == CMINUS && *(++lexer.index1) == CCLOSE) {
+				token = Token::COMENTEND;
+				lexer.index1++;
+			}
+			else {
+				lexer.index1 = tempIndex;
+				token = Token::MIUNS;
+			}
 			break;
-		case CSLASH:
-			token = Token::SLASH;
+		}
+		case CSLASH: {
+		
+			if (*(lexer.index1) == CCLOSE) {
+				token = Token::TAGENDWITHSLASH;
+				lexer.index1++;
+			}
+			else {
+				token = Token::SLASH;
+			}
+		}
 			break;
-		case COPEN:
-			token = Token::TAGBEGIN;
-			break;
+		case COPEN: {
+			auto tempIndex = lexer.index1;
+			if (*(lexer.index1) == CSLASH) {
+				token = Token::TAGBEGINWITHSLASH;
+				lexer.index1++;
+			}
+			else if (*(lexer.index1) == CEXCLAMATION && *(++lexer.index1) == CMINUS && *(++lexer.index1) == CMINUS) {
+				token = Token::COMMENTBEGIN;
+				lexer.index1++;
+			}
+			else {
+				token = Token::TAGBEGIN;
+				lexer.index1 = tempIndex;
+			}
+			break; 
+		}
 		case CCLOSE:
 			token = Token::TAGEND;
+			break;
+		default:
 			break;
 		}
 	}
@@ -80,33 +116,32 @@ wstring XMLParser::getTokenName(Token token) {
 	{
 	case XMLParser::STRING:
 		return L"STRING";
-		break;
 	case XMLParser::QUOTE:
 		return L"QUOTE";
-		break;
 	case XMLParser::DQUOTE:
 		return L"DQUOTE";
-		break;
 	case XMLParser::ASSIGN:
 		return L"ASSIGN";
-		break;
 	case XMLParser::TAGBEGIN:
 		return L"TAGBEGIN";
-		break;
 	case XMLParser::TAGEND:
 		return L"TAGEND";
-		break;
 	case XMLParser::SLASH:
 		return L"SLASH";
-		break;
 	case XMLParser::MIUNS:
 		return L"MINUS";
-		break;
 	case XMLParser::END:
 		return L"END";
-		break;
 	case XMLParser::INVALID:
 		return L"INVALID";
+	case XMLParser::COMENTEND:
+		return L"COMMENTEND";
+	case XMLParser::COMMENTBEGIN:
+		return L"COMMENTBEGIN";
+	case XMLParser::TAGBEGINWITHSLASH:
+		return L"TAGBEGINWITHSLASH";
+	case XMLParser::TAGENDWITHSLASH:
+		return L"TAGENDWITHSLASH";
 	default:
 		break;
 	}
