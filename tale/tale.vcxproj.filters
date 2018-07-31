@@ -80,9 +80,6 @@
     <ClInclude Include="Common.h">
       <Filter>Header Files\XML</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute.h">
-      <Filter>Header Files\XML</Filter>
-    </ClInclude>
     <ClInclude Include="XMLParser.h">
       <Filter>Header Files\XML</Filter>
     </ClInclude>
