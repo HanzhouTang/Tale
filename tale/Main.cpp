@@ -5,7 +5,9 @@ int main() {
 		if(app->InitDirectX())
 		{
 			wstring content = app->readFile(L"Resource\\xml\\test.xml");
+			cout << "before parsing" << endl;
 			app->parse(content);
+			cout << "after parsing" << endl;
 			if (app->initRootScene()) {
 				if (app->ShowWindow(SW_SHOW)) {
 					app->StartMessageLoop();

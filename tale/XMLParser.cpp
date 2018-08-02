@@ -4,11 +4,111 @@
 void XMLParser::parse(wstring str) {
 	content = str;
 	resetLexer();
+	this->root = Node::createNode(L"root", nullptr);
+	auto currentNode = this->root;
 	Token token = getNextToken();
+	bool insideTag = false;
+	stack<wstring> trace;
 	while (token != Token::END) {
-		wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
+		
+		switch (token)
+		{
+		case TAGBEGIN:
+			insideTag = true;
+			token = getNextToken();
+			if (token != STRING) {
+				wcout << "ERROR: tag must contain its' name" << endl;
+				assert(1 == 2);
+			}
+			else {
+				auto node = Node::createNode(lexer.currentLexeme, currentNode);
+				trace.push(lexer.currentLexeme);
+				currentNode->addChild(node);
+				currentNode = node;
+			}
+			break;
+		case TAGBEGINWITHSLASH:
+			insideTag = true;
+			token = getNextToken();
+			if (token != STRING) {
+				wcout << "ERROR: tag must contain its' name" << endl;
+				assert(1 == 2);
+			}
+			else {
+				if (trace.top() != lexer.currentLexeme) {
+					wcout << "ERROR: tag " << lexer.currentLexeme << " is doesn't match" << endl;
+					assert(1 == 2);
+				}
+				wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
+				trace.pop();
+				currentNode = currentNode->getHighLevel();
+				token = getNextToken();
+				if (token != TAGEND) {
+					wcout << "ERROR: closing tags cannot contain any attribute" << endl;
+					assert(1 == 2);
+				}
+				else {
+					insideTag = false;
+				}
+			}
+			break;
+		case TAGEND:
+			insideTag = false;
+			break;
+		case TAGENDWITHSLASH:
+			insideTag = false;
+			trace.pop();
+			currentNode = currentNode->getHighLevel();
+			break;
+		case STRING:
+			if (!insideTag) {
+				currentNode->appendValue(lexer.currentLexeme);
+			}
+			else {
+				// temporarily not support signle attribute. Because it's not necessary now.
+				auto key = lexer.currentLexeme;
+				token = getNextToken();
+				if (token != ASSIGN) {
+					wcout << "ERROR: now we don't support signle attribute. it musht be a pair" << endl;
+				}
+				else {
+					token = getNextToken();
+					if (token == Token::QUOTE) {
+						token = getNextToken();
+						currentNode->setAttribute(key, lexer.currentLexeme);
+						token = getNextToken();
+						if (token != QUOTE) {
+							wcout << "ERROR: \' must be ended by \'";
+							assert(1 == 2);
+						}
+					}
+					else if (token == Token::DQUOTE) {
+						token = getNextToken();
+						currentNode->setAttribute(key, lexer.currentLexeme);
+						token = getNextToken();
+						if (token != DQUOTE) {
+							wcout << "ERROR: \" must be ended by \"";
+							assert(1 == 2);
+						}
+					}
+					else {
+						wcout << "ERROR: the one fllowing = must be covered by \' or \"" << endl;
+						assert(1 == 2);
+					}
+				}
+
+			}
+			break;
+		}
+		
 		token = getNextToken();
+		//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 	}
+	cout << "output: " << endl;
+	wcout << currentNode->getName() << endl;
+	wcout << currentNode->getChild(0)->getName() << endl;
+	wcout << currentNode->getChild(0)->getChild(0)->getName() << endl;
+	wcout << currentNode->getChild(0)->getChild(0)->getAttribute(L"position") << endl;
 }
 
 XMLParser::Token XMLParser::getNextToken() {
@@ -143,6 +243,7 @@ wstring XMLParser::getTokenName(Token token) {
 	case XMLParser::TAGENDWITHSLASH:
 		return L"TAGENDWITHSLASH";
 	default:
+		return L"DEFAULT";
 		break;
 	}
 }
