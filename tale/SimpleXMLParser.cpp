@@ -99,6 +99,15 @@ void SimpleXMLParser::parse(wstring str) {
 
 			}
 			break;
+		case COMMENTBEGIN:
+			do {
+				token = getNextToken();
+			} while (token != COMENTEND&&token!=END);
+			if (token == END) {
+				wcout << "ERROR: the comment doesn't has a ending" << endl;
+				assert(1 == 2);
+			}
+			break;
 		}
 		
 		token = getNextToken();
@@ -106,10 +115,6 @@ void SimpleXMLParser::parse(wstring str) {
 	}
 	cout << "output: " << endl;
 	wcout << currentNode->info();
-	wcout << currentNode->getName() << endl;
-	wcout << currentNode->getChild(0)->getName() << endl;
-	wcout << currentNode->getChild(0)->getChild(0)->getName() << endl;
-	wcout << currentNode->getChild(0)->getChild(0)->getAttribute(L"position") << endl;
 }
 
 SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
