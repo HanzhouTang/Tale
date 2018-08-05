@@ -45,7 +45,7 @@
     <ClCompile Include="Node.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
-    <ClCompile Include="XMLParser.cpp">
+    <ClCompile Include="SimpleXMLParser.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,7 +80,7 @@
     <ClInclude Include="Common.h">
       <Filter>Header Files\XML</Filter>
     </ClInclude>
-    <ClInclude Include="XMLParser.h">
+    <ClInclude Include="SimpleXMLParser.h">
       <Filter>Header Files\XML</Filter>
     </ClInclude>
   </ItemGroup>

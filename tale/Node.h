@@ -17,6 +17,17 @@ struct Node {
 		attributes[key] = value;
 	}
 	shared_ptr<Node> getParent() { return parent; }
+	wstring info(wstring parentStr=L"")const {
+		wstring ret= (parentStr + L".name= " + name+L"\n");
+		ret += (parentStr + L".value= " + value + L"\n");
+		for (const auto& ptr : attributes) {
+			ret += (parentStr + L"[" + ptr.first + L"]= " + ptr.second + L"\n");
+		}
+		for (const auto& x : children) {
+			ret += x->info(parentStr + L"." + name);
+		}
+		return ret;
+	}
 	shared_ptr<Node> getHighLevel() {
 		auto ret = getParent();
 		if (ret == nullptr) {
@@ -27,3 +38,4 @@ struct Node {
 	static shared_ptr<Node> createNode(const wstring& name, const shared_ptr<Node>& );
 };
 //need a function to output it.
+//simpler than my imagine

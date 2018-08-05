@@ -1,7 +1,7 @@
-#include"XMLParser.h"
+#include"SimpleXMLParser.h"
 #include<stack>
 #include<cassert>
-void XMLParser::parse(wstring str) {
+void SimpleXMLParser::parse(wstring str) {
 	content = str;
 	resetLexer();
 	this->root = Node::createNode(L"root", nullptr);
@@ -105,13 +105,14 @@ void XMLParser::parse(wstring str) {
 		//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 	}
 	cout << "output: " << endl;
+	wcout << currentNode->info();
 	wcout << currentNode->getName() << endl;
 	wcout << currentNode->getChild(0)->getName() << endl;
 	wcout << currentNode->getChild(0)->getChild(0)->getName() << endl;
 	wcout << currentNode->getChild(0)->getChild(0)->getAttribute(L"position") << endl;
 }
 
-XMLParser::Token XMLParser::getNextToken() {
+SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
 	lexer.index0 = lexer.index1;
 	Token token = STRING;
 	if (lexer.index0 == content.end()) return Token::END;
@@ -211,36 +212,36 @@ XMLParser::Token XMLParser::getNextToken() {
 	return token;
 }
 
-wstring XMLParser::getTokenName(Token token) {
+wstring SimpleXMLParser::getTokenName(Token token) {
 	switch (token)
 	{
-	case XMLParser::STRING:
+	case SimpleXMLParser::STRING:
 		return L"STRING";
-	case XMLParser::QUOTE:
+	case SimpleXMLParser::QUOTE:
 		return L"QUOTE";
-	case XMLParser::DQUOTE:
+	case SimpleXMLParser::DQUOTE:
 		return L"DQUOTE";
-	case XMLParser::ASSIGN:
+	case SimpleXMLParser::ASSIGN:
 		return L"ASSIGN";
-	case XMLParser::TAGBEGIN:
+	case SimpleXMLParser::TAGBEGIN:
 		return L"TAGBEGIN";
-	case XMLParser::TAGEND:
+	case SimpleXMLParser::TAGEND:
 		return L"TAGEND";
-	case XMLParser::SLASH:
+	case SimpleXMLParser::SLASH:
 		return L"SLASH";
-	case XMLParser::MIUNS:
+	case SimpleXMLParser::MIUNS:
 		return L"MINUS";
-	case XMLParser::END:
+	case SimpleXMLParser::END:
 		return L"END";
-	case XMLParser::INVALID:
+	case SimpleXMLParser::INVALID:
 		return L"INVALID";
-	case XMLParser::COMENTEND:
+	case SimpleXMLParser::COMENTEND:
 		return L"COMMENTEND";
-	case XMLParser::COMMENTBEGIN:
+	case SimpleXMLParser::COMMENTBEGIN:
 		return L"COMMENTBEGIN";
-	case XMLParser::TAGBEGINWITHSLASH:
+	case SimpleXMLParser::TAGBEGINWITHSLASH:
 		return L"TAGBEGINWITHSLASH";
-	case XMLParser::TAGENDWITHSLASH:
+	case SimpleXMLParser::TAGENDWITHSLASH:
 		return L"TAGENDWITHSLASH";
 	default:
 		return L"DEFAULT";

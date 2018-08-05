@@ -1,7 +1,7 @@
 #pragma once
 #include"Node.h"
 using namespace std;
-class XMLParser {
+class SimpleXMLParser {
 	wstring content;
 	shared_ptr<Node> root;
 public:

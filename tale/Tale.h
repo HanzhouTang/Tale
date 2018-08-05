@@ -4,7 +4,7 @@
 #include"Button.h"
 #include"Sprite.h"
 #include"StackPanel.h"
-#include"XMLParser.h"
+#include"SimpleXMLParser.h"
 #include<fstream>
 #include<cwctype>
 #include<codecvt>
@@ -39,7 +39,7 @@ protected:
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
-	unique_ptr<XMLParser> xmlParser = make_unique<XMLParser>();
+	unique_ptr<SimpleXMLParser> xmlParser = make_unique<SimpleXMLParser>();
 	DXGI_PRESENT_PARAMETERS parameters={0};
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();

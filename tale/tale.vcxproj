@@ -143,7 +143,7 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="XMLParser.cpp" />
+    <ClCompile Include="SimpleXMLParser.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Tale.cpp" />
@@ -155,7 +155,7 @@
     <ClInclude Include="d2dutil.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="XMLParser.h" />
+    <ClInclude Include="SimpleXMLParser.h" />
     <ClInclude Include="RescourceManagerBase.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StackPanel.h" />
