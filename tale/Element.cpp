@@ -72,12 +72,17 @@ void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition) 
 void Element::setD2dContext(ComPtr<ID2D1DeviceContext> target) {
 	d2dContext = target;
 }
+void Element::setImageFactory(ComPtr<IWICImagingFactory> factory) {
+	imageFactory = factory;
+}
+
 
 void Element::setBrush(Brush b) {
 	brush = b;
 }
 
 ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
+ ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
 
 void Element::preDraw(D2D1_RECT_F,float) {}
 void Element::postDraw(D2D1_RECT_F,float) {}
@@ -100,3 +105,30 @@ shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
 	return ret;
 }
 
+shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
+	if (root == nullptr) return shared_ptr<Element>(nullptr);
+	const wstring& name = root->getName();
+	if (name == L"Root") {
+		auto ret = make_shared<Element>();
+		auto position = Utility::wstr2floats(root->getAttribute(L"position"));
+		if (!position.empty()) {
+			if (position.size() != 4) {
+				cout << "ERROR: the size of position must be 4" << endl;
+				assert(1 == 2);
+			}
+			auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
+		}
+		auto url = root->getAttribute(L"brush");
+		if (!url.empty()) {
+			auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
+			Brush brush(BrushType::bitmap, bitmapBrush);
+			ret->setBrush(brush);
+		}
+		for (const auto& nodeChild : root->getChildren()) {
+			ret->addChild(Element::createElementByXml(nodeChild));
+		}
+		return ret;
+	}
+	
+	
+}

@@ -46,12 +46,6 @@ protected:
 	virtual void OnDraw() override;
 	virtual void OnMouseMove(WPARAM, LPARAM) override;
 	virtual void OnLButtonDown(WPARAM, LPARAM) override;
-	HRESULT LoadBitmapFromFile(
-		ID2D1DeviceContext *pD2dContext,
-		IWICImagingFactory *pIWICFactory,
-		PCWSTR uri,
-		ID2D1Bitmap **ppBitmap
-	);
-	ID2D1BitmapBrush* CreateBitmapBrushFromFile(PCWSTR url);
+	
 
 };

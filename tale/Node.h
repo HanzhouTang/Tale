@@ -8,15 +8,16 @@ struct Node {
 	map<wstring, wstring> attributes;
 	void setParent(const shared_ptr<Node>& p) { parent = p; }
 	void setName(const wstring& n) { name = n; }
-	wstring getName() { return name; }
-	wstring getAttribute(const wstring& key) { return attributes[key]; }
+	wstring getName() const { return name; }
+	wstring getAttribute(const wstring& key) const { if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second; }
+	vector<shared_ptr<Node>>& getChildren() { return children; }
 	shared_ptr<Node> getChild(int ith) { return children[ith]; }
 	void addChild(shared_ptr<Node> c) { children.push_back(c); }
 	void appendValue(const wstring& v) { value += (v + L" "); }
 	void setAttribute(const wstring& key, const wstring& value) {
 		attributes[key] = value;
 	}
-	shared_ptr<Node> getParent() { return parent; }
+	shared_ptr<Node> getParent() const { return parent; }
 	wstring info(wstring parentStr = L"")const {
 	
 		wstring ret;

@@ -4,7 +4,7 @@
 void SimpleXMLParser::parse(wstring str) {
 	content = str;
 	resetLexer();
-	this->root = Node::createNode(L"root", nullptr);
+	this->root = Node::createNode(L"Root", nullptr);
 	auto currentNode = this->root;
 	Token token = getNextToken();
 	bool insideTag = false;
@@ -113,7 +113,6 @@ void SimpleXMLParser::parse(wstring str) {
 		token = getNextToken();
 		//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 	}
-	cout << "output: " << endl;
 	wcout << currentNode->info();
 }
 

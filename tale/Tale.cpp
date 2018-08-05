@@ -1,6 +1,6 @@
 ﻿#include"Tale.h"
 #include<windowsx.h>
-
+using namespace Utility;
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
 	:AppBase(height, width, hinstance, fullScreen, caption)
 {
@@ -181,70 +181,7 @@ bool Tale::InitDirectX()
 
 
 
-HRESULT Tale::LoadBitmapFromFile(
-	ID2D1DeviceContext *pD2dContext,
-	IWICImagingFactory *pIWICFactory,
-	PCWSTR uri,
-	ID2D1Bitmap **ppBitmap
-)
-{
-	ComPtr<IWICBitmapDecoder> pDecoder = NULL;
-	ComPtr<IWICBitmapFrameDecode> pSource = NULL;
-	ComPtr<IWICStream> pStream = NULL;
-	ComPtr<IWICFormatConverter> pConverter = NULL;
-	ComPtr<IWICBitmapScaler> pScaler = NULL;
 
-	HRESULT hr = pIWICFactory->CreateDecoderFromFilename(
-		uri,
-		NULL,
-		GENERIC_READ,
-		WICDecodeMetadataCacheOnLoad,
-		&pDecoder
-	);
-
-	if (SUCCEEDED(hr))
-	{
-		// Create the initial frame.
-		hr = pDecoder->GetFrame(0, &pSource);
-	}
-	if (SUCCEEDED(hr))
-	{
-
-		// Convert the bitmap format to 32bppPBGRA
-		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
-		hr = pIWICFactory->CreateFormatConverter(&pConverter);
-
-	}
-
-
-	if (SUCCEEDED(hr))
-	{
-		hr = pConverter->Initialize(
-			pSource.Get(),
-			GUID_WICPixelFormat32bppPBGRA,
-			WICBitmapDitherTypeNone,
-			NULL,
-			0.f,
-			WICBitmapPaletteTypeMedianCut
-		);
-	}   if (SUCCEEDED(hr))
-	{
-
-		// Create a Direct2D bitmap from the WIC bitmap.
-		hr = pD2dContext->CreateBitmapFromWicBitmap(
-			pConverter.Get(),
-			NULL,
-			ppBitmap
-		);
-	}
-
-	pDecoder.Reset();
-	pSource.Reset();
-	pStream.Reset();
-	pConverter.Reset();
-	pScaler.Reset();
-	return hr;
-}
 
 
 
@@ -274,23 +211,24 @@ bool Tale::CreateDependentRescource()
 }
 
 bool Tale::initRootScene() {
-	Element::setD2dContext(m_pD2dContext.Get());
-	ComPtr<ID2D1BitmapBrush> background(CreateBitmapBrushFromFile(L"Resource\\Image\\background\\bg_06a.jpg"));
+	Element::setD2dContext(m_pD2dContext);
+	Element::setImageFactory(m_pImageFactory);
+	ComPtr<ID2D1BitmapBrush> background(CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),L"Resource\\Image\\background\\bg_06a.jpg"));
 	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
 	Element::Brush bBackground(Element::BrushType::bitmap, background);
 	root = Element::createElement(bBackground, position);
-	Element::Brush ares_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\aries_a.png"));
-	Element::Brush ares_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\aries_b.png"));
-	Element::Brush hearts_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\hearts_a.png"));
-	Element::Brush hearts_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\hearts_b.png"));
-	Element::Brush scales_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\scales_a.png"));
-	Element::Brush scales_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\scales_b.png"));
-	Element::Brush ying_yang_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\yin-yang_a.png"));
-	Element::Brush ying_yang_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\yin-yang_b.png"));
-	Element::Brush triorb_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\triorb_a.png"));
-	Element::Brush triorb_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\triorb_b.png"));
-	Element::Brush sward_spade_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\sword-spade_a.png"));
-	Element::Brush sward_spade_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\sword-spade_b.png"));
+	Element::Brush ares_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\aries_a.png"));
+	Element::Brush ares_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\aries_b.png"));
+	Element::Brush hearts_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\hearts_a.png"));
+	Element::Brush hearts_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\hearts_b.png"));
+	Element::Brush scales_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\scales_a.png"));
+	Element::Brush scales_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\scales_b.png"));
+	Element::Brush ying_yang_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\yin-yang_a.png"));
+	Element::Brush ying_yang_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\yin-yang_b.png"));
+	Element::Brush triorb_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\triorb_a.png"));
+	Element::Brush triorb_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\triorb_b.png"));
+	Element::Brush sward_spade_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\sword-spade_a.png"));
+	Element::Brush sward_spade_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\sword-spade_b.png"));
 	auto Bares = Button::createButton(ares_a, D2D1::RectF(0, 0, 0, 0));
 	Bares->setmouseHoverBrush(ares_b);
 	auto Bheart = Button::createButton(hearts_a, D2D1::RectF(0, 0, 0, 0));
@@ -322,7 +260,7 @@ bool Tale::initRootScene() {
 	sprite1->addBrush(b1);
 	*/
 	auto stackPanel = StackPanel::createStackPanel(D2D1::RectF(0, 70, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio),StackPanel::Orientation::horizontal);
-	Element::Brush scroll(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\icon\\table\\background.jpg"));
+	Element::Brush scroll(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\background.jpg"));
 	stackPanel->setBackground(scroll);
 	/*
 	stackPanel->addChild(sprite);
@@ -335,7 +273,7 @@ bool Tale::initRootScene() {
 	stackPanel->addChild(Btriorb);
 	stackPanel->addChild(Bsward_spade);
 	root->addChild(stackPanel);
-	Element::Brush character(Element::BrushType::bitmap, CreateBitmapBrushFromFile(L"Resource\\DevelopQHead\\100011_01.png"));
+	Element::Brush character(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\DevelopQHead\\100011_01.png"));
 	auto  sprite = Sprite::createSprite(D2D1::RectF(0, 20, 30, 70), 0.5, character);
 	root->addChild(sprite);
 	return true;
@@ -378,20 +316,6 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 	}
 }
 
-ID2D1BitmapBrush* Tale::CreateBitmapBrushFromFile(PCWSTR url) {
-	ComPtr<ID2D1Bitmap> temp;
-	if (FAILED(LoadBitmapFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),
-		url, temp.GetAddressOf()))) {
-		assert(1 == 2);
-		return nullptr;
-	}
-	ID2D1BitmapBrush* bitmap;
-	if (FAILED(m_pD2dContext->CreateBitmapBrush(temp.Get(), &bitmap))) {
-		assert(1 == 2);
-		return nullptr;
-	}
-	return bitmap;
-}
 
 wstring Tale::readFile(wstring filename) {
 	std::wifstream read(filename, std::ios::binary);

@@ -48,6 +48,9 @@
     <ClCompile Include="SimpleXMLParser.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="SimpleXMLParser.h">
       <Filter>Header Files\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
