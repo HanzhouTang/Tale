@@ -1,8 +1,30 @@
-#include"Button.h"
+﻿#include"Button.h"
 
 
 
-Button::Button() {}
+Button::Button() {
+	if (defaultButtonColor.Get() == nullptr) {
+		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::Gray), &defaultButtonColor)))
+		{
+			cout << "ERROR: create solid brush failed" << endl;
+			assert(1 == 2);
+		}
+		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::Black), &defaultTextColor))) {
+			cout << "ERROR: create solid brush failed" << endl;
+			assert(1 == 2);
+		}
+	}
+	Element::Brush btext(Element::BrushType::solid, defaultTextColor);
+	setTextBrush(btext);
+	Element::Brush bcolor(Element::BrushType::solid, defaultButtonColor);
+	setBrush(bcolor);
+	setDefaultBrush(bcolor);
+	setmouseHoverBrush(bcolor);
+	setTextFormat(Element::textFormat);
+
+}
 
 void Button::onPressDown(Button::CallbackFunction f) {
 	if (f != nullptr)
@@ -35,6 +57,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 		if (message.event == Element::Event::LButtonDown) {
 			onPressDown(action);
 		}
+		
 		setBrush(mouseHoverBrush);
 	}
 	else {
@@ -45,6 +68,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 	}
 }
 Button::~Button() {
+	defaultButtonColor.Reset();
 	defaultBrush.m_brush.Reset();
 	mouseHoverBrush.m_brush.Reset();
 	textBrush.m_brush.Reset();
@@ -58,3 +82,42 @@ void Button::postDraw(D2D1_RECT_F realPosition,float dt) {
 		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
 	}
 }
+
+
+shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
+	auto ret = make_shared<Button>();
+	ret->setCaption(node->getValue());
+	auto hoverBrushUrl = node->getAttribute(L"mouseHoverBrush");
+
+	auto url = node->getAttribute(L"brush");
+	if (!url.empty()) {
+		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
+		Brush brush(BrushType::bitmap, bitmapBrush);
+		ret->setBrush(brush);
+		ret->setDefaultBrush(brush);
+	}
+
+	if (!hoverBrushUrl.empty()) {
+		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), hoverBrushUrl.c_str());
+		Brush mouseHoverBrush(BrushType::bitmap, bitmapBrush);
+		ret->setmouseHoverBrush(mouseHoverBrush);
+	}
+	return ret;
+}
+
+ComPtr<ID2D1SolidColorBrush> Button::defaultButtonColor = nullptr;
+ComPtr<ID2D1SolidColorBrush> Button::defaultTextColor =nullptr;
+
+
+
+/*
+ret->setBrush(b);
+ret->setTextBrush(bText);
+ret->setPosition(position);
+ret->setTextFormat(foramt);
+ret->setCallbackFunction(f);
+ret->setCaption(c);
+ret->setDefaultBrush(b);
+ret->setmouseHoverBrush(b);
+
+*/

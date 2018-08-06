@@ -21,6 +21,8 @@ public:
 		lexer.index0 = lexer.index1 = content.begin(); 
 		lexer.state = noString;
 	}
+	shared_ptr<Node> getRoot() { return root; }
+
 	static bool isDelimiter(wchar_t ch) {
 		return ch == CASSIGN || isWhiteSpace(ch)||ch == CQUOTE||
 			ch == CDQUOTE||ch==CSLASH||ch==COPEN||ch==CCLOSE||ch==CMINUS;

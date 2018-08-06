@@ -16,7 +16,6 @@ public:
 	bool InitDirectX();
 	virtual void StartMessageLoop() override;
 	bool initRootScene();
-	void parse(wstring content) { xmlParser->parse(content); }
 	wstring readFile(wstring filename);
 	float dt;
 protected:
@@ -39,7 +38,6 @@ protected:
 	ComPtr<IWICImagingFactory> m_pImageFactory;
 	ComPtr<IDWriteTextFormat> m_pTextFormat;
 	ComPtr<ID2D1SolidColorBrush> m_pTextBrush;
-	unique_ptr<SimpleXMLParser> xmlParser = make_unique<SimpleXMLParser>();
 	DXGI_PRESENT_PARAMETERS parameters={0};
 	virtual void updateScene(float dt);
 	bool CreateDependentRescource();

@@ -12,7 +12,6 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 
 Tale::~Tale() {
 	root.reset();
-	xmlParser.reset();
 	m_pD3dDevice.Reset();
 	m_pD3dContext.Reset();
 	m_pD2dDevice.Reset();
@@ -211,71 +210,22 @@ bool Tale::CreateDependentRescource()
 }
 
 bool Tale::initRootScene() {
+
+
+
+
 	Element::setD2dContext(m_pD2dContext);
 	Element::setImageFactory(m_pImageFactory);
-	ComPtr<ID2D1BitmapBrush> background(CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(),L"Resource\\Image\\background\\bg_06a.jpg"));
-	auto position = D2D1::RectF(0, 0, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio);
-	Element::Brush bBackground(Element::BrushType::bitmap, background);
-	root = Element::createElement(bBackground, position);
-	Element::Brush ares_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\aries_a.png"));
-	Element::Brush ares_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\aries_b.png"));
-	Element::Brush hearts_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\hearts_a.png"));
-	Element::Brush hearts_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\hearts_b.png"));
-	Element::Brush scales_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\scales_a.png"));
-	Element::Brush scales_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\scales_b.png"));
-	Element::Brush ying_yang_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\yin-yang_a.png"));
-	Element::Brush ying_yang_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\yin-yang_b.png"));
-	Element::Brush triorb_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\triorb_a.png"));
-	Element::Brush triorb_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\triorb_b.png"));
-	Element::Brush sward_spade_a(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\sword-spade_a.png"));
-	Element::Brush sward_spade_b(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\sword-spade_b.png"));
-	auto Bares = Button::createButton(ares_a, D2D1::RectF(0, 0, 0, 0));
-	Bares->setmouseHoverBrush(ares_b);
-	auto Bheart = Button::createButton(hearts_a, D2D1::RectF(0, 0, 0, 0));
-	Bheart->setmouseHoverBrush(hearts_b);
-	auto Bscale= Button::createButton(scales_a, D2D1::RectF(0, 0, 0, 0));
-	Bscale->setmouseHoverBrush(scales_b);
-	auto Bying_yang = Button::createButton(ying_yang_a, D2D1::RectF(0, 0, 0, 0));
-	Bying_yang->setmouseHoverBrush(ying_yang_b);
-	auto Btriorb= Button::createButton(triorb_a, D2D1::RectF(0, 0, 0, 0));
-	Btriorb->setmouseHoverBrush(triorb_b);
-	auto Bsward_spade = Button::createButton(sward_spade_a, D2D1::RectF(0, 0, 0, 0));
-	Bsward_spade->setmouseHoverBrush(sward_spade_b);
-	/*ComPtr<ID2D1SolidColorBrush> temp;
-	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Blue), &temp)))
-		return false;
-	Element::Brush b2(Element::BrushType::solid, temp);
-	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::Black), &temp)))
-		return false;
-	Element::Brush b3(Element::BrushType::solid, temp);
-	auto button = Button::createButton(b1,D2D1::RectF(40,30,60,70),b3, m_pTextFormat);
-	button->setCaption(L"a simple test");
-	button->setmouseHoverBrush(b2);
-	root->addChild(button);*/
-	/*auto sprite = Sprite::createSprite(D2D1::RectF(10, 10, 30, 30), 0.5,bBackground);
-	auto sprite1 = Sprite::createSprite(D2D1::RectF(10, 10, 30, 30), 0.5, bBackground);
-	sprite->addBrush(b1);
-	sprite1->addBrush(b1);
-	*/
-	auto stackPanel = StackPanel::createStackPanel(D2D1::RectF(0, 70, Element::MaximumRealtiveRatio, Element::MaximumRealtiveRatio),StackPanel::Orientation::horizontal);
-	Element::Brush scroll(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\icon\\table\\background.jpg"));
-	stackPanel->setBackground(scroll);
-	/*
-	stackPanel->addChild(sprite);
-	stackPanel->addChild(sprite1);
-	*/
-	stackPanel->addChild(Bares);
-	stackPanel->addChild(Bheart);
-	stackPanel->addChild(Bscale);
-	stackPanel->addChild(Bying_yang);
-	stackPanel->addChild(Btriorb);
-	stackPanel->addChild(Bsward_spade);
-	root->addChild(stackPanel);
-	Element::Brush character(Element::BrushType::bitmap, CreateBitmapBrushFromFile(m_pD2dContext.Get(), m_pImageFactory.Get(), L"Resource\\DevelopQHead\\100011_01.png"));
-	auto  sprite = Sprite::createSprite(D2D1::RectF(0, 20, 30, 70), 0.5, character);
-	root->addChild(sprite);
+	Element::setTextFormat(m_pTextFormat);
+	wstring content = readFile(L"Resource\\xml\\test.xml");
+	unique_ptr<SimpleXMLParser> xmlParser = make_unique<SimpleXMLParser>();
+	cout << "before parsing" << endl;
+	xmlParser->parse(content);
+	cout << "after parsing" << endl;
+	auto nodeRoot = xmlParser->getRoot();
+	nodeRoot->setAttribute(L"position", L"0 0 100 100");
+	root = Element::createElementByXml(nodeRoot);
+	
 	return true;
 }
 

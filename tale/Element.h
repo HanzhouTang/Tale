@@ -38,6 +38,7 @@ public:
 	D2D1_RECT_F position;
 	static ComPtr<ID2D1DeviceContext> d2dContext ;
 	static ComPtr<IWICImagingFactory> imageFactory;
+	static ComPtr<IDWriteTextFormat>  textFormat;
 	Brush brush;
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	virtual ~Element();
@@ -50,6 +51,7 @@ public:
 	void setBrush(Brush b);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
+	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	virtual void addChild(const shared_ptr<Element>&);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<Node>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);

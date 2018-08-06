@@ -81,9 +81,11 @@ namespace Utility {
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> temp;
 		if (FAILED(LoadBitmapFromFile(context, imageFactory,
 			url, temp.GetAddressOf()))) {
+			std::wcout << "ERROR: cannot load image "<< url << std::endl;
 			assert(1 == 2);
 			return nullptr;
 		}
+
 		ID2D1BitmapBrush* bitmap;
 		if (FAILED(context->CreateBitmapBrush(temp.Get(), &bitmap))) {
 			assert(1 == 2);

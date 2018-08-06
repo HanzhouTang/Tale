@@ -1,5 +1,5 @@
 #include"Element.h"
-
+#include"Button.h"
 Element::Element() {}
 
 void Element::setPosition(D2D1_RECT_F p) {
@@ -24,16 +24,16 @@ D2D1_RECT_F Element::getRealPosition(D2D1_RECT_F parentPosition) {
 	return realPosition;
 }
 
-void Element::onDraw(D2D1_RECT_F parentPosition,float dt) {
+void Element::onDraw(D2D1_RECT_F parentPosition, float dt) {
 
 	auto realPosition = getRealPosition(parentPosition);
-	preDraw(realPosition,dt);
+	preDraw(realPosition, dt);
 	//std::cout << "top: " << realPosition.top << " bottom: " << realPosition.bottom << " left: " << realPosition.left << " right: " << realPosition.right << std::endl;
 	switch (brush.brushType) {
 	case transparent:
 		break;
 
-		
+
 	case bitmap:
 	{
 		ComPtr<ID2D1BitmapBrush> bitmapBrush(reinterpret_cast<ID2D1BitmapBrush*>(brush.m_brush.Get()));
@@ -51,11 +51,10 @@ void Element::onDraw(D2D1_RECT_F parentPosition,float dt) {
 	default:
 		d2dContext->FillRectangle(&realPosition, brush.m_brush.Get());
 		break;
-
 	}
-	postDraw(realPosition,dt);
+	postDraw(realPosition, dt);
 	for (auto& x : children) {
-		x->onDraw(realPosition,dt);
+		x->onDraw(realPosition, dt);
 	}
 
 }
@@ -82,10 +81,10 @@ void Element::setBrush(Brush b) {
 }
 
 ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
- ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
-
-void Element::preDraw(D2D1_RECT_F,float) {}
-void Element::postDraw(D2D1_RECT_F,float) {}
+ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
+ComPtr<IDWriteTextFormat>  Element::textFormat = nullptr;
+void Element::preDraw(D2D1_RECT_F, float) {}
+void Element::postDraw(D2D1_RECT_F, float) {}
 void Element::onMouseMoveOn() {}
 void Element::onPressLeftButton() {}
 void Element::addChild(const shared_ptr<Element>& t) {
@@ -108,27 +107,30 @@ shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
 shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 	if (root == nullptr) return shared_ptr<Element>(nullptr);
 	const wstring& name = root->getName();
+	shared_ptr<Element> ret;
 	if (name == L"Root") {
-		auto ret = make_shared<Element>();
-		auto position = Utility::wstr2floats(root->getAttribute(L"position"));
-		if (!position.empty()) {
-			if (position.size() != 4) {
-				cout << "ERROR: the size of position must be 4" << endl;
-				assert(1 == 2);
-			}
-			auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
-		}
-		auto url = root->getAttribute(L"brush");
-		if (!url.empty()) {
-			auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
-			Brush brush(BrushType::bitmap, bitmapBrush);
-			ret->setBrush(brush);
-		}
-		for (const auto& nodeChild : root->getChildren()) {
-			ret->addChild(Element::createElementByXml(nodeChild));
-		}
-		return ret;
+		ret = make_shared<Element>();
+		ret->setBrush(Brush(BrushType::transparent, nullptr));
 	}
+	else if (name == L"Button") {
+		ret = Button::createButtonByXml(root);
+	}
+
+	auto position = Utility::wstr2floats(root->getAttribute(L"position"));
+	if (!position.empty()) {
+		if (position.size() != 4) {
+			cout << "ERROR: the size of position must be 4" << endl;
+			assert(1 == 2);
+		}
+		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
+		std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
+		ret->setPosition(positionRect);
+	}
+
 	
-	
+
+	for (const auto& nodeChild : root->getChildren()) {
+		ret->addChild(Element::createElementByXml(nodeChild));
+	}
+	return ret;
 }
