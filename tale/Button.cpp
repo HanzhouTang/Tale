@@ -1,5 +1,5 @@
 ﻿#include"Button.h"
-
+using namespace Utility;
 
 
 Button::Button() {
@@ -62,7 +62,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 		if (message.event == Element::Event::LButtonDown) {
 			onPressDown(action);
 		}
-		
+
 		setBrush(mouseHoverBrush);
 	}
 	else {
@@ -80,10 +80,10 @@ Button::~Button() {
 	textFormat.Reset();
 }
 
-void Button::postDraw(D2D1_RECT_F realPosition,float dt) {
-	
-	if (textFormat != nullptr && textBrush.m_brush!=nullptr) {
-		
+void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
+
+	if (textFormat != nullptr && textBrush.m_brush != nullptr) {
+
 		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
 	}
 }
@@ -92,9 +92,10 @@ void Button::postDraw(D2D1_RECT_F realPosition,float dt) {
 shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
 	auto ret = make_shared<Button>();
 	ret->setCaption(node->getValue());
-	auto hoverBrushUrl = node->getAttribute(L"mouseHoverBrush");
 
-	auto url = node->getAttribute(L"brush");
+	auto url = node->getAttribute(BRUSH_EN);
+	if (url.empty())
+		url = node->getAttribute(BRUSH_CH);
 	if (!url.empty()) {
 		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
 		Brush brush(BrushType::bitmap, bitmapBrush);
@@ -102,6 +103,9 @@ shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
 		ret->setDefaultBrush(brush);
 	}
 
+	auto hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_EN);
+	if (hoverBrushUrl.empty())
+		hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_CH);
 	if (!hoverBrushUrl.empty()) {
 		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), hoverBrushUrl.c_str());
 		Brush mouseHoverBrush(BrushType::bitmap, bitmapBrush);
@@ -111,8 +115,8 @@ shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
 }
 
 ComPtr<ID2D1SolidColorBrush> Button::defaultButtonColor = nullptr;
-ComPtr<ID2D1SolidColorBrush> Button::defaultTextColor =nullptr;
-ComPtr<ID2D1SolidColorBrush> Button::defaultMouseHoverColor =nullptr;
+ComPtr<ID2D1SolidColorBrush> Button::defaultTextColor = nullptr;
+ComPtr<ID2D1SolidColorBrush> Button::defaultMouseHoverColor = nullptr;
 
 
 /*

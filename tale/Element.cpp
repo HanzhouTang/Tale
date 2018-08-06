@@ -1,6 +1,7 @@
-#include"Element.h"
+﻿#include"Element.h"
 #include"Button.h"
 #include"StackPanel.h"
+using namespace Utility;
 Element::Element() {
 	setBrush(Brush(BrushType::transparent, nullptr));
 	position = D2D1::RectF(0, 0, 100, 100);
@@ -112,22 +113,30 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 	if (root == nullptr) return shared_ptr<Element>(nullptr);
 	const wstring& name = root->getName();
 	shared_ptr<Element> ret;
-	if (name == L"Element") {
+	if (name == ELEMENT_EN || name == ELEMENT_CH) {
 		ret = make_shared<Element>();
-		auto url = root->getAttribute(L"brush");
+		auto url = root->getAttribute(BRUSH_EN);
+		if (url.empty()) {
+			url = root->getAttribute(BRUSH_CH);
+		}
 		if (!url.empty()) {
 			auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
 			Brush brush(BrushType::bitmap, bitmapBrush);
 			ret->setBrush(brush);
 		}
 	}
-	else if (name == L"Button") {
+	else if (name == BUTTON_EN || name == BUTTON_CH) {
 		ret = Button::createButtonByXml(root);
 	}
-	else if (name == L"StackPanel") {
+	else if (name == STACKPANEL_EN || name == STACKPANEL_CH) {
 		ret = StackPanel::createStackPanelByXml(root);
 	}
-	auto position = Utility::wstr2floats(root->getAttribute(L"position"));
+
+	auto position = Utility::wstr2floats(root->getAttribute(POSITION_EN));
+	if (position.empty()) {
+		position = Utility::wstr2floats(root->getAttribute(POSITION_CH));
+	}
+
 	if (!position.empty()) {
 		if (position.size() != 4) {
 			cout << "ERROR: the size of position must be 4" << endl;
@@ -138,7 +147,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 		ret->setPosition(positionRect);
 	}
 
-	
+
 	for (const auto& nodeChild : root->getChildren()) {
 		ret->addChild(Element::createElementByXml(nodeChild));
 	}

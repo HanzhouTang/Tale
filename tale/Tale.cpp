@@ -201,7 +201,6 @@ bool Tale::CreateDependentRescource()
 }
 
 bool Tale::initRootScene() {
-
 	Element::setD2dContext(m_pD2dContext);
 	Element::setImageFactory(m_pImageFactory);
 	Element::setTextFormat(m_pTextFormat);
