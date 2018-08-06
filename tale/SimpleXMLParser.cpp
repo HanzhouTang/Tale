@@ -4,7 +4,7 @@
 void SimpleXMLParser::parse(wstring str) {
 	content = str;
 	resetLexer();
-	this->root = Node::createNode(L"Root", nullptr);
+	this->root = Node::createNode(L"_root", nullptr);
 	auto currentNode = this->root;
 	Token token = getNextToken();
 	bool insideTag = false;
@@ -39,7 +39,7 @@ void SimpleXMLParser::parse(wstring str) {
 					wcout << "ERROR: tag " << lexer.currentLexeme << " is doesn't match" << endl;
 					assert(1 == 2);
 				}
-				wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
+				//wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
 				trace.pop();
 				currentNode = currentNode->getHighLevel();
 				token = getNextToken();
@@ -113,7 +113,7 @@ void SimpleXMLParser::parse(wstring str) {
 		token = getNextToken();
 		//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 	}
-	wcout << currentNode->info();
+	//wcout << currentNode->info();
 }
 
 SimpleXMLParser::Token SimpleXMLParser::getNextToken() {

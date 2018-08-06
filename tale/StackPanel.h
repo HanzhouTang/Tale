@@ -12,8 +12,8 @@ struct StackPanel:Element
 	};
 	void setPadding(float p);
 	void setOrientation(Orientation o); 
-	void setBackground(Element::Brush b) { setBrush(b); };
 	void rearrangement();
 	virtual void addChild(const shared_ptr<Element>&) override;
 	static shared_ptr<StackPanel> createStackPanel(D2D1_RECT_F, Orientation = horizontal, float =1.0f);
+	static shared_ptr<StackPanel> createStackPanelByXml(const shared_ptr<Node>& node);
 };

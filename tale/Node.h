@@ -9,6 +9,7 @@ struct Node {
 	void setParent(const shared_ptr<Node>& p) { parent = p; }
 	void setName(const wstring& n) { name = n; }
 	wstring getName() const { return name; }
+	int getChildrenCount() { return children.size(); }
 	wstring getValue() const { return value; }
 	wstring getAttribute(const wstring& key) const { if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second; }
 	vector<shared_ptr<Node>>& getChildren() { return children; }

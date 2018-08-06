@@ -1,6 +1,10 @@
 #include"Element.h"
 #include"Button.h"
-Element::Element() {}
+#include"StackPanel.h"
+Element::Element() {
+	setBrush(Brush(BrushType::transparent, nullptr));
+	position = D2D1::RectF(0, 0, 100, 100);
+}
 
 void Element::setPosition(D2D1_RECT_F p) {
 	assert(p.left >= 0 && p.top >= 0);
@@ -108,14 +112,21 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 	if (root == nullptr) return shared_ptr<Element>(nullptr);
 	const wstring& name = root->getName();
 	shared_ptr<Element> ret;
-	if (name == L"Root") {
+	if (name == L"Element") {
 		ret = make_shared<Element>();
-		ret->setBrush(Brush(BrushType::transparent, nullptr));
+		auto url = root->getAttribute(L"brush");
+		if (!url.empty()) {
+			auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
+			Brush brush(BrushType::bitmap, bitmapBrush);
+			ret->setBrush(brush);
+		}
 	}
 	else if (name == L"Button") {
 		ret = Button::createButtonByXml(root);
 	}
-
+	else if (name == L"StackPanel") {
+		ret = StackPanel::createStackPanelByXml(root);
+	}
 	auto position = Utility::wstr2floats(root->getAttribute(L"position"));
 	if (!position.empty()) {
 		if (position.size() != 4) {
@@ -123,12 +134,11 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 			assert(1 == 2);
 		}
 		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
-		std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
+		//std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
 		ret->setPosition(positionRect);
 	}
 
 	
-
 	for (const auto& nodeChild : root->getChildren()) {
 		ret->addChild(Element::createElementByXml(nodeChild));
 	}

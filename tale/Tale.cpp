@@ -176,15 +176,6 @@ bool Tale::InitDirectX()
 }
 //need refactor this function !!!
 
-
-
-
-
-
-
-
-
-
 bool Tale::CreateDependentRescource()
 {
 
@@ -211,19 +202,23 @@ bool Tale::CreateDependentRescource()
 
 bool Tale::initRootScene() {
 
-
-
-
 	Element::setD2dContext(m_pD2dContext);
 	Element::setImageFactory(m_pImageFactory);
 	Element::setTextFormat(m_pTextFormat);
 	wstring content = readFile(L"Resource\\xml\\test.xml");
 	unique_ptr<SimpleXMLParser> xmlParser = make_unique<SimpleXMLParser>();
-	cout << "before parsing" << endl;
+	//cout << "before parsing" << endl;
 	xmlParser->parse(content);
-	cout << "after parsing" << endl;
-	auto nodeRoot = xmlParser->getRoot();
-	nodeRoot->setAttribute(L"position", L"0 0 100 100");
+	//cout << "after parsing" << endl;
+
+	auto _node = xmlParser->getRoot();
+	//wcout << _node->info();
+	if (_node->getChildrenCount() != 1) {
+		cout << "ERROR: 1 xml file only can have 1 root node" << endl;
+		assert(1 == 2);
+	}
+
+	auto nodeRoot = _node->getChild(0);
 	root = Element::createElementByXml(nodeRoot);
 	
 	return true;

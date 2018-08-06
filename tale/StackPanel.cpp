@@ -47,3 +47,25 @@ shared_ptr<StackPanel> StackPanel::createStackPanel(D2D1_RECT_F position, Orient
 	ret->setOrientation(o);
 	return ret;
 }
+
+shared_ptr<StackPanel> StackPanel::createStackPanelByXml(const shared_ptr<Node>& node) {
+	auto ret = make_shared<StackPanel>();
+	auto padding = Utility::wstr2floats(node->getAttribute(L"padding"));
+	if (padding.size() == 1) {
+		ret->setPadding(padding[0]);
+	}
+	auto url = node->getAttribute(L"brush");
+	if (!url.empty()) {
+		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
+		Brush brush(BrushType::bitmap, bitmapBrush);
+		ret->setBrush(brush);
+	}
+	auto orientation = node->getAttribute(L"orientation");
+	if (orientation == L"vertical") {
+		ret->setOrientation(vertical);
+	}
+	else if (orientation == L"horizontal") {
+		ret->setOrientation(horizontal);
+	}
+	return ret;
+}

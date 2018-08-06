@@ -15,13 +15,18 @@ Button::Button() {
 			cout << "ERROR: create solid brush failed" << endl;
 			assert(1 == 2);
 		}
+		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::LightBlue), &defaultMouseHoverColor))) {
+			cout << "ERROR: create solid brush failed" << endl;
+			assert(1 == 2);
+		}
 	}
 	Element::Brush btext(Element::BrushType::solid, defaultTextColor);
 	setTextBrush(btext);
 	Element::Brush bcolor(Element::BrushType::solid, defaultButtonColor);
 	setBrush(bcolor);
 	setDefaultBrush(bcolor);
-	setmouseHoverBrush(bcolor);
+	setmouseHoverBrush(Brush(Element::BrushType::solid, defaultMouseHoverColor));
 	setTextFormat(Element::textFormat);
 
 }
@@ -107,7 +112,7 @@ shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
 
 ComPtr<ID2D1SolidColorBrush> Button::defaultButtonColor = nullptr;
 ComPtr<ID2D1SolidColorBrush> Button::defaultTextColor =nullptr;
-
+ComPtr<ID2D1SolidColorBrush> Button::defaultMouseHoverColor =nullptr;
 
 
 /*

@@ -25,6 +25,7 @@ public:
 	virtual void postDraw(D2D1_RECT_F,float) override;
 	static ComPtr<ID2D1SolidColorBrush> defaultButtonColor;
 	static ComPtr<ID2D1SolidColorBrush> defaultTextColor;
+	static ComPtr<ID2D1SolidColorBrush> defaultMouseHoverColor;
 	virtual ~Button();
 	Button();
 
