@@ -38,7 +38,6 @@ void Element::onDraw(D2D1_RECT_F parentPosition, float dt) {
 	case transparent:
 		break;
 
-
 	case bitmap:
 	{
 		ComPtr<ID2D1BitmapBrush> bitmapBrush(reinterpret_cast<ID2D1BitmapBrush*>(brush.m_brush.Get()));
@@ -139,8 +138,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 
 	if (!position.empty()) {
 		if (position.size() != 4) {
-			cout << "ERROR: the size of position must be 4" << endl;
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"the size of position must be 4");
 		}
 		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
 		//std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;

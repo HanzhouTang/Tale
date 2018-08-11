@@ -81,16 +81,33 @@ namespace Utility {
 		Microsoft::WRL::ComPtr<ID2D1Bitmap> temp;
 		if (FAILED(LoadBitmapFromFile(context, imageFactory,
 			url, temp.GetAddressOf()))) {
-			std::wcout << "ERROR: cannot load image "<< url << std::endl;
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"cannot load image");
 			return nullptr;
 		}
 
 		ID2D1BitmapBrush* bitmap;
 		if (FAILED(context->CreateBitmapBrush(temp.Get(), &bitmap))) {
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"cannot create bitmap");
 			return nullptr;
 		}
 		return bitmap;
+	}
+	
+	std::wstring str2wstr(const std::string& str) {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.from_bytes(str);
+	}
+
+	std::string wstr2str(const std::wstring& wstr) {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.to_bytes(wstr);
+	}
+
+	void QuitWithError(int lineNumber, const char* filename, std::wstring error)
+	{
+		std::wostringstream stream;
+		stream << "Error: " << error << " occuring at line " << lineNumber << " file " << filename;
+		MessageBoxW(NULL, stream.str().c_str(),L"Error", MB_OK);
+		exit(-1);
 	}
 };

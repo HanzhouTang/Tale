@@ -3,6 +3,8 @@
 #include<string>
 #include<vector>
 #include<sstream>
+#include<locale>
+#include<codecvt>
 #include"d2dutil.h"
 namespace Utility {
 
@@ -39,5 +41,7 @@ namespace Utility {
 	);
 	ID2D1BitmapBrush* CreateBitmapBrushFromFile(ID2D1DeviceContext *pD2dContext,
 		IWICImagingFactory *pIWICFactory, PCWSTR url);
-
+	void QuitWithError(int lineNumber, const char* filename, std::wstring error);
+	std::wstring str2wstr(const std::string& str);
+	std::string wstr2str(const std::wstring& wstr);
 }

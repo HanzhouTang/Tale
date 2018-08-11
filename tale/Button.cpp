@@ -7,18 +7,15 @@ Button::Button() {
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Gray), &defaultButtonColor)))
 		{
-			cout << "ERROR: create solid brush failed" << endl;
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"create default button color brush failed");
 		}
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Black), &defaultTextColor))) {
-			cout << "ERROR: create solid brush failed" << endl;
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"create default text color brush failed");
 		}
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::LightBlue), &defaultMouseHoverColor))) {
-			cout << "ERROR: create solid brush failed" << endl;
-			assert(1 == 2);
+			QuitWithError(__LINE__, __FILE__, L"create default mouse hover color brush failed");
 		}
 	}
 	Element::Brush btext(Element::BrushType::solid, defaultTextColor);

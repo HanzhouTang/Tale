@@ -213,8 +213,7 @@ bool Tale::initRootScene() {
 	auto _node = xmlParser->getRoot();
 	//wcout << _node->info();
 	if (_node->getChildrenCount() != 1) {
-		cout << "ERROR: 1 xml file only can have 1 root node" << endl;
-		assert(1 == 2);
+		QuitWithError(__LINE__, __FILE__, L" 1 xml file only can have 1 root node");
 	}
 
 	auto nodeRoot = _node->getChild(0);
@@ -237,8 +236,7 @@ void Tale::OnDraw() {
 	m_pD2dContext->DrawText(fps.c_str(), fps.length(), m_pTextFormat.Get(), rect, m_pTextBrush.Get());
 	m_pSwapChain->Present1(1, 0, &parameters);
 	if (FAILED(result = m_pD2dContext->EndDraw())) {
-		cout << "drawing fault" << endl;
-		assert(1 == 2);
+		QuitWithError(__LINE__, __FILE__, L"draw fault");
 	}
 }
 
@@ -266,8 +264,7 @@ wstring Tale::readFile(wstring filename) {
 	read.imbue(std::locale(std::locale("chs"),
 		new std::codecvt_utf16<wchar_t, 0x10ffff, std::consume_header>));
 	if (!read.is_open()) {
-		wcout << "cannot opend file " << filename << endl;
-		assert(1 == 2);
+		QuitWithError(__LINE__, __FILE__, L"cannot opend file " + filename);
 	}
 	return wstring(istreambuf_iterator<wchar_t>(read), istreambuf_iterator<wchar_t>());
 }

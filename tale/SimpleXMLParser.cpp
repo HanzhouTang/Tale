@@ -1,6 +1,8 @@
 #include"SimpleXMLParser.h"
+#include"Utility.h"
 #include<stack>
 #include<cassert>
+using namespace Utility;
 void SimpleXMLParser::parse(wstring str) {
 	content = str;
 	resetLexer();
@@ -10,15 +12,14 @@ void SimpleXMLParser::parse(wstring str) {
 	bool insideTag = false;
 	stack<wstring> trace;
 	while (token != Token::END) {
-		
+
 		switch (token)
 		{
 		case TAGBEGIN:
 			insideTag = true;
 			token = getNextToken();
 			if (token != STRING) {
-				wcout << "ERROR: tag must contain its' name" << endl;
-				assert(1 == 2);
+				QuitWithError(__LINE__, __FILE__, L"tag must contain its' name");
 			}
 			else {
 				auto node = Node::createNode(lexer.currentLexeme, currentNode);
@@ -31,21 +32,19 @@ void SimpleXMLParser::parse(wstring str) {
 			insideTag = true;
 			token = getNextToken();
 			if (token != STRING) {
-				wcout << "ERROR: tag must contain its' name" << endl;
-				assert(1 == 2);
+				QuitWithError(__LINE__, __FILE__, L"tag must contain its' name");
 			}
 			else {
 				if (trace.top() != lexer.currentLexeme) {
-					wcout << "ERROR: tag " << lexer.currentLexeme << " is doesn't match" << endl;
-					assert(1 == 2);
+
+					QuitWithError(__LINE__, __FILE__, L"tag " + lexer.currentLexeme + L" is doesn't match");
 				}
 				//wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
 				trace.pop();
 				currentNode = currentNode->getHighLevel();
 				token = getNextToken();
 				if (token != TAGEND) {
-					wcout << "ERROR: closing tags cannot contain any attribute" << endl;
-					assert(1 == 2);
+					QuitWithError(__LINE__, __FILE__, L"closing tags cannot contain any attribute");
 				}
 				else {
 					insideTag = false;
@@ -69,7 +68,7 @@ void SimpleXMLParser::parse(wstring str) {
 				auto key = lexer.currentLexeme;
 				token = getNextToken();
 				if (token != ASSIGN) {
-					wcout << "ERROR: now we don't support signle attribute. it musht be a pair" << endl;
+					QuitWithError(__LINE__, __FILE__, L"now we don't support signle attribute. it musht be a pair");
 				}
 				else {
 					token = getNextToken();
@@ -78,8 +77,7 @@ void SimpleXMLParser::parse(wstring str) {
 						currentNode->setAttribute(key, lexer.currentLexeme);
 						token = getNextToken();
 						if (token != QUOTE) {
-							wcout << "ERROR: \' must be ended by \'";
-							assert(1 == 2);
+							QuitWithError(__LINE__, __FILE__, L" \' must be ended by \'");
 						}
 					}
 					else if (token == Token::DQUOTE) {
@@ -87,13 +85,11 @@ void SimpleXMLParser::parse(wstring str) {
 						currentNode->setAttribute(key, lexer.currentLexeme);
 						token = getNextToken();
 						if (token != DQUOTE) {
-							wcout << "ERROR: \" must be ended by \"";
-							assert(1 == 2);
+							QuitWithError(__LINE__, __FILE__, L"\" must be ended by \"");
 						}
 					}
 					else {
-						wcout << "ERROR: the one fllowing = must be covered by \' or \"" << endl;
-						assert(1 == 2);
+						QuitWithError(__LINE__, __FILE__, L"the one fllowing = must be covered by \' or \"");
 					}
 				}
 
@@ -102,14 +98,13 @@ void SimpleXMLParser::parse(wstring str) {
 		case COMMENTBEGIN:
 			do {
 				token = getNextToken();
-			} while (token != COMENTEND&&token!=END);
+			} while (token != COMENTEND && token != END);
 			if (token == END) {
-				wcout << "ERROR: the comment doesn't has a ending" << endl;
-				assert(1 == 2);
+				QuitWithError(__LINE__, __FILE__, L" the comment doesn't has a ending");
 			}
 			break;
 		}
-		
+
 		token = getNextToken();
 		//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 	}
@@ -165,7 +160,7 @@ SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
 				lexer.state = noString;
 			}
 			break;
-		case CMINUS: 
+		case CMINUS:
 		{
 			auto tempIndex = lexer.index1;
 			if (*(lexer.index1) == CMINUS && *(++lexer.index1) == CCLOSE) {
@@ -179,7 +174,7 @@ SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
 			break;
 		}
 		case CSLASH: {
-		
+
 			if (*(lexer.index1) == CCLOSE) {
 				token = Token::TAGENDWITHSLASH;
 				lexer.index1++;
@@ -188,7 +183,7 @@ SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
 				token = Token::SLASH;
 			}
 		}
-			break;
+					 break;
 		case COPEN: {
 			auto tempIndex = lexer.index1;
 			if (*(lexer.index1) == CSLASH) {
@@ -203,7 +198,7 @@ SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
 				token = Token::TAGBEGIN;
 				lexer.index1 = tempIndex;
 			}
-			break; 
+			break;
 		}
 		case CCLOSE:
 			token = Token::TAGEND;
