@@ -1,4 +1,5 @@
 #include"Utility.h"
+#include<Shlwapi.h>
 namespace Utility {
 	std::vector<float> wstr2floats(const std::wstring& str) {
 		std::wstringstream ss(str);
@@ -106,7 +107,7 @@ namespace Utility {
 	void QuitWithError(int lineNumber, const char* filename, std::wstring error)
 	{
 		std::wostringstream stream;
-		stream << "Error: " << error << " occuring at line " << lineNumber << " file " << filename;
+		stream << "Error: " << error << " occuring at line " << lineNumber << " file " << PathFindFileNameA(filename);
 		MessageBoxW(NULL, stream.str().c_str(),L"Error", MB_OK);
 		exit(-1);
 	}
