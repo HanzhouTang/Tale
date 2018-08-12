@@ -7,15 +7,15 @@ Button::Button() {
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Gray), &defaultButtonColor)))
 		{
-			QuitWithError(__LINE__, __FILE__, L"create default button color brush failed");
+			quitWithError(__LINE__, __FILE__, L"create default button color brush failed");
 		}
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Black), &defaultTextColor))) {
-			QuitWithError(__LINE__, __FILE__, L"create default text color brush failed");
+			quitWithError(__LINE__, __FILE__, L"create default text color brush failed");
 		}
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::LightBlue), &defaultMouseHoverColor))) {
-			QuitWithError(__LINE__, __FILE__, L"create default mouse hover color brush failed");
+			quitWithError(__LINE__, __FILE__, L"create default mouse hover color brush failed");
 		}
 	}
 	Element::Brush btext(Element::BrushType::solid, defaultTextColor);
@@ -90,15 +90,9 @@ shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
 	auto ret = make_shared<Button>();
 	ret->setCaption(node->getValue());
 
-	auto url = node->getAttribute(BRUSH_EN);
-	if (url.empty())
-		url = node->getAttribute(BRUSH_CH);
-	if (!url.empty()) {
-		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
-		Brush brush(BrushType::bitmap, bitmapBrush);
-		ret->setBrush(brush);
-		ret->setDefaultBrush(brush);
-	}
+	auto brush = getBrushFromXml(node);
+	ret->setBrush(brush);
+	ret->setDefaultBrush(brush);
 
 	auto hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_EN);
 	if (hoverBrushUrl.empty())

@@ -28,6 +28,12 @@ namespace Utility {
 	static const std::wstring VERTICAL_CH = L"垂直";
 	static const std::wstring HORIZONTAL_EN = L"horizontal";
 	static const std::wstring HORIZONTAL_CH = L"水平";
+	static const std::wstring SPRITE_EN = L"Sprite";
+	static const std::wstring SPRITE_CH = L"精灵";
+	static const std::wstring INTERVAL_EN = L"interval";
+	static const std::wstring INTERVAL_CH = L"间隔";
+	static const std::wstring ITEM_EN = L"Item";
+	static const std::wstring ITEM_CH = L"项";
 
 
 
@@ -41,7 +47,8 @@ namespace Utility {
 	);
 	ID2D1BitmapBrush* CreateBitmapBrushFromFile(ID2D1DeviceContext *pD2dContext,
 		IWICImagingFactory *pIWICFactory, PCWSTR url);
-	void QuitWithError(int lineNumber, const char* filename, std::wstring error);
+	void quitWithError(int lineNumber, const char* filename, std::wstring error);
+	void warning(std::wstring info);
 	std::wstring str2wstr(const std::string& str);
 	std::string wstr2str(const std::wstring& wstr);
 }

@@ -19,7 +19,7 @@ void SimpleXMLParser::parse(wstring str) {
 			insideTag = true;
 			token = getNextToken();
 			if (token != STRING) {
-				QuitWithError(__LINE__, __FILE__, L"tag must contain its' name");
+				quitWithError(__LINE__, __FILE__, L"tag must contain its' name");
 			}
 			else {
 				auto node = Node::createNode(lexer.currentLexeme, currentNode);
@@ -32,19 +32,19 @@ void SimpleXMLParser::parse(wstring str) {
 			insideTag = true;
 			token = getNextToken();
 			if (token != STRING) {
-				QuitWithError(__LINE__, __FILE__, L"tag must contain its' name");
+				quitWithError(__LINE__, __FILE__, L"tag must contain its' name");
 			}
 			else {
 				if (trace.top() != lexer.currentLexeme) {
 
-					QuitWithError(__LINE__, __FILE__, L"tag " + lexer.currentLexeme + L" is doesn't match");
+					quitWithError(__LINE__, __FILE__, L" ending tag " + lexer.currentLexeme + L" doesn't match starting tag");
 				}
 				//wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
 				trace.pop();
 				currentNode = currentNode->getHighLevel();
 				token = getNextToken();
 				if (token != TAGEND) {
-					QuitWithError(__LINE__, __FILE__, L"closing tags cannot contain any attribute");
+					quitWithError(__LINE__, __FILE__, L"closing tags cannot contain any attribute");
 				}
 				else {
 					insideTag = false;
@@ -68,7 +68,7 @@ void SimpleXMLParser::parse(wstring str) {
 				auto key = lexer.currentLexeme;
 				token = getNextToken();
 				if (token != ASSIGN) {
-					QuitWithError(__LINE__, __FILE__, L"now we don't support signle attribute. it musht be a pair");
+					quitWithError(__LINE__, __FILE__, L"now we don't support signle attribute. it musht be a pair");
 				}
 				else {
 					token = getNextToken();
@@ -77,7 +77,7 @@ void SimpleXMLParser::parse(wstring str) {
 						currentNode->setAttribute(key, lexer.currentLexeme);
 						token = getNextToken();
 						if (token != QUOTE) {
-							QuitWithError(__LINE__, __FILE__, L" \' must be ended by \'");
+							quitWithError(__LINE__, __FILE__, L" \' must be ended by \'");
 						}
 					}
 					else if (token == Token::DQUOTE) {
@@ -85,11 +85,11 @@ void SimpleXMLParser::parse(wstring str) {
 						currentNode->setAttribute(key, lexer.currentLexeme);
 						token = getNextToken();
 						if (token != DQUOTE) {
-							QuitWithError(__LINE__, __FILE__, L"\" must be ended by \"");
+							quitWithError(__LINE__, __FILE__, L"\" must be ended by \"");
 						}
 					}
 					else {
-						QuitWithError(__LINE__, __FILE__, L"the one fllowing = must be covered by \' or \"");
+						quitWithError(__LINE__, __FILE__, L"the one fllowing = must be covered by \' or \"");
 					}
 				}
 
@@ -100,7 +100,7 @@ void SimpleXMLParser::parse(wstring str) {
 				token = getNextToken();
 			} while (token != COMENTEND && token != END);
 			if (token == END) {
-				QuitWithError(__LINE__, __FILE__, L" the comment doesn't has a ending");
+				quitWithError(__LINE__, __FILE__, L" the comment doesn't has a ending");
 			}
 			break;
 		}

@@ -56,14 +56,9 @@ shared_ptr<StackPanel> StackPanel::createStackPanelByXml(const shared_ptr<Node>&
 	if (padding.size() == 1) {
 		ret->setPadding(padding[0]);
 	}
-	auto url = node->getAttribute(BRUSH_EN);
-	if (url.empty())
-		url = node->getAttribute(BRUSH_CH);
-	if (!url.empty()) {
-		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
-		Brush brush(BrushType::bitmap, bitmapBrush);
-		ret->setBrush(brush);
-	}
+
+	auto brush = getBrushFromXml(node);
+	ret->setBrush(brush);
 
 	auto orientation = node->getAttribute(ORIENTATION_EN);
 	if (orientation.empty())

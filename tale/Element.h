@@ -55,5 +55,6 @@ public:
 	virtual void addChild(const shared_ptr<Element>&);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<Node>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
+	static Brush getBrushFromXml(const shared_ptr<Node>&);
 	Element();
 };

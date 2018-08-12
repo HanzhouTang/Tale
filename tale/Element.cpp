@@ -1,6 +1,7 @@
 ﻿#include"Element.h"
 #include"Button.h"
 #include"StackPanel.h"
+#include"Sprite.h"
 using namespace Utility;
 Element::Element() {
 	setBrush(Brush(BrushType::transparent, nullptr));
@@ -114,21 +115,22 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 	shared_ptr<Element> ret;
 	if (name == ELEMENT_EN || name == ELEMENT_CH) {
 		ret = make_shared<Element>();
-		auto url = root->getAttribute(BRUSH_EN);
-		if (url.empty()) {
-			url = root->getAttribute(BRUSH_CH);
-		}
-		if (!url.empty()) {
-			auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
-			Brush brush(BrushType::bitmap, bitmapBrush);
-			ret->setBrush(brush);
-		}
+		auto brush = getBrushFromXml(root);
+		ret->setBrush(brush);
 	}
 	else if (name == BUTTON_EN || name == BUTTON_CH) {
 		ret = Button::createButtonByXml(root);
 	}
 	else if (name == STACKPANEL_EN || name == STACKPANEL_CH) {
 		ret = StackPanel::createStackPanelByXml(root);
+	}
+	else if (name == SPRITE_EN || name == SPRITE_CH) {
+		ret = Sprite::createSpriteByXml(root);
+	}
+
+	if (ret == nullptr) {
+		warning(name + L" is not a valid XML Tag");
+		return nullptr;
 	}
 
 	auto position = Utility::wstr2floats(root->getAttribute(POSITION_EN));
@@ -138,16 +140,31 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 
 	if (!position.empty()) {
 		if (position.size() != 4) {
-			QuitWithError(__LINE__, __FILE__, L"the size of position must be 4");
+			quitWithError(__LINE__, __FILE__, L"the size of position must be 4");
 		}
 		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
 		//std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
 		ret->setPosition(positionRect);
 	}
 
+	if (name == SPRITE_CH || name ==  SPRITE_EN) return ret;
 
 	for (const auto& nodeChild : root->getChildren()) {
-		ret->addChild(Element::createElementByXml(nodeChild));
+		auto child = Element::createElementByXml(nodeChild);
+		if (child != nullptr) {
+			ret->addChild(child);
+		}
 	}
 	return ret;
+}
+
+Element::Brush Element::getBrushFromXml(const shared_ptr<Node>& node) {
+	auto url = node->getAttribute(BRUSH_EN);
+	if (url.empty())
+		url = node->getAttribute(BRUSH_CH);
+	if (!url.empty()) {
+		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), url.c_str());
+		return Brush(BrushType::bitmap, bitmapBrush);
+	}
+	return Brush(BrushType::transparent, nullptr);
 }
