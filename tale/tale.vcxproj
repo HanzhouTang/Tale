@@ -151,17 +151,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h" />
+    <ClInclude Include="BooleanExpr.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="d2dutil.h" />
     <ClInclude Include="Element.h" />
+    <ClInclude Include="Expr.h" />
+    <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NumberExpr.h" />
+    <ClInclude Include="SequenceExpr.h" />
     <ClInclude Include="SimpleXMLParser.h" />
     <ClInclude Include="RescourceManagerBase.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StackPanel.h" />
+    <ClInclude Include="StringExpr.h" />
     <ClInclude Include="Tale.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="VariableExpr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

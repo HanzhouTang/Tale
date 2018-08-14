@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Display">
       <UniqueIdentifier>{bd65fad5-66fc-440d-b968-4a738bb36181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scripting">
+      <UniqueIdentifier>{610b8ad3-3545-44fa-8389-3de6af7b5b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scripting">
+      <UniqueIdentifier>{71e7dcfc-33e9-4d41-b7de-2b9c9950d552}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -94,6 +100,27 @@
     </ClInclude>
     <ClInclude Include="StackPanel.h">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Expr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="StringExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="SequenceExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="BooleanExpr.h">
+      <Filter>Header Files\Scripting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
