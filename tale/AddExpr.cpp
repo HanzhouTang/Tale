@@ -12,5 +12,6 @@ std::shared_ptr<Expr> AddExpr::operate(std::shared_ptr<Expr> l, std::shared_ptr<
 		std::shared_ptr<StringExpr> rString = std::dynamic_pointer_cast<StringExpr>(r);
 		return std::make_shared<StringExpr>(shared_from_this(),lString->getString() + rString->getString());
 	}
+	Utility::quitWithError(__LINE__, __FILE__, L"only number or string support addtion");
 	return std::make_shared<Expr>(shared_from_this());
 }

@@ -2,12 +2,11 @@
 #include"Expr.h"
 struct VariableExpr :Expr {
 	std::wstring name;
-	std::shared_ptr<Expr> value;
-	VariableExpr(const std::shared_ptr<Expr>& runtime,std::wstring n, std::shared_ptr<Expr> v) :
-		Expr(runtime),name(n), value(v) {
+	VariableExpr(const std::shared_ptr<Expr>& runtime,std::wstring n) :
+		Expr(runtime),name(n){
 		setType(variable);
 	}
-	virtual std::shared_ptr<Expr> getValue() override {
-		return value->getValue();
+	std::wstring getVariableName() {
+		return name;
 	}
 };

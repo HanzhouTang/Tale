@@ -66,6 +66,12 @@
     <ClCompile Include="AddExpr.cpp">
       <Filter>Source Files\Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="AssignExpr.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Expr.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -132,6 +138,9 @@
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="AddExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AssignExpr.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
   </ItemGroup>
