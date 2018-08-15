@@ -2,10 +2,10 @@
 #include"Expr.h"
 struct BooleanExpr :Expr {
 	bool value;
-	BooleanExpr(bool v) : value(v) {
+	BooleanExpr(const std::shared_ptr<Expr>& runtime, bool v) : value(v),Expr(runtime) {
 		setType(boolean);
 	}
 	std::shared_ptr<Expr> getValue() override {
-		return std::shared_ptr<BooleanExpr>(this);
+		return shared_from_this();
 	}
 };

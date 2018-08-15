@@ -63,6 +63,9 @@
     <ClCompile Include="StackPanel.cpp">
       <Filter>Source Files\Display</Filter>
     </ClCompile>
+    <ClCompile Include="AddExpr.cpp">
+      <Filter>Source Files\Scripting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -120,6 +123,15 @@
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="BooleanExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="IfExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryOperatorExpr.h">
+      <Filter>Header Files\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="AddExpr.h">
       <Filter>Header Files\Scripting</Filter>
     </ClInclude>
   </ItemGroup>

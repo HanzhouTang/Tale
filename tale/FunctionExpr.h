@@ -10,4 +10,5 @@ struct FunctionExpr :Expr {
 	void setSequence(std::shared_ptr<SequenceExpr> se) {
 		sequence = se;
 	}
+	FunctionExpr(const std::shared_ptr<Expr>& runtime):Expr(runtime){}
 };

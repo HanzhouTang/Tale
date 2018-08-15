@@ -1,6 +1,6 @@
 #pragma once
 #include"Common.h"
-struct Node {
+struct Node :enable_shared_from_this<Node> {
 	wstring name;
 	wstring value;
 	shared_ptr<Node> parent;
@@ -45,7 +45,7 @@ struct Node {
 	shared_ptr<Node> getHighLevel() {
 		auto ret = getParent();
 		if (ret == nullptr) {
-			return shared_ptr<Node>(this);
+			return shared_from_this();
 		}
 		return ret;
 	}

@@ -5,15 +5,19 @@
 #include<sstream>
 #include<unordered_map>
 #include<vector>
-struct Expr {
-	enum ExprType { null, string, number, variable, function, boolean,sequence };
+struct Expr: std::enable_shared_from_this<Expr> {
+	enum ExprType { null, string, number, variable, function, boolean,sequence,ifElse,binaryOperator };
 	ExprType type;
+	std::shared_ptr<Expr> runtime;
 	void setType(ExprType t) { type = t; }
+	void setRunTime(const std::shared_ptr<Expr>& r) {
+		runtime = r;
+	}
 	ExprType getType() { return type; }
-	Expr() {
+	Expr(std::shared_ptr<Expr> p):runtime(p) {
 		setType(null);
 	}
 	virtual std::shared_ptr<Expr> getValue(){
-		return std::shared_ptr<Expr>(this);
+		return shared_from_this();
 	}
 };

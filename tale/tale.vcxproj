@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AddExpr.cpp" />
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Element.cpp" />
@@ -150,7 +151,9 @@
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddExpr.h" />
     <ClInclude Include="AppBase.h" />
+    <ClInclude Include="BinaryOperatorExpr.h" />
     <ClInclude Include="BooleanExpr.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />
@@ -158,6 +161,7 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="FunctionExpr.h" />
+    <ClInclude Include="IfExpr.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NumberExpr.h" />
     <ClInclude Include="SequenceExpr.h" />
