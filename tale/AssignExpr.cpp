@@ -1,8 +1,10 @@
 #include"AssignExpr.h"
 #include"SequenceExpr.h"
- std::shared_ptr<Expr> AssignExpr::operate(std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) {
+ std::shared_ptr<Expr> AssignExpr::getValue(){
 	 auto run = getRunTime();
-	 if (r->type == sequence) {
+	 auto l = left;
+	 auto r = right->getValue();
+	 if (run->getType() == sequence) {
 		 std::shared_ptr<SequenceExpr> runtime = std::dynamic_pointer_cast<SequenceExpr>(run);
 		 if(l->getType()==variable){
 			 std::shared_ptr<VariableExpr> variable = std::dynamic_pointer_cast<VariableExpr>(l);

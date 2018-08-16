@@ -1,7 +1,6 @@
+#define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
 #include"Tale.h"
-#include<gtest/gtest.h>
-
-
+#include"ExprTest.h"
 
 int main(int argc, char* argv[]) {
 

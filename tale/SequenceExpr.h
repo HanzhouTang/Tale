@@ -13,9 +13,11 @@ struct SequenceExpr :Expr {
 		}
 		return ret;
 	}
+
 	void addSentence(const std::shared_ptr<Expr>& s) {
 		sentences.emplace_back(s);
 	}
+
 	void setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value) {
 		if (context.find(variable->getVariableName()) == context.end()) {
 			context.emplace(variable->getVariableName(), value);
@@ -24,9 +26,17 @@ struct SequenceExpr :Expr {
 			context[variable->getVariableName()] = value;
 		}
 	}
+
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable) override{
+		for (auto& x : context) {
+			std::wcout << x.first << " " << x.second->toString() << std::endl;
+		}
 		if (context.find(variable->getVariableName()) != context.end()) {
 			return context[variable->getVariableName()];
+		}
+		else if (getRunTime() == nullptr) {
+			Utility::quitWithError(__LINE__, __FILE__, L"the variable " + variable->getVariableName() + L" is not defined");
+			return std::make_shared<Expr>(shared_from_this());
 		}
 		else {
 			return getRunTime()->getVariable(variable);

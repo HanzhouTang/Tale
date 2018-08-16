@@ -1,7 +1,9 @@
 #include"AddExpr.h"
 #include"NumberExpr.h"
 #include"StringExpr.h"
-std::shared_ptr<Expr> AddExpr::operate(std::shared_ptr<Expr> l, std::shared_ptr<Expr> r) {
+ std::shared_ptr<Expr> AddExpr::getValue() {
+	 auto l = left->getValue();
+	 auto r = right->getValue();
 	if (l->getType() == number && r->getType() == number) {
 		std::shared_ptr<NumberExpr> lNumber = std::dynamic_pointer_cast<NumberExpr>(l);
 		std::shared_ptr<NumberExpr> rNmuber = std::dynamic_pointer_cast<NumberExpr>(r);
@@ -12,6 +14,7 @@ std::shared_ptr<Expr> AddExpr::operate(std::shared_ptr<Expr> l, std::shared_ptr<
 		std::shared_ptr<StringExpr> rString = std::dynamic_pointer_cast<StringExpr>(r);
 		return std::make_shared<StringExpr>(shared_from_this(),lString->getString() + rString->getString());
 	}
+	std::wcout << "left: " << l->toString() << " right: " << r->toString() << std::endl;
 	Utility::quitWithError(__LINE__, __FILE__, L"only number or string support addtion");
 	return std::make_shared<Expr>(shared_from_this());
 }

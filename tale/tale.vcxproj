@@ -144,7 +144,6 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Expr.cpp" />
-    <ClCompile Include="ExprTest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="SimpleXMLParser.cpp" />
