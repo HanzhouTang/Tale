@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Display">
       <UniqueIdentifier>{bd65fad5-66fc-440d-b968-4a738bb36181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test">
+      <UniqueIdentifier>{e8ef02b5-6dd8-45d5-bb95-195089599a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Script">
+      <UniqueIdentifier>{2ade17c2-60ad-4ba3-9c8e-26999910f301}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -95,5 +101,14 @@
     <ClInclude Include="StackPanel.h">
       <Filter>Header Files\Display</Filter>
     </ClInclude>
+    <ClInclude Include="ExprTest.h">
+      <Filter>Header Files\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Expr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

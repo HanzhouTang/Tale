@@ -155,6 +155,8 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="d2dutil.h" />
     <ClInclude Include="Element.h" />
+    <ClInclude Include="Expr.h" />
+    <ClInclude Include="ExprTest.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="SimpleXMLParser.h" />
     <ClInclude Include="RescourceManagerBase.h" />
@@ -163,7 +165,19 @@
     <ClInclude Include="Tale.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\googletest.redist.1.8.2\build\native\googletest.redist.targets" Condition="Exists('..\packages\googletest.redist.1.8.2\build\native\googletest.redist.targets')" />
+    <Import Project="..\packages\googletest.1.8.2\build\native\googletest.targets" Condition="Exists('..\packages\googletest.1.8.2\build\native\googletest.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\googletest.redist.1.8.2\build\native\googletest.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletest.redist.1.8.2\build\native\googletest.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\googletest.1.8.2\build\native\googletest.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletest.1.8.2\build\native\googletest.targets'))" />
+  </Target>
 </Project>
