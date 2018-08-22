@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 #include<gtest/gtest.h>
 #include<gmock/gmock.h>
 #include"NumberExpr.h"
 #include"StringExpr.h"
 #include"ClosureExpr.h"
 #include"VariableExpr.h"
+#include"AssignExpr.h"
 using namespace testing;
 struct ExprTest : testing::Test {
 	std::shared_ptr<NumberExpr> number_15;
@@ -61,4 +62,14 @@ TEST_F(ExprTest, BasicVariableTest) {
 	EXPECT_THAT(variable_new->getValue()->toString(), EndsWith(L"15"));
 }
 
-//assign need test
+TEST_F(ExprTest, BasicAssignTest) {
+	std::shared_ptr<AssignExpr> assign = AssignExpr::createAssignExpr(nullptr, variable, number_15);
+	EXPECT_NE(variable, assign->getLeft());
+	EXPECT_NE(number_15, assign->getRight());
+	auto closure_new = std::dynamic_pointer_cast<ClosureExpr>(closure->clone());
+	assign->setRunTime(closure_new);
+	closure_new->addExpression(assign);
+	closure_new->addExpression(variable);
+	EXPECT_EQ(closure_new->getValue()->getType(), Expr::ExprType::TYPE_NUMBER);
+}
+//assign 

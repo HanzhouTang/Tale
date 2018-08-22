@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppBase.cpp" />
+    <ClCompile Include="AssignExpr.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ClosureExpr.cpp" />
     <ClCompile Include="Element.cpp" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h" />
+    <ClInclude Include="AssignExpr.h" />
     <ClInclude Include="BinaryOperatorExpr.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />

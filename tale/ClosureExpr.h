@@ -30,13 +30,7 @@ struct ClosureExpr :Expr {
 		context[var] = val->clone();
 	}
 
-	virtual std::shared_ptr<Expr> getValue() override { 
-		std::shared_ptr<Expr> ret;
-		for (const auto& x : expressions) {
-			ret = x->getValue();
-		}
-		return ret;
-	}
+	virtual std::shared_ptr<Expr> getValue() override;
 
 	virtual std::wstring toString() {
 		std::wostringstream ret;

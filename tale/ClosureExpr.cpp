@@ -15,3 +15,13 @@ std::shared_ptr<Expr> ClosureExpr::getVariable(const std::shared_ptr<VariableExp
 	}
 	return getRunTime()->getVariable(variable);
 }
+
+
+std::shared_ptr<Expr> ClosureExpr::getValue()
+{
+	std::shared_ptr<Expr> ret = NullExpr::createNullExpr();
+	for (const auto& x : expressions) {
+		ret = x->getValue();
+	}
+	return ret;
+}
