@@ -31,6 +31,9 @@
     <Filter Include="Header Files\Script">
       <UniqueIdentifier>{2ade17c2-60ad-4ba3-9c8e-26999910f301}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Script">
+      <UniqueIdentifier>{59173ed4-22ed-4d00-b45c-13ec7e855eca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -62,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="StackPanel.cpp">
       <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="Expr.cpp">
+      <Filter>Source Files\Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +111,15 @@
       <Filter>Header Files\Test</Filter>
     </ClInclude>
     <ClInclude Include="Expr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberExpr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="StringExpr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ClosureExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

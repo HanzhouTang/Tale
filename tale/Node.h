@@ -2,7 +2,7 @@
 #include"Common.h"
 struct Node {
 	wstring name;
-	wstring value;
+	wstring expressions;
 	shared_ptr<Node> parent;
 	vector<shared_ptr<Node>> children;
 	map<wstring, wstring> attributes;
@@ -10,24 +10,24 @@ struct Node {
 	void setName(const wstring& n) { name = n; }
 	wstring getName() const { return name; }
 	int getChildrenCount() { return children.size(); }
-	wstring getValue() const { return value; }
+	wstring getValue() const { return expressions; }
 	wstring getAttribute(const wstring& key) const { if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second; }
 	vector<shared_ptr<Node>>& getChildren() { return children; }
 	shared_ptr<Node> getChild(int ith) { return children[ith]; }
 	void addChild(shared_ptr<Node> c) { children.push_back(c); }
-	void appendValue(const wstring& v) { value += (v + L" "); }
-	void setAttribute(const wstring& key, const wstring& value) {
-		attributes[key] = value;
+	void appendValue(const wstring& v) { expressions += (v + L" "); }
+	void setAttribute(const wstring& key, const wstring& expressions) {
+		attributes[key] = expressions;
 	}
 	shared_ptr<Node> getParent() const { return parent; }
 	wstring info(wstring parentStr = L"")const {
 	
 		wstring ret;
-		if (value.empty()) {
+		if (expressions.empty()) {
 			ret += (name + L"\n");
 		}
 		else {
-			ret += (name + L" : " + value + L"\n");
+			ret += (name + L" : " + expressions + L"\n");
 		}
 		for (const auto& attr : attributes) {
 			ret += (name + L"[" + attr.first + L"]= " + attr.second + L"\n");

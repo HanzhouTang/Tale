@@ -1,13 +1,31 @@
 #pragma once
 #include<iostream>
 #include<memory>
+#include<string>
+#include<sstream>
 #include<vector>
-struct Expr {
+#include<initializer_list>
+struct Expr :std::enable_shared_from_this<Expr> {
+	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION };
+	ExprType type;
+	std::shared_ptr<Expr> runtime;
+	static const std::vector<std::wstring> TypeList;
+	void setType(ExprType t) { type = t; }
+	ExprType getType() { return type; }
+	std::shared_ptr<Expr> getRunTime() { return runtime; }
+	void setRunTime(const std::shared_ptr<Expr>& r) { runtime = r; }
+	Expr(std::shared_ptr<Expr> r) : runtime(r) { setType(TYPE_NULL); }
+	virtual ~Expr(){}
 	virtual std::shared_ptr<Expr> clone() = 0;
-	virtual std::wstring toString() = 0;
+	virtual std::wstring toString() { 
+		std::wostringstream ret;
+		ret << TypeList[getType()] << L"@"<<shared_from_this();
+		return ret.str();
+	}
 
-	template< typename... Arguments >
-	virtual std::shared_ptr<Expr> getValue(std::shared_ptr<Expr> value, Arguments... args);
+	virtual std::shared_ptr<Expr> getValue(std::initializer_list<std::shared_ptr<Expr>> args) { return shared_from_this(); }
+	virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }
 
-	virtual std::shared_ptr<Expr> getValue();
+
+
 };
