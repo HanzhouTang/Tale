@@ -1,9 +1,9 @@
 #pragma once
 #include"Expr.h"
 struct NumberExpr :Expr {
-	float expressions;
+	float value;
 	NumberExpr(const std::shared_ptr<Expr>& runtime, float v) :
-		Expr(runtime), expressions(v) {
+		Expr(runtime), value(v) {
 		setType(TYPE_NUMBER);
 	}
 	static std::shared_ptr<NumberExpr> createNumberExpr(const std::shared_ptr<Expr> runtime, float expressions) {
@@ -11,11 +11,12 @@ struct NumberExpr :Expr {
 		return ret;
 	}
 	virtual std::shared_ptr<Expr> clone() override {
-		return createNumberExpr(getRunTime(), expressions);
+		return createNumberExpr(getRunTime(), value);
 	}
 	virtual std::wstring toString() {
 		std::wostringstream ret;
-		ret << Expr::toString() << " : " << expressions;
+		ret << Expr::toString() << " : " << value;
 		return ret.str();
 	}
+	float getNumber() { return value; }
 };

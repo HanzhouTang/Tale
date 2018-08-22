@@ -6,6 +6,7 @@
 #include"ClosureExpr.h"
 #include"VariableExpr.h"
 #include"AssignExpr.h"
+#include"AddExpr.h"
 using namespace testing;
 struct ExprTest : testing::Test {
 	std::shared_ptr<NumberExpr> number_15;
@@ -72,4 +73,25 @@ TEST_F(ExprTest, BasicAssignTest) {
 	closure_new->addExpression(variable);
 	EXPECT_EQ(closure_new->getValue()->getType(), Expr::ExprType::TYPE_NUMBER);
 }
-//assign 
+
+TEST_F(ExprTest, BasicAddTest) {
+
+	std::shared_ptr<AddExpr> addition = AddExpr::createAddExpr(nullptr, number_15, string_hello_world);
+	auto result = addition->getValue();
+	EXPECT_EQ(result->getType(), Expr::ExprType::TYPE_STRING);
+	auto r = std::dynamic_pointer_cast<StringExpr>(result);
+	EXPECT_EQ(r->getString(), L"15hello world");
+}
+TEST_F(ExprTest, ClosureTest) {
+	std::shared_ptr<AssignExpr> assign = AssignExpr::createAssignExpr(nullptr, variable, number_15);
+	auto closure_new = std::dynamic_pointer_cast<ClosureExpr>(closure->clone());
+	closure_new->addExpression(assign);
+	auto closure_inside = std::dynamic_pointer_cast<ClosureExpr>(closure->clone());
+	std::shared_ptr<AssignExpr> add1 = AssignExpr::createAssignExpr(nullptr, variable, 
+		AddExpr::createAddExpr(nullptr, variable, NumberExpr::createNumberExpr(nullptr, 1)));
+	closure_inside->addExpression(add1);
+	closure_new->addExpression(closure_inside);
+	auto ret = closure_new->getValue();
+	EXPECT_EQ(ret->getType(), Expr::ExprType::TYPE_NUMBER);
+	EXPECT_EQ(std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber(),16);
+}

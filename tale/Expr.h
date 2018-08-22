@@ -23,7 +23,9 @@ struct Expr :std::enable_shared_from_this<Expr> {
 		ret << TypeList[getType()] << L"@"<<shared_from_this();
 		return ret.str();
 	}
-
+	std::wstring getTypeString() {
+		return TypeList[getType()];
+	}
 	virtual std::shared_ptr<Expr> getValue(std::initializer_list<std::shared_ptr<Expr>> args) { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable);
