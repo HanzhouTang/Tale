@@ -1,7 +1,7 @@
 #pragma once
 #include"Expr.h"
 #include<unordered_map>
-
+struct VariableExpr;
 struct ClosureExpr :Expr {
 	std::vector<std::shared_ptr<Expr>> expressions;
 	std::unordered_map<std::wstring, std::shared_ptr<Expr>> context;
@@ -40,6 +40,11 @@ struct ClosureExpr :Expr {
 
 	virtual std::wstring toString() {
 		std::wostringstream ret;
+		ret << L"================variables================\n";
+		for (const auto& x : getContext()) {
+			ret << x.first << L" : " << x.second->clone()->toString()<<"\n";
+		}
+		ret<< L"=========================================\n";
 		ret << Expr::toString() << " :{\n";
 		for (const auto& x : expressions) {
 			ret <<x->toString() << "\n";
@@ -52,8 +57,11 @@ struct ClosureExpr :Expr {
 			x.reset();
 		}
 	}
-
+	std::unordered_map<std::wstring, std::shared_ptr<Expr>>& getContext() {
+		return context;
+	}
 	std::shared_ptr<Expr> getIthSentence(std::size_t i) {
 		return expressions[i];
 	}
+	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable) override;
 };

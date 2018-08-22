@@ -142,10 +142,12 @@
   <ItemGroup>
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ClosureExpr.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Expr.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NullExpr.cpp" />
     <ClCompile Include="SimpleXMLParser.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />
@@ -154,12 +156,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h" />
+    <ClInclude Include="BinaryOperatorExpr.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="d2dutil.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="ClosureExpr.h" />
+    <ClInclude Include="NullExpr.h" />
     <ClInclude Include="StringExpr.h" />
     <ClInclude Include="ExprTest.h" />
     <ClInclude Include="Node.h" />
@@ -170,6 +174,7 @@
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Tale.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="VariableExpr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
