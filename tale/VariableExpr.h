@@ -18,9 +18,8 @@ struct VariableExpr : Expr {
 	void setName(const std::wstring& name) {
 		this->name = name;
 	}
-	std::shared_ptr<Expr> getValue() override {
-		return getRunTime()->getVariable(std::dynamic_pointer_cast<VariableExpr>(shared_from_this()));
-	}
+	virtual std::shared_ptr<Expr> getValue() override;
+
 	std::wstring toString() override {
 		std::wostringstream ret;
 		ret << Expr::toString();

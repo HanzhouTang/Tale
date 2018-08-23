@@ -58,4 +58,5 @@ struct ClosureExpr :Expr {
 		return expressions[i];
 	}
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable) override;
+	virtual std::shared_ptr<Expr> setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value) override;
 };

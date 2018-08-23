@@ -8,7 +8,7 @@
 #include<vector>
 using namespace Utility;
 const std::vector<std::wstring> Expr::TypeList = {
-	L"TYPE_NULL", L"TYPE_STRING", L"TYPE_NUMBER", L"TYPE_VARIABLE",L"TYPE_BOOLEAN", L"TYPE_SEQUENCE", L"TYPE_FUNCTION", L"TYPE_BINARYOPERATION"
+	L"TYPE_NULL", L"TYPE_STRING", L"TYPE_NUMBER", L"TYPE_VARIABLE",L"TYPE_BOOLEAN", L"TYPE_SEQUENCE", L"TYPE_FUNCTION", L"TYPE_BINARYOPERATION",L"TYPE_RETURN"
 };
 
 std::shared_ptr<Expr> Expr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
@@ -17,4 +17,11 @@ std::shared_ptr<Expr> Expr::getVariable(const std::shared_ptr<VariableExpr>& var
 		return NullExpr::createNullExpr();
 	}
 	return getRunTime()->getVariable(variable);
+}
+
+std::shared_ptr<Expr> Expr::setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value) {
+	if (getRunTime() == nullptr) {
+		return NullExpr::createNullExpr();
+	}
+	return getRunTime()->setVariable(variable, value);
 }

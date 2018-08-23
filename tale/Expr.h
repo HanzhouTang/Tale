@@ -7,7 +7,7 @@
 #include<initializer_list>
 struct VariableExpr;
 struct Expr :std::enable_shared_from_this<Expr> {
-	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION };
+	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION,TYPE_RETURN };
 	ExprType type;
 	std::shared_ptr<Expr> runtime;
 	static const std::vector<std::wstring> TypeList;
@@ -29,6 +29,6 @@ struct Expr :std::enable_shared_from_this<Expr> {
 	virtual std::shared_ptr<Expr> getValue(std::initializer_list<std::shared_ptr<Expr>> args) { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable);
-
+	virtual std::shared_ptr<Expr> setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value);
 
 };

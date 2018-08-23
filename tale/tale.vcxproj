@@ -147,6 +147,7 @@
     <ClCompile Include="ClosureExpr.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Expr.cpp" />
+    <ClCompile Include="FunctionExpr.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullExpr.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Tale.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="VariableExpr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddExpr.h" />
@@ -167,7 +169,9 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="ClosureExpr.h" />
+    <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="NullExpr.h" />
+    <ClInclude Include="ReturnExpr.h" />
     <ClInclude Include="StringExpr.h" />
     <ClInclude Include="ExprTest.h" />
     <ClInclude Include="Node.h" />
