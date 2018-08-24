@@ -2,7 +2,7 @@
 #include"BinaryOperatorExpr.h"
 struct AddExpr :BinaryOperatorExpr {
 	std::shared_ptr<Expr> getValue() override;
-	std::wstring toString() {
+	virtual std::wstring toString() override{
 		std::wostringstream ret;
 		ret << L"(" << getLeft()->toString() << L")";
 		ret << L" + (" << getRight()->toString() << L")";
@@ -18,6 +18,9 @@ struct AddExpr :BinaryOperatorExpr {
 		ret->getLeft()->setRunTime(ret);
 		ret->getRight()->setRunTime(ret);
 		return ret;
+	}
+	static std::shared_ptr<AddExpr> createAddExpr(const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right) {
+		return createAddExpr(nullptr, left, right);
 	}
 
 	virtual std::shared_ptr<Expr> clone() override {

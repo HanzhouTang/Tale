@@ -13,9 +13,11 @@ struct ReturnExpr :Expr {
 		ret->getContent()->setRunTime(ret);
 		return ret;
 	}
-	virtual std::shared_ptr<Expr> getValue() override {
-		return content;
+	static std::shared_ptr<ReturnExpr> createReturnExpr(const std::shared_ptr<Expr>& content) {
+		return createReturnExpr(nullptr, content);
 	}
+
+	virtual std::shared_ptr<Expr> getValue() override;
 	virtual std::shared_ptr<Expr> clone() override {
 		return createReturnExpr(getRunTime(), content->clone());
 	}

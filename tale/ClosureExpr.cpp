@@ -6,7 +6,9 @@ using namespace Utility;
 
 std::shared_ptr<Expr> ClosureExpr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
 	auto name = variable->getName();
+	
 	if (getContext().count(name)) {
+		std::wcout << " get variable " << name <<"value "<< getContext()[name] ->toString()<< std::endl;
 		return getContext()[name];
 	}
 	else if (getRunTime() == nullptr) {
@@ -35,11 +37,7 @@ std::shared_ptr<Expr> ClosureExpr::getValue()
 	std::shared_ptr<Expr> ret = NullExpr::createNullExpr();
 	for (const auto& x : expressions) {
 		if (x->getType() == TYPE_RETURN) {
-			auto retValue = x->getValue();
-			if (retValue->getType() == TYPE_VARIABLE) {
-				return retValue->getValue();
-			}
-			return retValue;
+			return x->getValue();
 		}
 		ret = x->getValue();
 	}

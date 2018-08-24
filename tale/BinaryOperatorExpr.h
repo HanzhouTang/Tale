@@ -4,7 +4,7 @@ struct BinaryOperatorExpr : Expr {
 	std::shared_ptr<Expr> left;
 	std::shared_ptr<Expr> right;
 	BinaryOperatorExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& l, const std::shared_ptr<Expr>& r)
-		: Expr(runtime), left(l->clone()), right(r->clone()) {
+		: Expr(runtime), left(l), right(r) {
 		setType(TYPE_BINARYOPERATION);
 	}
 	

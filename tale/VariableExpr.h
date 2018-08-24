@@ -6,11 +6,14 @@ struct VariableExpr : Expr {
 		:Expr(runtime), name(str) {
 		setType(TYPE_VARIABLE);
 	}
-	static std::shared_ptr<VariableExpr> createVariable(const std::shared_ptr<Expr>& runtime, const std::wstring& name) {
+	static std::shared_ptr<VariableExpr> createVariableExpr(const std::shared_ptr<Expr>& runtime, const std::wstring& name) {
 		return std::make_shared<VariableExpr>(runtime, name);
 	}
+	static std::shared_ptr<VariableExpr> createVariableExpr(const std::wstring& name) {
+		return createVariableExpr(nullptr, name);
+	}
 	std::shared_ptr<Expr> clone() override {
-		return createVariable(runtime, name);
+		return createVariableExpr(runtime, name);
 	}
 	std::wstring getName() {
 		return name;

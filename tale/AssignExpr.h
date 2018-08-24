@@ -3,7 +3,7 @@
 struct VariableExpr;
 struct AssignExpr : BinaryOperatorExpr{
 	virtual std::shared_ptr<Expr> getValue() override;
-	std::wstring toString() {
+	virtual std::wstring toString() override{
 		std::wostringstream ret;
 		ret << L"(" << getLeft()->toString() << L")";
 		ret << L" = (" << getRight()->toString() << L")";
@@ -19,6 +19,11 @@ struct AssignExpr : BinaryOperatorExpr{
 		ret->getRight()->setRunTime(ret);
 		return ret;
 	}
+
+	static std::shared_ptr<AssignExpr> createAssignExpr(const std::shared_ptr<VariableExpr>& left, const std::shared_ptr<Expr>& right) {
+		return createAssignExpr(nullptr, left, right);
+	}
+
 
 	virtual std::shared_ptr<Expr> clone() override {
 		auto ret = createAssignExpr(runtime, std::dynamic_pointer_cast<VariableExpr>(getLeft()->clone()), getRight()->clone());

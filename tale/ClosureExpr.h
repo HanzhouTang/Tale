@@ -10,7 +10,7 @@ struct ClosureExpr :Expr {
 		setType(TYPE_CLOSURE);
 	}
 	void addExpression(const std::shared_ptr<Expr>& expr) {
-		auto e = expr->clone();
+		auto e = expr;
 		e->setRunTime(shared_from_this());
 		expressions.emplace_back(e);
 	}
@@ -18,16 +18,29 @@ struct ClosureExpr :Expr {
 		return std::make_shared<ClosureExpr>(r);
 	}
 
+	static std::shared_ptr<ClosureExpr> createClosureExpr() {
+		return std::make_shared<ClosureExpr>(nullptr);
+	}
+
 	virtual std::shared_ptr<Expr> clone() override {
 		auto closure = createClosureExpr(getRunTime());
+		std::cout << "clone clousre" << std::endl;
 		for (const auto& x : expressions) {
-			closure->addExpression(x);
+			auto expr = x->clone();
+			closure->addExpression(expr);
+			expr->setRunTime(closure);
+		}
+		for (auto x : getContext()) {
+			auto name = x.first;
+			auto expr = x.second;
+			closure->context[name] = expr->clone();
+			closure->context[name]->setRunTime(closure);
 		}
 		return closure;
 	}
 
 	void addVarable(const std::wstring& var, const std::shared_ptr<Expr> val) {
-		context[var] = val->clone();
+		context[var] = val;
 	}
 
 	virtual std::shared_ptr<Expr> getValue() override;
@@ -36,7 +49,7 @@ struct ClosureExpr :Expr {
 		std::wostringstream ret;
 		ret << L"================variables================\n";
 		for (const auto& x : getContext()) {
-			ret << x.first << L" : " << x.second->clone()->toString()<<"\n";
+			ret << x.first << L" : " << x.second->toString()<<"\n";
 		}
 		ret<< L"=========================================\n";
 		ret << Expr::toString() << " :{\n";

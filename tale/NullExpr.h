@@ -9,6 +9,8 @@ struct NullExpr : Expr {
 	static std::shared_ptr<NullExpr> createNullExpr() {
 		return NONE;
 	}
+	virtual void setRunTime(const std::shared_ptr<Expr>& r) override { return; }
+	
 	virtual std::shared_ptr<Expr> clone() override {
 		return NONE;
 	}
