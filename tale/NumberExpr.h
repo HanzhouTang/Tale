@@ -1,5 +1,6 @@
 #pragma once
 #include"Expr.h"
+
 struct NumberExpr :Expr {
 	using NumberType = long double;
 	NumberType value;
@@ -26,4 +27,5 @@ struct NumberExpr :Expr {
 	NumberType getNumber() { return value; }
 	friend std::shared_ptr<NumberExpr> operator ""_expr(long double value);
 	friend std::shared_ptr<NumberExpr> operator ""_expr(unsigned long long int value);
+	
 };

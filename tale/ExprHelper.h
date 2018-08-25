@@ -13,6 +13,7 @@
 #include"NullExpr.h"
 #include"CallExpr.h"
 #include"BooleanExpr.h"
+#include"ReverseExpr.h"
 std::shared_ptr<NumberExpr> operator ""_expr(long double value) {
 	return NumberExpr::createNumberExpr(value);
 }
@@ -27,3 +28,19 @@ std::shared_ptr<StringExpr> operator ""_expr(const wchar_t* value, std::size_t) 
 std::shared_ptr<VariableExpr> operator ""_variableExpr(const wchar_t* value, std::size_t) {
 	return VariableExpr::createVariableExpr(value);
 }
+
+std::shared_ptr<AssignExpr> operator <<(const std::shared_ptr<VariableExpr>& l, const std::shared_ptr<Expr>& r) {
+	return AssignExpr::createAssignExpr(l, r);
+}
+std::shared_ptr<ReverseExpr> operator -(const std::shared_ptr<Expr>& expr) {
+	return ReverseExpr::createReverseExpr(expr);
+}
+
+std::shared_ptr<AddExpr> operator + (const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right) {
+	return AddExpr::createAddExpr(left, right);
+}
+
+std::shared_ptr<AddExpr> operator -(const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right) {
+	return left + -right;
+}
+

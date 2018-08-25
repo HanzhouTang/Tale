@@ -159,6 +159,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullExpr.cpp" />
     <ClCompile Include="ReturnExpr.cpp" />
+    <ClCompile Include="ReverseExpr.cpp" />
     <ClCompile Include="SimpleXMLParser.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="MapExpr.h" />
     <ClInclude Include="NullExpr.h" />
     <ClInclude Include="ReturnExpr.h" />
+    <ClInclude Include="ReverseExpr.h" />
     <ClInclude Include="StringExpr.h" />
     <ClInclude Include="ExprTest.h" />
     <ClInclude Include="Node.h" />
@@ -198,7 +200,6 @@
     <ClInclude Include="Tale.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VariableExpr.h" />
-    <ClInclude Include="WrapperExpr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
