@@ -23,4 +23,5 @@ struct StringExpr : Expr {
 		return ret.str();
 	}
 	std::wstring getString() { return value; }
+	friend std::shared_ptr<StringExpr> operator ""_expr(const wchar_t* value, std::size_t);
 };

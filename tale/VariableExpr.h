@@ -29,4 +29,5 @@ struct VariableExpr : Expr {
 		ret << "\tname : " << getName()<<"\n";
 		return ret.str();
 	}
+	friend std::shared_ptr<VariableExpr> operator ""_variableExpr(const wchar_t* value, std::size_t);
 };

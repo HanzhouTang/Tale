@@ -1,19 +1,7 @@
 ﻿#pragma once
 #include<gtest/gtest.h>
 #include<gmock/gmock.h>
-#include"NumberExpr.h"
-#include"StringExpr.h"
-#include"ClosureExpr.h"
-#include"VariableExpr.h"
-#include"AssignExpr.h"
-#include"AddExpr.h"
-#include"ReturnExpr.h"
-#include"FunctionExpr.h"
-#include"GreaterThanExpr.h"
-#include"ConditionExpr.h"
-#include"EqualExpr.h"
-#include"NullExpr.h"
-#include"CallExpr.h"
+#include"ExprHelper.h"
 
 using namespace testing;
 
@@ -321,7 +309,7 @@ TEST_F(ExprTest, RecurisionTest) {
 	auto function = FunctionExpr::createFunctionExpr();
 	auto closure_new = ClosureExpr::createClosureExpr();
 	function->setSignature({ L"x" });
-	auto variable = VariableExpr::createVariableExpr(L"x");
+	auto variable = L"x"_variableExpr;
 	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(1)) });
 	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
 		NumberExpr::createNumberExpr(10)),
@@ -350,14 +338,13 @@ f(x){
 if(x==1) return 1 
 if(x==2 ) return 1
 return f(x-1)+f(x-2);
-
-
 */
+
 TEST_F(ExprTest, FibonacciTest) {
 	auto function = FunctionExpr::createFunctionExpr();
 	auto closure_new = ClosureExpr::createClosureExpr();
 	function->setSignature({ L"x" });
-	auto variable = VariableExpr::createVariableExpr(L"x");
+	auto variable = L"x"_variableExpr;
 	auto con1 = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable, NumberExpr::createNumberExpr(2)),
 		NumberExpr::createNumberExpr(1),
 		ReturnExpr::createReturnExpr(
@@ -373,10 +360,7 @@ TEST_F(ExprTest, FibonacciTest) {
 		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(1)),con1);
 	closure_new->addExpression(con);
 	function->setClosure(closure_new);
-
-
 	EXPECT_EQ(function, closure_new->getRunTime());
-
 	auto ret2 = function->getValue({ NumberExpr::createNumberExpr(4) });
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
 	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
@@ -385,6 +369,14 @@ TEST_F(ExprTest, FibonacciTest) {
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
 	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
 }
-//
-//
-//
+
+TEST_F(ExprTest, LiteralTest) {
+	auto number10 = 10.0_expr;
+	auto n10 = 10_expr;
+	auto str = L"hello world"_expr;
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER,number10->getType());
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, n10->getType());
+	EXPECT_EQ(10, n10->getNumber());
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, str->getType());
+	EXPECT_EQ(L"hello world", str->getString());
+}

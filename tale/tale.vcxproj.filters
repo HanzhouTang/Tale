@@ -206,6 +206,9 @@
     <ClInclude Include="WrapperExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
+    <ClInclude Include="ExprHelper.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

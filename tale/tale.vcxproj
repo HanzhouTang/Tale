@@ -181,6 +181,7 @@
     <ClInclude Include="EqualExpr.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="ClosureExpr.h" />
+    <ClInclude Include="ExprHelper.h" />
     <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="GreaterThanExpr.h" />
     <ClInclude Include="MapExpr.h" />

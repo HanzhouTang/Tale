@@ -1,16 +1,17 @@
 #pragma once
 #include"Expr.h"
 struct NumberExpr :Expr {
-	float value;
-	NumberExpr(const std::shared_ptr<Expr>& runtime, float v) :
+	using NumberType = long double;
+	NumberType value;
+	NumberExpr(const std::shared_ptr<Expr>& runtime, NumberType v) :
 		Expr(runtime), value(v) {
 		setType(TYPE_NUMBER);
 	}
-	static std::shared_ptr<NumberExpr> createNumberExpr(const std::shared_ptr<Expr> runtime, float expressions) {
+	static std::shared_ptr<NumberExpr> createNumberExpr(const std::shared_ptr<Expr> runtime, NumberType expressions) {
 		auto ret = std::make_shared<NumberExpr>(runtime, expressions);
 		return ret;
 	}
-	static std::shared_ptr<NumberExpr> createNumberExpr(float expressions) {
+	static std::shared_ptr<NumberExpr> createNumberExpr(NumberType expressions) {
 		return createNumberExpr(nullptr, expressions);
 	}
 	virtual std::shared_ptr<Expr> clone() override {
@@ -21,5 +22,8 @@ struct NumberExpr :Expr {
 		ret << Expr::toString() << " : " << value;
 		return ret.str();
 	}
-	float getNumber() { return value; }
+	
+	NumberType getNumber() { return value; }
+	friend std::shared_ptr<NumberExpr> operator ""_expr(long double value);
+	friend std::shared_ptr<NumberExpr> operator ""_expr(unsigned long long int value);
 };

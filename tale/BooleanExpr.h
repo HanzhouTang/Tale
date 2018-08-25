@@ -12,7 +12,6 @@ struct BooleanExpr : Expr {
 	static std::shared_ptr<BooleanExpr> createBooleanExpr(bool value) {
 		return std::make_shared<BooleanExpr>(nullptr, value);
 	}
-
 	virtual std::shared_ptr<Expr> clone() override {
 		return createBooleanExpr(getRunTime(), value);
 	}
