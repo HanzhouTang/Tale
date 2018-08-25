@@ -19,12 +19,6 @@
     <Filter Include="Source Files\XML">
       <UniqueIdentifier>{15ed2b14-0809-4686-8827-6f14e32351ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Display">
-      <UniqueIdentifier>{bfa4e1ef-4f6c-4d74-85a7-12a3c8be2df0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Display">
-      <UniqueIdentifier>{bd65fad5-66fc-440d-b968-4a738bb36181}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Test">
       <UniqueIdentifier>{e8ef02b5-6dd8-45d5-bb95-195089599a75}</UniqueIdentifier>
     </Filter>
@@ -33,6 +27,12 @@
     </Filter>
     <Filter Include="Source Files\Script">
       <UniqueIdentifier>{59173ed4-22ed-4d00-b45c-13ec7e855eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{bfa4e1ef-4f6c-4d74-85a7-12a3c8be2df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{bd65fad5-66fc-440d-b968-4a738bb36181}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -55,16 +55,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>Source Files\Display</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Element.cpp">
-      <Filter>Source Files\Display</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\Display</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="StackPanel.cpp">
-      <Filter>Source Files\Display</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="Expr.cpp">
       <Filter>Source Files\Script</Filter>
@@ -135,16 +135,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>Header Files\Display</Filter>
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Element.h">
-      <Filter>Header Files\Display</Filter>
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Header Files\Display</Filter>
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="StackPanel.h">
-      <Filter>Header Files\Display</Filter>
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="ExprTest.h">
       <Filter>Header Files\Test</Filter>
