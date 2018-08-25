@@ -108,6 +108,9 @@
     <ClCompile Include="CallExpr.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
+    <ClCompile Include="MapExpr.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -195,6 +198,12 @@
       <Filter>Header Files\Script</Filter>
     </ClInclude>
     <ClInclude Include="CallExpr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="MapExpr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

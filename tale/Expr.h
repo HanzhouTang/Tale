@@ -6,9 +6,10 @@
 #include<vector>
 #include<initializer_list>
 #include<algorithm>
+#include<unordered_map>
 struct VariableExpr;
 struct Expr :std::enable_shared_from_this<Expr> {
-	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION,TYPE_RETURN,TYPE_CONDITION,TYPE_CALL };
+	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION,TYPE_RETURN,TYPE_CONDITION,TYPE_CALL,TYPE_MAP };
 	ExprType type;
 	std::size_t maximumRecursionDepth() {
 		return 100;
@@ -30,7 +31,7 @@ struct Expr :std::enable_shared_from_this<Expr> {
 	std::wstring getTypeString() {
 		return TypeList[getType()];
 	}
-	virtual std::shared_ptr<Expr> getValue(std::vector<std::shared_ptr<Expr>> args) { return shared_from_this(); }
+	virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& args) { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable);
 	virtual std::shared_ptr<Expr> setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value);

@@ -4,7 +4,7 @@ struct ClosureExpr;
 struct FunctionExpr : Expr {
 	std::vector<std::wstring> signature;
 	std::shared_ptr<ClosureExpr> closure;
-	virtual std::shared_ptr<Expr> getValue(std::vector<std::shared_ptr<Expr>> args) override;
+	virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& args) override;
 	virtual std::shared_ptr<Expr> getValue() override;
 	void setSignature(const std::vector<std::wstring>& parameters) {
 		signature = parameters;

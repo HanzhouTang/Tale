@@ -155,6 +155,7 @@
     <ClCompile Include="FunctionExpr.cpp" />
     <ClCompile Include="GreaterThanExpr.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MapExpr.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NullExpr.cpp" />
     <ClCompile Include="ReturnExpr.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="ClosureExpr.h" />
     <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="GreaterThanExpr.h" />
+    <ClInclude Include="MapExpr.h" />
     <ClInclude Include="NullExpr.h" />
     <ClInclude Include="ReturnExpr.h" />
     <ClInclude Include="StringExpr.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="Tale.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VariableExpr.h" />
+    <ClInclude Include="WrapperExpr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

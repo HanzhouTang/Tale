@@ -18,7 +18,7 @@ std::shared_ptr<Expr> FunctionExpr::clone() {
 	return ret;
  }
 
-std::shared_ptr<Expr> FunctionExpr::getValue(std::vector<std::shared_ptr<Expr>> args) {
+std::shared_ptr<Expr> FunctionExpr::getValue(const std::vector<std::shared_ptr<Expr>>& args) {
 	if (signature.size() == args.size()) {
 		for (int i = 0; i < signature.size(); i++) {
 			getClosure()->addVarable(signature[i], args[i]);
