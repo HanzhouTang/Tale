@@ -114,9 +114,6 @@
     <ClCompile Include="ReverseExpr.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
-    <ClCompile Include="ExprOperatorOverload.cpp">
-      <Filter>Source Files\Script</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
