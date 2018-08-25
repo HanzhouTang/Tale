@@ -5,6 +5,7 @@ struct VariableExpr;
 struct ClosureExpr :Expr {
 	std::vector<std::shared_ptr<Expr>> expressions;
 	std::unordered_map<std::wstring, std::shared_ptr<Expr>> context;
+	std::vector<std::unordered_map<std::wstring, std::shared_ptr<Expr>>> stack;
 	ClosureExpr(const std::shared_ptr<Expr>&r) :
 		Expr(r) {
 		setType(TYPE_CLOSURE);
@@ -26,14 +27,13 @@ struct ClosureExpr :Expr {
 		auto closure = createClosureExpr(getRunTime());
 		std::cout << "clone clousre" << std::endl;
 		for (const auto& x : expressions) {
-			auto expr = x->clone();
-			closure->addExpression(expr);
-			expr->setRunTime(closure);
+			closure->addExpression(x);
+			x->setRunTime(closure);
 		}
 		for (auto x : getContext()) {
 			auto name = x.first;
 			auto expr = x.second;
-			closure->context[name] = expr->clone();
+			closure->context[name] = expr;
 			closure->context[name]->setRunTime(closure);
 		}
 		return closure;
@@ -72,4 +72,8 @@ struct ClosureExpr :Expr {
 	}
 	virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable) override;
 	virtual std::shared_ptr<Expr> setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value) override;
+
+	virtual void store(const std::shared_ptr<Expr>& begin) override;
+	virtual void restore(const std::shared_ptr<Expr>& begin) override;
+
 };

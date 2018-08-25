@@ -7,10 +7,8 @@
 using namespace Utility;
 
 std::shared_ptr<Expr> EqualExpr::getValue() {
-	std::wcout << "before left: " << getLeft()->toString() << "  \nbefore right: " << getRight()->toString() << std::endl;
 	auto left = getLeft()->getValue();
 	auto right = getRight()->getValue();
-	std::wcout << "left: " << left->toString() << "  \nright: " << right->toString() << std::endl;
 	if (left->getType() == TYPE_NUMBER && right->getType() == TYPE_NUMBER) {
 		return BooleanExpr::createBooleanExpr(getRunTime(),
 			std::dynamic_pointer_cast<NumberExpr>(left)->getNumber() ==

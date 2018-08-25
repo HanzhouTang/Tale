@@ -11,7 +11,6 @@ std::shared_ptr<Expr> AddExpr::getValue() {
 	if (l->getType() == TYPE_NUMBER && r->getType() == TYPE_NUMBER) {
 		auto left = std::dynamic_pointer_cast<NumberExpr>(l);
 		auto right = std::dynamic_pointer_cast<NumberExpr>(r);
-		std::wcout << " add result value: " << left->getNumber() + right->getNumber() << std::endl;
 		return NumberExpr::createNumberExpr(getRunTime(), left->getNumber() + right->getNumber());
 	}
 	else if (l->getType() == TYPE_STRING && r->getType() == TYPE_NUMBER ) {

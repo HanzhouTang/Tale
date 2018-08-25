@@ -17,7 +17,8 @@ std::shared_ptr<Expr> CallExpr::getValue() {
 	}
 	else if (param.size() == getFunction()->getSignature().size()) {
 	
-
+		auto run = getFunction()->getRunTime();
+		getFunction()->setRunTime(shared_from_this());
 		std::vector<std::shared_ptr<Expr>> args;
 		for (int i = 0; i < parameters.size(); i++) {
 			auto x = parameters[i]->getValue();
@@ -33,10 +34,12 @@ std::shared_ptr<Expr> CallExpr::getValue() {
 		doesn't work?
 		*/
 
-		std::wcout << "args[0]"<<args[0]->toString() << std::endl;
-		//auto function = getFunction()->clone();
-		//std::wcout << "here" << std::endl;
-		return getFunction()->getValue(args);
+	
+		store(shared_from_this());
+		auto ret = getFunction()->getValue(args);
+		restore(shared_from_this());
+		getFunction()->setRunTime(run);
+		return ret;
 	}
 	else {
 		quitWithError(__LINE__, __FILE__, L"call doesn't match function's signature");
