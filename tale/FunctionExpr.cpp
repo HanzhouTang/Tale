@@ -2,6 +2,7 @@
 #include"ClosureExpr.h"
 #include"Utility.h"
 #include"NullExpr.h"
+#include"CallExpr.h"
 using namespace Utility;
 FunctionExpr::FunctionExpr(const std::shared_ptr<Expr>& runtime) :Expr(runtime){
 	setType(TYPE_FUNCTION);
@@ -57,4 +58,8 @@ std::wstring FunctionExpr::toString()
 	ret << L")";
 	ret << getClosure()->toString();
 	return ret.str();
+}
+
+std::shared_ptr<CallExpr> FunctionExpr::operator ()(const std::vector<std::shared_ptr<Expr>>& param) {
+	return CallExpr::createCallExpr(std::dynamic_pointer_cast<FunctionExpr>(shared_from_this()), param);
 }

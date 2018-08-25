@@ -152,6 +152,7 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="EqualExpr.cpp" />
     <ClCompile Include="Expr.cpp" />
+    <ClCompile Include="ExprOperatorOverload.cpp" />
     <ClCompile Include="FunctionExpr.cpp" />
     <ClCompile Include="GreaterThanExpr.cpp" />
     <ClCompile Include="Main.cpp" />

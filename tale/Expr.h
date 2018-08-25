@@ -12,6 +12,7 @@ struct AssignExpr;
 struct ReverseExpr;
 struct AddExpr;
 struct EqualExpr;
+struct ReturnExpr;
 struct Expr :std::enable_shared_from_this<Expr> {
 	enum ExprType { TYPE_NULL=0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION,TYPE_RETURN,TYPE_CONDITION,TYPE_CALL,TYPE_MAP, UNARY_OPERATOR};
 	ExprType type;
@@ -45,5 +46,5 @@ struct Expr :std::enable_shared_from_this<Expr> {
 	friend std::shared_ptr<ReverseExpr> operator -(const std::shared_ptr<Expr>& expr);
 	friend std::shared_ptr<AddExpr> operator + (const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right);
 	friend std::shared_ptr<AddExpr> operator -(const std::shared_ptr<Expr>& left , const std::shared_ptr<Expr>& right);
-
+	friend std::shared_ptr<EqualExpr> operator <<=(const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right);
 };
