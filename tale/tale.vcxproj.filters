@@ -114,6 +114,9 @@
     <ClCompile Include="ReverseExpr.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
+    <ClCompile Include="ExprLiteral.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -206,10 +209,10 @@
     <ClInclude Include="MapExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
-    <ClInclude Include="ExprHelper.h">
+    <ClInclude Include="ReverseExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
-    <ClInclude Include="ReverseExpr.h">
+    <ClInclude Include="ExprLiteral.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

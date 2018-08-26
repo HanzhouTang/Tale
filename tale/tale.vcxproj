@@ -152,6 +152,7 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="EqualExpr.cpp" />
     <ClCompile Include="Expr.cpp" />
+    <ClCompile Include="ExprLiteral.cpp" />
     <ClCompile Include="FunctionExpr.cpp" />
     <ClCompile Include="GreaterThanExpr.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -182,7 +183,7 @@
     <ClInclude Include="EqualExpr.h" />
     <ClInclude Include="Expr.h" />
     <ClInclude Include="ClosureExpr.h" />
-    <ClInclude Include="ExprHelper.h" />
+    <ClInclude Include="ExprLiteral.h" />
     <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="GreaterThanExpr.h" />
     <ClInclude Include="MapExpr.h" />

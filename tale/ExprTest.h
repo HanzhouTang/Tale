@@ -1,10 +1,24 @@
 ﻿#pragma once
 #include<gtest/gtest.h>
 #include<gmock/gmock.h>
-#include"ExprHelper.h"
-
+#include"NumberExpr.h"
+#include"StringExpr.h"
+#include"ClosureExpr.h"
+#include"VariableExpr.h"
+#include"AssignExpr.h"
+#include"AddExpr.h"
+#include"ReturnExpr.h"
+#include"FunctionExpr.h"
+#include"GreaterThanExpr.h"
+#include"ConditionExpr.h"
+#include"EqualExpr.h"
+#include"NullExpr.h"
+#include"CallExpr.h"
+#include"BooleanExpr.h"
+#include"ReverseExpr.h"
+#include"ExprLiteral.h"
 using namespace testing;
-
+using namespace expr;
 struct ExprTest : testing::Test {
 	std::shared_ptr<NumberExpr> number_15;
 	std::shared_ptr<StringExpr> string_hello_world;
@@ -35,14 +49,15 @@ TEST_F(ExprTest, BasicStringTest) {
 }
 
 
-
-
 TEST_F(ExprTest, BasicVariableTest) {
+
 	auto number_15new = number_15;
 	auto closure = ClosureExpr::createClosureExpr();
 	auto variable_new = variable;
 	variable_new->setRunTime(closure);
 	closure->getContext()[L"test"] = number_15new;
+	auto x = L"x"_variableExpr;
+	EXPECT_EQ(Expr::ExprType::TYPE_VARIABLE, x->getType());
 	EXPECT_THAT(variable_new->getValue()->toString(), EndsWith(L"15"));
 }
 
@@ -402,7 +417,7 @@ TEST_F(ExprTest, ReserveTest) {
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
 	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
 
-	auto ret3 = function->getValue({ 12_expr});
+	auto ret3 = function->getValue({ 12_expr });
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
 	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
 

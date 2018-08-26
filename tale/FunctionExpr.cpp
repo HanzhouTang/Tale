@@ -3,63 +3,66 @@
 #include"Utility.h"
 #include"NullExpr.h"
 #include"CallExpr.h"
-using namespace Utility;
-FunctionExpr::FunctionExpr(const std::shared_ptr<Expr>& runtime) :Expr(runtime){
-	setType(TYPE_FUNCTION);
-	closure = ClosureExpr::createClosureExpr(runtime);
-}
-std::shared_ptr<FunctionExpr> FunctionExpr::createFunctionExpr(const std::shared_ptr<Expr>& runtime) {
-	return std::make_shared<FunctionExpr>(runtime);
-}
-std::shared_ptr<Expr> FunctionExpr::clone() {
-	auto ret = createFunctionExpr(getRunTime());
-	ret->setClosure(std::dynamic_pointer_cast<ClosureExpr>(getClosure()->clone()));
-	ret->closure->setRunTime(ret);
-	ret->setSignature(getSignature());
-	return ret;
- }
+namespace expr {
+	using namespace Utility;
 
-std::shared_ptr<Expr> FunctionExpr::getValue(const std::vector<std::shared_ptr<Expr>>& args) {
-	if (signature.size() == args.size()) {
-		for (int i = 0; i < signature.size(); i++) {
-			getClosure()->addVarable(signature[i], args[i]);
+	FunctionExpr::FunctionExpr(const std::shared_ptr<Expr>& runtime) :Expr(runtime) {
+		setType(TYPE_FUNCTION);
+		closure = ClosureExpr::createClosureExpr(runtime);
+	}
+	std::shared_ptr<FunctionExpr> FunctionExpr::createFunctionExpr(const std::shared_ptr<Expr>& runtime) {
+		return std::make_shared<FunctionExpr>(runtime);
+	}
+	std::shared_ptr<Expr> FunctionExpr::clone() {
+		auto ret = createFunctionExpr(getRunTime());
+		ret->setClosure(std::dynamic_pointer_cast<ClosureExpr>(getClosure()->clone()));
+		ret->closure->setRunTime(ret);
+		ret->setSignature(getSignature());
+		return ret;
+	}
+
+	std::shared_ptr<Expr> FunctionExpr::getValue(const std::vector<std::shared_ptr<Expr>>& args) {
+		if (signature.size() == args.size()) {
+			for (int i = 0; i < signature.size(); i++) {
+				getClosure()->addVarable(signature[i], args[i]);
+			}
+
+			return getClosure()->getValue();
 		}
-	
-		return getClosure()->getValue();
+		else {
+			quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
+			return NullExpr::createNullExpr();
+		}
 	}
-	else {
-		quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
-		return NullExpr::createNullExpr();
-	}
-}
 
-std::shared_ptr<Expr> FunctionExpr::getValue() {
-	if (signature.size() == 0) {
-		return getClosure()->getValue();
+	std::shared_ptr<Expr> FunctionExpr::getValue() {
+		if (signature.size() == 0) {
+			return getClosure()->getValue();
+		}
+		else {
+			quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
+			return NullExpr::createNullExpr();
+		}
 	}
-	else {
-		quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
-		return NullExpr::createNullExpr();
+
+	void FunctionExpr::setClosure(const std::shared_ptr<ClosureExpr>& closure) {
+		this->closure = closure;
+		this->closure->setRunTime(shared_from_this());
 	}
- }
 
-void FunctionExpr::setClosure(const std::shared_ptr<ClosureExpr>& closure) {
-	this->closure = closure;
-	this->closure->setRunTime(shared_from_this());
-}
-
-std::wstring FunctionExpr::toString() 
-{
-	std::wostringstream ret;
-	ret << L"f(";
-	for (auto& x : signature) {
-		ret << x << L",";
+	std::wstring FunctionExpr::toString()
+	{
+		std::wostringstream ret;
+		ret << L"f(";
+		for (auto& x : signature) {
+			ret << x << L",";
+		}
+		ret << L")";
+		ret << getClosure()->toString();
+		return ret.str();
 	}
-	ret << L")";
-	ret << getClosure()->toString();
-	return ret.str();
-}
 
-std::shared_ptr<CallExpr> FunctionExpr::operator ()(const std::vector<std::shared_ptr<Expr>>& param) {
-	return CallExpr::createCallExpr(std::dynamic_pointer_cast<FunctionExpr>(shared_from_this()), param);
+	std::shared_ptr<CallExpr> FunctionExpr::operator ()(const std::vector<std::shared_ptr<Expr>>& param) {
+		return CallExpr::createCallExpr(std::dynamic_pointer_cast<FunctionExpr>(shared_from_this()), param);
+	}
 }
