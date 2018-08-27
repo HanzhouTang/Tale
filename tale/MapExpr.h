@@ -1,22 +1,28 @@
 #pragma once
 #include"Expr.h"
 namespace expr {
+	struct FunctionExpr;
 	struct MapExpr : Expr {
 		typedef std::wstring KeyType;
 		std::unordered_map<KeyType, std::shared_ptr<Expr>> map;
-		MapExpr(const std::shared_ptr<Expr>& runtime) :
-			Expr(runtime) {
+		std::shared_ptr<FunctionExpr> getter;
+		std::shared_ptr<FunctionExpr> setter;
+		std::shared_ptr<FunctionExpr> getSetter() { return setter; }
+		MapExpr(const std::shared_ptr<Expr>& runtime, const std::unordered_map<KeyType, std::shared_ptr<Expr>>& m) :
+			Expr(runtime),map(m) {
 			setType(TYPE_MAP);
 		}
-		static std::shared_ptr<MapExpr> createMapExpr(const std::shared_ptr<Expr>& runtime) {
-			return std::make_shared<MapExpr>(runtime);
-		}
+		static std::shared_ptr<MapExpr> createMapExpr(const std::shared_ptr<Expr>& runtime, 
+			const std::unordered_map<KeyType, std::shared_ptr<Expr>>& map);
 		static std::shared_ptr<MapExpr> createMapExpr() {
-			return createMapExpr(nullptr);
+			return createMapExpr(nullptr, std::unordered_map<KeyType, std::shared_ptr<Expr>>());
+		}
+		static std::shared_ptr<MapExpr> createMapExpr(const std::shared_ptr<Expr>& runtime) {
+			return createMapExpr(runtime, std::unordered_map<KeyType, std::shared_ptr<Expr>>());
 		}
 		virtual std::shared_ptr<Expr> clone() override {
-			auto ret = createMapExpr(getRunTime());
-			for (auto & x : map) {
+			auto ret = createMapExpr(getRunTime(),map);
+			for (auto & x : ret->map) {
 				ret->map[x.first] = x.second->clone();
 			}
 			return ret;

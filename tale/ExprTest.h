@@ -17,6 +17,7 @@
 #include"BooleanExpr.h"
 #include"ReverseExpr.h"
 #include"ExprLiteral.h"
+#include"MapExpr.h"
 using namespace testing;
 using namespace expr;
 struct ExprTest : testing::Test {
@@ -420,6 +421,10 @@ TEST_F(ExprTest, ReserveTest) {
 	auto ret3 = function->getValue({ 12_expr });
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
 	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
+}
 
+TEST_F(ExprTest, BasicMapTest) {
+	auto map = MapExpr::createMapExpr();
+	auto setter = map->getSetter();
 
 }

@@ -2,6 +2,11 @@
 #include"Utility.h"
 #include"NullExpr.h"
 #include"StringExpr.h"
+#include"FunctionExpr.h"
+#include"ClosureExpr.h"
+#include"ExprLiteral.h"
+#include"ReturnExpr.h"
+#include"VariableExpr.h"
 namespace expr {
 	using namespace Utility;
 	std::shared_ptr<Expr> MapExpr::get(const KeyType& key) {
@@ -22,7 +27,7 @@ namespace expr {
 			return NullExpr::createNullExpr();
 		}
 		else {
-			auto expr = params[0];
+			auto expr = params[0]->getValue();
 			if (expr->getType() != TYPE_STRING) {
 				quitWithError(__LINE__, __FILE__, L"now only support string as key");
 				return NullExpr::createNullExpr();
@@ -39,5 +44,20 @@ namespace expr {
 		}
 		return buf.str();
 
+	}
+
+	 std::shared_ptr<MapExpr> MapExpr::createMapExpr(const std::shared_ptr<Expr>& runtime, const std::unordered_map<KeyType, std::shared_ptr<Expr>>& map) {
+		auto ret =  std::make_shared<MapExpr>(runtime, map);
+		ret->getter = FunctionExpr::createFunctionExpr();
+		auto closure = ClosureExpr::createClosureExpr();
+		closure->addVarable(L"map", ret);
+		closure->addExpression(
+			ReturnExpr::createReturnExpr(
+				std::dynamic_pointer_cast<MapExpr>(closure->getVariable(L"map"_variableExpr))->getValue({L"x"_variableExpr})
+			));
+		ret->getter->setSignature({ L"x" });
+		ret->getter->setClosure(closure);
+
+		return ret;
 	}
 }
