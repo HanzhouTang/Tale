@@ -14,6 +14,7 @@ namespace expr {
 	struct AddExpr;
 	struct EqualExpr;
 	struct ReturnExpr;
+	struct CallExpr;
 	struct Expr :std::enable_shared_from_this<Expr> {
 		enum ExprType { TYPE_NULL = 0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION, TYPE_RETURN, TYPE_CONDITION, TYPE_CALL, TYPE_MAP, UNARY_OPERATOR };
 		ExprType type;
@@ -43,5 +44,6 @@ namespace expr {
 		virtual std::shared_ptr<Expr> setVariable(const std::shared_ptr<VariableExpr>& variable, const std::shared_ptr<Expr>& value);
 		virtual void store(const std::shared_ptr<Expr>& start);
 		virtual void restore(const std::shared_ptr<Expr>& start);
+		std::shared_ptr<CallExpr> operator ()(const std::vector<std::shared_ptr<Expr>>&);
 	};
 }

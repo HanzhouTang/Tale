@@ -1,6 +1,7 @@
 #pragma once
 #include"Expr.h"
 #include"VariableExpr.h"
+#include"CallExpr.h"
 #include"NullExpr.h"
 #include"Utility.h"
 #include<iostream>
@@ -43,5 +44,7 @@ namespace expr {
 		}
 		getRunTime()->restore(start);
 	}
-
+	std::shared_ptr<CallExpr> Expr::operator ()(const std::vector<std::shared_ptr<Expr>>& param) {
+		return CallExpr::createCallExpr(nullptr, shared_from_this(), param);
+	}
 }

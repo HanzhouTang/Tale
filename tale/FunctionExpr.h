@@ -2,7 +2,6 @@
 #include"Expr.h"
 namespace expr {
 	struct ClosureExpr;
-	struct CallExpr;
 	struct FunctionExpr : Expr {
 		std::vector<std::wstring> signature;
 		std::shared_ptr<ClosureExpr> closure;
@@ -23,7 +22,7 @@ namespace expr {
 		}
 		void setClosure(const std::shared_ptr<ClosureExpr>& closure);
 		virtual std::wstring toString() override;
-		std::shared_ptr<CallExpr> operator ()(const std::vector<std::shared_ptr<Expr>>&);
+
 	};
 }
 //const std::shared_ptr<FunctionExpr>& f,

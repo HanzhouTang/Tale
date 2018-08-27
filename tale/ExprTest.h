@@ -423,8 +423,23 @@ TEST_F(ExprTest, ReserveTest) {
 	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
 }
 
+
 TEST_F(ExprTest, BasicMapTest) {
-	auto map = MapExpr::createMapExpr();
+	auto map = MapExpr::createMapExpr({ {L"x",1_expr},{L"x1",L"hello world"_expr} });
+	auto getter = map->getGetter();
 	auto setter = map->getSetter();
 
+	auto x = getter->getValue({ L"x"_expr });
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, x->getType());
+	EXPECT_EQ(1, std::dynamic_pointer_cast<NumberExpr>(x)->getNumber());
+
+	auto x1 = getter->getValue({ L"x1"_expr });
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x1->getType());
+	EXPECT_EQ(L"hello world", std::dynamic_pointer_cast<StringExpr>(x1)->getString());
+
+	setter->getValue({ L"x"_expr,L"a test"_expr });
+
+	auto x_new = getter->getValue({ L"x"_expr });
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x_new->getType());
+	EXPECT_EQ(L"a test", std::dynamic_pointer_cast<StringExpr>(x_new)->getString());
 }

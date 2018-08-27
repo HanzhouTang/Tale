@@ -62,7 +62,5 @@ namespace expr {
 		return ret.str();
 	}
 
-	std::shared_ptr<CallExpr> FunctionExpr::operator ()(const std::vector<std::shared_ptr<Expr>>& param) {
-		return CallExpr::createCallExpr(std::dynamic_pointer_cast<FunctionExpr>(shared_from_this()), param);
-	}
+
 }
