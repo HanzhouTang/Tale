@@ -19,7 +19,7 @@
 #include"ExprLiteral.h"
 #include"MapExpr.h"
 #include"ExternalFunctionExpr.h"
-#include"Libarary.h"
+#include"ExprLibrary.h"
 using namespace testing;
 using namespace expr;
 struct ExprTest : testing::Test {
@@ -467,4 +467,39 @@ TEST_F(ExprTest, TwoMapTest) {
 	EXPECT_EQ(L"map", std::dynamic_pointer_cast<StringExpr>(x)->getString());
 	EXPECT_EQ(L"a new map", std::dynamic_pointer_cast<StringExpr>(x1)->getString());
 
+}
+
+/*
+
+f(){
+ a=0;
+ g(){
+ a+=1;
+ }
+ g()
+ return g;
+
+*/
+
+TEST_F(ExprTest, PrintTest) {
+	auto print = expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::printExpr);
+	std::shared_ptr<FunctionExpr> function = FunctionExpr::createFunctionExpr(nullptr);
+	auto variable_a = L"a"_variableExpr;
+	auto  assign = L"a"_variableExpr << 0_expr;
+	auto add1 = L"a"_variableExpr << (L"a"_variableExpr + 1_expr);
+	auto closure_new = ClosureExpr::createClosureExpr();
+	closure_new->addExpression(add1);
+	std::shared_ptr<FunctionExpr> functionInside = FunctionExpr::createFunctionExpr(nullptr);
+	functionInside->setClosure(closure_new);
+	auto closure_outter = ClosureExpr::createClosureExpr(nullptr);
+	closure_outter->addExpression(assign);
+	closure_outter->addExpression(functionInside);
+	closure_outter->addExpression(ReturnExpr::createReturnExpr(nullptr, functionInside));
+	function->setClosure(closure_outter);
+	
+	auto f = FunctionExpr::createFunctionExpr();
+	auto closure = ClosureExpr::createClosureExpr();
+	closure->addExpression(L"f"_variableExpr << CallExpr::createCallExpr(function));
+	closure->addExpression(CallExpr::createCallExpr(print, { CallExpr::createCallExpr(L"f"_variableExpr) }));
+	f->setClosure(closure);
 }

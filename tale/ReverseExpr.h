@@ -5,7 +5,7 @@ namespace expr {
 		std::shared_ptr<Expr> expr;
 		ReverseExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& e) :
 			Expr(runtime), expr(e) {
-			setType(UNARY_OPERATOR);
+			setType(TYPE_UNARY_OPERATOR);
 		}
 		static std::shared_ptr<ReverseExpr> createReverseExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& expr) {
 			auto ret = std::make_shared<ReverseExpr>(runtime, expr);

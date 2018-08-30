@@ -20,6 +20,10 @@ namespace expr {
 		}
 		return _f(args);
 	}
+	std::shared_ptr<Expr> ExternalFunctionExpr::getValue()
+	{
+		return _f({});
+	}
 	std::shared_ptr<Expr> ExternalFunctionExpr::clone() {
 		return createExternalFunctionExpr(getRunTime(), _f);
 	}

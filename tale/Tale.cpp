@@ -1,4 +1,24 @@
 ﻿#include"Tale.h"
+
+#include"NumberExpr.h"
+#include"StringExpr.h"
+#include"ClosureExpr.h"
+#include"VariableExpr.h"
+#include"AssignExpr.h"
+#include"AddExpr.h"
+#include"ReturnExpr.h"
+#include"FunctionExpr.h"
+#include"GreaterThanExpr.h"
+#include"ConditionExpr.h"
+#include"EqualExpr.h"
+#include"NullExpr.h"
+#include"CallExpr.h"
+#include"BooleanExpr.h"
+#include"ReverseExpr.h"
+#include"ExprLiteral.h"
+#include"MapExpr.h"
+#include"ExternalFunctionExpr.h"
+#include"ExprLibrary.h"
 #include<windowsx.h>
 using namespace Utility;
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
@@ -201,6 +221,7 @@ bool Tale::CreateDependentRescource()
 }
 
 bool Tale::initRootScene() {
+	using namespace expr;
 	Element::setD2dContext(m_pD2dContext);
 	Element::setImageFactory(m_pImageFactory);
 	Element::setTextFormat(m_pTextFormat);
@@ -218,7 +239,46 @@ bool Tale::initRootScene() {
 
 	auto nodeRoot = _node->getChild(0);
 	root = Element::createElementByXml(nodeRoot);
-	
+	auto button = std::dynamic_pointer_cast<Button>(root->getIthChild(0)->getIthChild(2));
+	//=========================TEST FUNCTIONEXPT ==========================
+	/*
+	def f(){
+	a=0
+	def g(){
+	a=a+1}
+	g()
+	return g
+	}
+	def p(){
+	f = f()
+	print f()
+	}
+	*/
+	auto print = expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::printExpr);
+	std::shared_ptr<FunctionExpr> function = FunctionExpr::createFunctionExpr(nullptr);
+	auto variable_a = L"a"_variableExpr;
+	auto  assign = L"a"_variableExpr << 0_expr;
+	auto add1 = L"a"_variableExpr << (L"a"_variableExpr + 1_expr);
+	auto closure_new = ClosureExpr::createClosureExpr();
+	closure_new->addExpression(add1);
+	std::shared_ptr<FunctionExpr> functionInside = FunctionExpr::createFunctionExpr(nullptr);
+	functionInside->setClosure(closure_new);
+	auto closure_outter = ClosureExpr::createClosureExpr(nullptr);
+	closure_outter->addExpression(assign);
+	closure_outter->addExpression(functionInside);
+	closure_outter->addExpression(ReturnExpr::createReturnExpr(nullptr, functionInside));
+	function->setClosure(closure_outter);
+
+	auto f = FunctionExpr::createFunctionExpr();
+	auto closure = ClosureExpr::createClosureExpr();
+	closure->addExpression(L"f"_variableExpr << CallExpr::createCallExpr(function));
+	closure->addExpression(CallExpr::createCallExpr(print, { CallExpr::createCallExpr(L"f"_variableExpr) }));
+	closure->addExpression(CallExpr::createCallExpr(print, { CallExpr::createCallExpr(L"f"_variableExpr) }));
+	closure->addExpression(CallExpr::createCallExpr(print, { CallExpr::createCallExpr(L"f"_variableExpr) }));
+	f->setClosure(closure);
+	//==========================================END ==================================================
+
+	button->setOnClickFunction(f);
 	return true;
 }
 

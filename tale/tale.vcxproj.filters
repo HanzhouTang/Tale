@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Render">
       <UniqueIdentifier>{bd65fad5-66fc-440d-b968-4a738bb36181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Script\RenderRelated">
+      <UniqueIdentifier>{d29d2c2e-348e-4dc3-82e9-d25bd79e0ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script\RenderRelated">
+      <UniqueIdentifier>{9a15bbb3-551b-46e4-bec2-72b87fa714d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -120,7 +126,10 @@
     <ClCompile Include="ExternalFunctionExpr.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
-    <ClCompile Include="Library.cpp">
+    <ClCompile Include="ElementExpr.cpp">
+      <Filter>Source Files\Script\RenderRelated</Filter>
+    </ClCompile>
+    <ClCompile Include="ExprLibrary.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,7 +233,10 @@
     <ClInclude Include="ExternalFunctionExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
-    <ClInclude Include="Libarary.h">
+    <ClInclude Include="ElementExpr.h">
+      <Filter>Header Files\Script\RenderRelated</Filter>
+    </ClInclude>
+    <ClInclude Include="ExprLibrary.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,12 @@ struct Element {
 public:
 	enum BrushType { solid, linear, radial, bitmap, transparent };
 	enum Event { LButtonDown, LButtonUp, RButtonDown, RButtonUp, MouseMove };
+	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL};
+	static const std::vector<std::wstring> TypeList;
+	ElementType _type;
+	inline ElementType getType() { return _type; }
+	inline void setType(ElementType t) { _type = t; }
+	inline std::wstring getTypeString() { return TypeList[getType()]; }
 	struct Brush {
 		BrushType brushType;
 		ComPtr<ID2D1Brush> m_brush;
@@ -53,6 +59,7 @@ public:
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
 	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	virtual void addChild(const shared_ptr<Element>&);
+	std::shared_ptr<Element> getIthChild(std::size_t i);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<Node>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	static Brush getBrushFromXml(const shared_ptr<Node>&);

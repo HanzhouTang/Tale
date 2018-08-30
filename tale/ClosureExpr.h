@@ -26,7 +26,7 @@ namespace expr {
 
 		virtual std::shared_ptr<Expr> clone() override {
 			auto closure = createClosureExpr(getRunTime());
-			std::cout << "clone clousre" << std::endl;
+			//std::cout << "clone clousre" << std::endl;
 			for (const auto& x : expressions) {
 				closure->addExpression(x);
 				x->setRunTime(closure);

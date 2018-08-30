@@ -14,6 +14,7 @@ struct  Sprite: Element
 	static shared_ptr<Sprite> createSprite(D2D1_RECT_F position, float interval, const Element::Brush&);
 	static shared_ptr<Sprite> createSpriteByXml(const shared_ptr<Node>& node);
 	Sprite() {
+		setType(TYPE_SPRITE);
 		setInterval(0.5);
 	}
 	virtual ~Sprite();

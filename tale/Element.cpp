@@ -6,8 +6,9 @@ using namespace Utility;
 Element::Element() {
 	setBrush(Brush(BrushType::transparent, nullptr));
 	position = D2D1::RectF(0, 0, 100, 100);
+	setType(TYPE_ELEMENT);
 }
-
+const std::vector<std::wstring> Element::TypeList = { L"TYPE_ELEMENT",L"TYPE_BUTTON",L"TYPE_SPRITE",L"TYPE_STACKPANEL" };
 void Element::setPosition(D2D1_RECT_F p) {
 	assert(p.left >= 0 && p.top >= 0);
 	assert(p.top <= MaximumRealtiveRatio && p.bottom <= MaximumRealtiveRatio);
@@ -94,6 +95,18 @@ void Element::onMouseMoveOn() {}
 void Element::onPressLeftButton() {}
 void Element::addChild(const shared_ptr<Element>& t) {
 	children.push_back(t);
+}
+
+std::shared_ptr<Element> Element::getIthChild(std::size_t i)
+{
+	if (i < children.size()) {
+		return children[i];
+	}
+	else {
+		quitWithError(__LINE__, __FILE__, L"vist a doesn't exist child");
+		return nullptr;
+	}
+	return std::shared_ptr<Element>();
 }
 
 Element::~Element() {

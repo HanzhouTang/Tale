@@ -1,8 +1,8 @@
 ﻿#include"Button.h"
+#include"Expr.h"
 using namespace Utility;
-
-
 Button::Button() {
+	setType(TYPE_BUTTON);
 	if (defaultButtonColor.Get() == nullptr) {
 		if (FAILED(Element::d2dContext->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Gray), &defaultButtonColor)))
@@ -28,9 +28,9 @@ Button::Button() {
 
 }
 
-void Button::onPressDown(Button::CallbackFunction f) {
+void Button::onPressDown(const Button::CallbackFunction& f) {
 	if (f != nullptr)
-		f(this);
+		f->getValue();
 }
 
 shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, Element::Brush bText, ComPtr<IDWriteTextFormat> foramt, CallbackFunction f, wstring c) {
@@ -39,7 +39,7 @@ shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, 
 	ret->setTextBrush(bText);
 	ret->setPosition(position);
 	ret->setTextFormat(foramt);
-	ret->setCallbackFunction(f);
+	ret->setOnClickFunction(f);
 	ret->setCaption(c);
 	ret->setDefaultBrush(b);
 	ret->setmouseHoverBrush(b);
@@ -57,7 +57,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 	auto realPosition = getRealPosition(parentPosition);
 	if (inside(message.position, realPosition)) {
 		if (message.event == Element::Event::LButtonDown) {
-			onPressDown(action);
+			onPressDown(_clickAction);
 		}
 
 		setBrush(mouseHoverBrush);

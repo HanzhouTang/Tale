@@ -10,6 +10,7 @@ namespace expr {
 			const FuncType& f);
 		static std::shared_ptr<ExternalFunctionExpr> createExternalFunctionExpr(const FuncType& f);
 		virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& args) override;
+		virtual std::shared_ptr<Expr> getValue() override;
 		virtual std::shared_ptr<Expr> clone() override;
 
 	};
