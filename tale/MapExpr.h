@@ -21,6 +21,14 @@ namespace expr {
 			return createMapExpr(nullptr, std::unordered_map<KeyType, std::shared_ptr<Expr>>());
 		}
 
+		static std::shared_ptr<MapExpr> createMapExpr(const std::shared_ptr<MapExpr>& map) {
+			auto m = map->map;
+			std::unordered_map<KeyType, std::shared_ptr<Expr>> m1;
+			for (auto& x : m) {
+				m1[x.first] = x.second->clone();
+			}
+			return createMapExpr(nullptr, m1);
+		}
 		static std::shared_ptr<MapExpr> createMapExpr(const std::shared_ptr<Expr>& runtime) {
 			return createMapExpr(runtime, std::unordered_map<KeyType, std::shared_ptr<Expr>>());
 		}

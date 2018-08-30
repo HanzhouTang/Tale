@@ -117,6 +117,12 @@
     <ClCompile Include="ExprLiteral.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
+    <ClCompile Include="ExternalFunctionExpr.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Library.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -213,6 +219,12 @@
       <Filter>Header Files\Script</Filter>
     </ClInclude>
     <ClInclude Include="ExprLiteral.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalFunctionExpr.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Libarary.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

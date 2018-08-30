@@ -18,6 +18,8 @@
 #include"ReverseExpr.h"
 #include"ExprLiteral.h"
 #include"MapExpr.h"
+#include"ExternalFunctionExpr.h"
+#include"Libarary.h"
 using namespace testing;
 using namespace expr;
 struct ExprTest : testing::Test {
@@ -442,4 +444,27 @@ TEST_F(ExprTest, BasicMapTest) {
 	auto x_new = getter->getValue({ L"x"_expr });
 	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x_new->getType());
 	EXPECT_EQ(L"a test", std::dynamic_pointer_cast<StringExpr>(x_new)->getString());
+}
+
+
+TEST_F(ExprTest, TwoMapTest) {
+	auto map = MapExpr::createMapExpr({ { L"x",1_expr },{ L"x1",L"hello world"_expr } });
+	auto getter = map->getGetter();
+	auto setter = map->getSetter();
+
+	auto map1 = MapExpr::createMapExpr(map);
+	auto getter1 = map1->getGetter();
+	auto setter1 = map1->getSetter();
+
+	setter->getValue({ L"x"_expr,L"map"_expr });
+	setter1->getValue({ L"x"_expr,L"a new map"_expr });
+	auto x = getter->getValue({ L"x"_expr });
+	auto x1 = getter1->getValue({ L"x"_expr });
+
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x->getType());
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x1->getType());
+
+	EXPECT_EQ(L"map", std::dynamic_pointer_cast<StringExpr>(x)->getString());
+	EXPECT_EQ(L"a new map", std::dynamic_pointer_cast<StringExpr>(x1)->getString());
+
 }

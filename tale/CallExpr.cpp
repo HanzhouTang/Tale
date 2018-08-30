@@ -15,9 +15,7 @@ namespace expr {
 		auto param = getParameters();
 		auto callObject = getCallable();
 		if (param.size() == 0) {
-			if (callObject->getType() == TYPE_FUNCTION) {
-				return callObject->getValue();
-			}
+			return callObject->getValue();
 		}
 		else {
 			auto run = callObject->getRunTime();
@@ -28,7 +26,7 @@ namespace expr {
 				args.emplace_back(x);
 			}
 			store(shared_from_this());
-			auto ret= callObject->getValue(args);
+			auto ret = callObject->getValue(args);
 			restore(shared_from_this());
 			callObject->setRunTime(run);
 			return ret;

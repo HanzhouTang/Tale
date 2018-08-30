@@ -10,9 +10,11 @@ namespace expr {
 		setType(TYPE_FUNCTION);
 		closure = ClosureExpr::createClosureExpr(runtime);
 	}
+
 	std::shared_ptr<FunctionExpr> FunctionExpr::createFunctionExpr(const std::shared_ptr<Expr>& runtime) {
 		return std::make_shared<FunctionExpr>(runtime);
 	}
+
 	std::shared_ptr<Expr> FunctionExpr::clone() {
 		auto ret = createFunctionExpr(getRunTime());
 		ret->setClosure(std::dynamic_pointer_cast<ClosureExpr>(getClosure()->clone()));

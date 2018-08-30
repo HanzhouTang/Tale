@@ -34,7 +34,7 @@ namespace expr {
 			std::wostringstream ret;
 			ret << TypeList[getType()] << L"@" << shared_from_this();
 			return ret.str();
-		}
+		}  
 		std::wstring getTypeString() {
 			return TypeList[getType()];
 		}
