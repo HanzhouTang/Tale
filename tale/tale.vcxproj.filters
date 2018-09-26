@@ -132,6 +132,9 @@
     <ClCompile Include="ExprLibrary.cpp">
       <Filter>Source Files\Script</Filter>
     </ClCompile>
+    <ClCompile Include="ArithmeticExpr.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -237,6 +240,9 @@
       <Filter>Header Files\Script\RenderRelated</Filter>
     </ClInclude>
     <ClInclude Include="ExprLibrary.h">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ArithmeticExpr.h">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
   </ItemGroup>

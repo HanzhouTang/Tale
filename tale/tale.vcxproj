@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="AddExpr.cpp" />
     <ClCompile Include="AppBase.cpp" />
+    <ClCompile Include="ArithmeticExpr.cpp" />
     <ClCompile Include="AssignExpr.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CallExpr.cpp" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="AddExpr.h" />
     <ClInclude Include="AppBase.h" />
+    <ClInclude Include="ArithmeticExpr.h" />
     <ClInclude Include="AssignExpr.h" />
     <ClInclude Include="BinaryOperatorExpr.h" />
     <ClInclude Include="BooleanExpr.h" />
