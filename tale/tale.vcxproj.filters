@@ -40,6 +40,12 @@
     <Filter Include="Source Files\Script\RenderRelated">
       <UniqueIdentifier>{9a15bbb3-551b-46e4-bec2-72b87fa714d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{0def190d-3d4f-41d4-85a2-780da5edaaff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{48ceaa85-dce8-4f4f-ba3e-6b8f39dc4bb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -134,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="ArithmeticExpr.cpp">
       <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLexer.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLexer.cpp">
+      <Filter>Source Files\Parser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="ArithmeticExpr.h">
       <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleLexerTest.h">
+      <Filter>Header Files\Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
