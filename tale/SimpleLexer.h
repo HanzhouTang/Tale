@@ -11,9 +11,10 @@ namespace parser {
 		enum Token {
 			LBrace, RBrace, Comma,LCurlyBrace, RCurlyBrace, Times, Minus,
 			Add, Div, LParen, RParen, Eql, Less, Greater, And,Or, Smicolon
-			, If, Else, Quote, Invalid, Variable,Newline, EndofContent,Number
+			, If, Else, Quote, Invalid, Variable,Newline, EndofContent,Number,
+			String
 		};
-		enum State { inString, noString, endString };
+		enum State { inString, noString,endString };
 		static const std::set<std::wstring> delimiters;
 		static const std::map<std::wstring, Token> lexeme2token;
 		std::wstring content;
@@ -24,8 +25,9 @@ namespace parser {
 		wchar_t peek();
 		Token getNextToken();
 		static bool isDelimiter(const wchar_t str) {
-			return delimiters.count(str+L"");
+			return delimiters.count(std::wstring(1, str));
 		}
+
 		static bool isWhiteSpace(const wchar_t ch) {
 			return ch == L' ' || ch == L'\t';
 		}

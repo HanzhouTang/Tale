@@ -2,7 +2,7 @@
 namespace parser {
 	const std::set<std::wstring> SimpleLexer::delimiters =
 	{
-		L"[",L"]",L",",L"{",L"}",L"*",L"-",L"+",L"/",L"(",L")",L"=",L"<",L">",L";",L"\"",L"\n"
+		L"[",L"]",L",",L"{",L"}",L"*",L"-",L"+",L"/",L"(",L")",L"=",L"<",L">",L";",L"\"",L"\n",L"\"",L" "
 	};
 	const std::map<std::wstring, SimpleLexer::Token> SimpleLexer::lexeme2token = {
 	{L"[",Token::LBrace},{L"]",Token::RBrace},{L",",Token::Comma},{L"{",Token::LCurlyBrace},
@@ -15,15 +15,40 @@ namespace parser {
 	SimpleLexer::Token SimpleLexer::getNextToken() {
 		using namespace std;
 		auto last = content.end();
-		/*
-		if in a string 
-		*/
 		if (index1 == last) return Token::EndofContent;
+		if (state == State::inString) {
+			wstring str;
+			for (; index1 != last; index1++) {
+				if (*index1 == L'"') break;
+				if (*index1 == L'\\') {
+					index1++;
+				}
+				str.push_back(*index1);
+			}
+			currentLexeme = str;
+			//wcout << L"(" << currentLexeme << L")" << endl;
+			state = State::endString;
+			return Token::String;
+		}
+
 		index1 = find_if(index1, last, [&](wchar_t ch) {return !isWhiteSpace(ch); });
 		if (index1 == last) return Token::EndofContent;
 		index0 = index1;
 		index1 = find_if(index0, last, isDelimiter);
+		if (index0 == index1) {
+			index1++;
+		}
 		currentLexeme = std::wstring(index0, index1);
+
+		if (currentLexeme == L"\"") {
+			if (state == State::endString) {
+				state = State::noString;
+			}
+			else if (state == State::noString) {
+				state = State::inString;
+			}
+		}
+		//wcout << L"(" << currentLexeme << L")" << endl;
 		if (lexeme2token.count(currentLexeme)) {
 			return lexeme2token.find(currentLexeme)->second;
 		}

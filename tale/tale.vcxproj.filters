@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Parser">
       <UniqueIdentifier>{48ceaa85-dce8-4f4f-ba3e-6b8f39dc4bb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Test">
+      <UniqueIdentifier>{479a64c6-7b2f-401b-b89c-44fb7a883eed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -146,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="SimpleLexer.cpp">
       <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLexerTest.cpp">
+      <Filter>Source Files\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="ExprTest.cpp">
+      <Filter>Source Files\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
