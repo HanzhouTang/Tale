@@ -156,6 +156,9 @@
     <ClCompile Include="ExprTest.cpp">
       <Filter>Source Files\Test</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleParser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="SimpleLexerTest.h">
       <Filter>Header Files\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleParser.h">
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

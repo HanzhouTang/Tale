@@ -169,6 +169,7 @@
     <ClCompile Include="SimpleLexer.cpp" />
     <ClCompile Include="SimpleLexer.h" />
     <ClCompile Include="SimpleLexerTest.cpp" />
+    <ClCompile Include="SimpleParser.cpp" />
     <ClCompile Include="SimpleXMLParser.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ReturnExpr.h" />
     <ClInclude Include="ReverseExpr.h" />
     <ClInclude Include="SimpleLexerTest.h" />
+    <ClInclude Include="SimpleParser.h" />
     <ClInclude Include="StringExpr.h" />
     <ClInclude Include="ExprTest.h" />
     <ClInclude Include="Node.h" />

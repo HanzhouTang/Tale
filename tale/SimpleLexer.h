@@ -46,6 +46,8 @@ namespace parser {
 			token = Invalid;
 			state = noString;
 		}
+		SimpleLexer() = delete;
+
 	};
 
 };
