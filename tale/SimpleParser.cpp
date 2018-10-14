@@ -76,7 +76,7 @@ namespace parser {
 		else if (tokens[0] == SimpleLexer::Number) {
 			ret = number();
 		}
-		else if (tokens[1] == SimpleLexer::Variable) {
+		else if (tokens[0] == SimpleLexer::Variable) {
 			ret = id();
 		}
 		return ret;
