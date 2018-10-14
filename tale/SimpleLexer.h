@@ -9,19 +9,31 @@
 namespace parser {
 	struct SimpleLexer {
 		enum Token {
-			LBrace, RBrace, Comma,LCurlyBrace, RCurlyBrace, Times, Minus,
+			LBrace=0, RBrace, Comma,LCurlyBrace, RCurlyBrace, Times, Minus,
 			Add, Div, LParen, RParen, Eql, Less, Greater, And,Or, Smicolon
 			, If, Else, Quote, Invalid, Variable,Newline, EndofContent,Number,
 			String
+		};
+		static const std::vector<std::wstring> TokenNames;
+		static std::wstring getTokenName(Token t) {
+			return TokenNames[t];
+		}
+		std::vector<Token> lookAheadK(int k);
+		struct LexerNode {
+			std::wstring lexeme;
+			Token token;
+			LexerNode(const std::wstring& lex, Token t): lexeme(lex),token(t){}
 		};
 		enum State { inString, noString,endString };
 		static const std::set<std::wstring> delimiters;
 		static const std::map<std::wstring, Token> lexeme2token;
 		std::wstring content;
+		//====================================
 		std::wstring::iterator index0, index1;
 		std::wstring currentLexeme;
 		Token token;
 		State state;
+		//====================================
 		wchar_t peek();
 		Token getNextToken();
 		static bool isDelimiter(const wchar_t str) {

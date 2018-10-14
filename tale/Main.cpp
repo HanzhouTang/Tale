@@ -1,6 +1,7 @@
 #include"Tale.h"
 #include"ExprTest.h"
-#include"SimpleLexerTest.h"
+//#include"SimpleLexerTest.h"
+//#include"SimpleParserTest.h"
 int main(int argc, char* argv[]) {
 	testing::InitGoogleTest(&argc, argv);
 	RUN_ALL_TESTS();

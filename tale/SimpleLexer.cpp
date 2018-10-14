@@ -12,6 +12,13 @@ namespace parser {
 	{L"if",Token::If},{L"else",Token::Else}
 	};
 
+	const std::vector<std::wstring> SimpleLexer::TokenNames = {
+		L"LBrace",L"RBrace", L"Comma",L"LCurlyBrace",L"RCurlyBrace", L"Times", L"Minus",
+		L"Add", L"Div", L"LParen", L"RParen", L"Eql", L"Less", L"Greater", L"And",L"Or", L"Smicolon"
+		, L"If", L"Else", L"Quote", L"Invalid", L"Variable",L"Newline", L"EndofContent",L"Number",
+		L"String"
+	};
+	
 	SimpleLexer::Token SimpleLexer::getNextToken() {
 		using namespace std;
 		auto last = content.end();
@@ -62,12 +69,32 @@ namespace parser {
 	}
 	// if no string 
 
-
-
-
 	wchar_t SimpleLexer::peek() {
 		return *(index1);
 	}
+
+	std::vector<SimpleLexer::Token> SimpleLexer::lookAheadK(int k) {
+		auto _state = state;
+		auto _index0 = index0;
+		auto _index1 = index1;
+		auto _currentLexeme = currentLexeme;
+		auto _token = token;
+		std::vector<Token> tokens;
+		for (int i = 0; i < k; i++) {
+			auto t = getNextToken();
+			tokens.push_back(t);
+			if (t == Token::EndofContent) {
+				break;
+			}
+		}
+		state = _state;
+		index0 = _index0;
+		index1 = _index1;
+		currentLexeme = _currentLexeme;
+		token = _token;
+		return tokens;
+	}
+
 
 };
 
