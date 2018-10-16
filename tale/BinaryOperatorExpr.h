@@ -12,6 +12,18 @@ namespace expr {
 		static std::shared_ptr<BinaryOperatorExpr> createBinaryOperatorExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& l, const std::shared_ptr<Expr>& r) {
 			return std::make_shared<BinaryOperatorExpr>(runtime, l, r);
 		}
+
+		std::shared_ptr<Expr> setLeft(const std::shared_ptr<Expr>& l) {
+			left = l;
+			left->setRunTime(shared_from_this());
+		}
+
+		std::shared_ptr<Expr> setRight(const std::shared_ptr<Expr>& r) {
+			right = r;
+			right->setRunTime(shared_from_this());
+		}
+
+
 		virtual std::shared_ptr<Expr> clone() override {
 			auto ret = createBinaryOperatorExpr(runtime, getLeft()->clone(), getRight()->clone());
 			ret->getLeft()->setRunTime(ret);
@@ -24,7 +36,6 @@ namespace expr {
 		}
 		std::shared_ptr<Expr> getLeft() { return left; }
 		std::shared_ptr<Expr> getRight() { return right; }
-		void setLeft(const std::shared_ptr<Expr>& l) { left = l; }
-		void setRight(const std::shared_ptr<Expr>& r) { right = r; }
+
 	};
 }

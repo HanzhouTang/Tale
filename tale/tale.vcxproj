@@ -170,7 +170,6 @@
     <ClCompile Include="SimpleLexer.h" />
     <ClCompile Include="SimpleLexerTest.cpp" />
     <ClCompile Include="SimpleParser.cpp" />
-    <ClCompile Include="SimpleParserTest.cpp" />
     <ClCompile Include="SimpleXMLParser.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />

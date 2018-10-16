@@ -159,9 +159,6 @@
     <ClCompile Include="SimpleParser.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="SimpleParserTest.cpp">
-      <Filter>Source Files\Test</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">

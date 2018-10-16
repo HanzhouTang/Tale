@@ -15,7 +15,7 @@ namespace expr {
 	struct EqualExpr;
 	struct ReturnExpr;
 	struct CallExpr;
-	struct Expr :std::enable_shared_from_this<Expr> {
+	struct Expr : std::enable_shared_from_this<Expr> {
 		enum ExprType { TYPE_NULL = 0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION, TYPE_RETURN, TYPE_CONDITION, TYPE_CALL, TYPE_MAP, TYPE_UNARY_OPERATOR,TYPE_ELEMENT_WRAPPER };
 		ExprType type;
 		std::size_t maximumRecursionDepth() {
