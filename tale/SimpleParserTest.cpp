@@ -5,6 +5,7 @@
 #include"ClosureExpr.h"
 #include"AssignExpr.h"
 #include"VariableExpr.h"
+#include"ExprLiteral.h"
 using namespace std;
 using namespace expr;
 using namespace parser;
@@ -45,8 +46,7 @@ TEST_F(SimpleParserTest, ParseAddAndTimes2) {
 	auto expr = parser.expr();
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
 	auto closure = ClosureExpr::createClosureExpr();
-	auto a = VariableExpr::createVariableExpr(L"a");
-	auto assign = AssignExpr::createAssignExpr(a, NumberExpr::createNumberExpr(10));
+	auto assign = L"a"_variableExpr << 10_expr;
 	closure->addExpression(assign);
 	closure->addExpression(expr);
 	auto ret = closure->getValue();
