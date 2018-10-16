@@ -1,6 +1,10 @@
 #include"SimpleParserTest.h"
 #include"SimpleParser.h"
 #include"NumberExpr.h"
+#include"VariableExpr.h"
+#include"ClosureExpr.h"
+#include"AssignExpr.h"
+#include"VariableExpr.h"
 using namespace std;
 using namespace expr;
 using namespace parser;
@@ -32,4 +36,21 @@ TEST_F(SimpleParserTest, ParseAddAndTimes1) {
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
 	EXPECT_EQ(13317, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, ParseAddAndTimes2) {
+	wstring content = L"(123+a)*24";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto closure = ClosureExpr::createClosureExpr();
+	auto a = VariableExpr::createVariableExpr(L"a");
+	auto assign = AssignExpr::createAssignExpr(a, NumberExpr::createNumberExpr(10));
+	closure->addExpression(assign);
+	closure->addExpression(expr);
+	auto ret = closure->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+	auto number = std::dynamic_pointer_cast<NumberExpr>(ret);
+	EXPECT_EQ(3192, number->getNumber());
 }
