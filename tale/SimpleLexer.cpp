@@ -37,7 +37,6 @@ namespace parser {
 			state = State::endString;
 			return Token::String;
 		}
-
 		index1 = find_if(index1, last, [&](wchar_t ch) {return !isWhiteSpace(ch); });
 		if (index1 == last) return Token::EndofContent;
 		index0 = index1;

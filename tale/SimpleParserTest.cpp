@@ -40,7 +40,7 @@ TEST_F(SimpleParserTest, ParseAddAndTimes1) {
 }
 
 TEST_F(SimpleParserTest, ParseAddAndTimes2) {
-	wstring content = L"(123+a)*24";
+	wstring content = L"(123+a)*24+a*10";
 	SimpleParser parser(content);
 	parser.init();
 	auto expr = parser.expr();
@@ -52,5 +52,31 @@ TEST_F(SimpleParserTest, ParseAddAndTimes2) {
 	auto ret = closure->getValue();
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
 	auto number = std::dynamic_pointer_cast<NumberExpr>(ret);
-	EXPECT_EQ(3192, number->getNumber());
+	EXPECT_EQ(3292, number->getNumber());
 }
+
+TEST_F(SimpleParserTest, ParseAddAndTimes3) {
+	wstring content = L"(123-a)*24+a*10";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto closure = ClosureExpr::createClosureExpr();
+	auto assign = L"a"_variableExpr << 10_expr;
+	closure->addExpression(assign);
+	closure->addExpression(expr);
+	auto ret = closure->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+	auto number = std::dynamic_pointer_cast<NumberExpr>(ret);
+	EXPECT_EQ(2812, number->getNumber());
+}
+
+TEST_F(SimpleParserTest, InvalidTest) {
+	wstring content = L"(123)[]";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	auto token = parser.lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::LBrace, token);
+}
+

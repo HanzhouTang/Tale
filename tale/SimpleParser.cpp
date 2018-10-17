@@ -29,7 +29,7 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::expr() {
 		auto Term = term();
 		auto MoreTerms = moreterms();
-		if (MoreTerms->getType() != expr::Expr::TYPE_NULL) {
+		if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
 			return MoreTerms;
 		}
@@ -38,6 +38,8 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::moreterms() {
 		auto nodes = lexer.lookAheadK(1);
+		using namespace std;
+		//wcout<<SimpleLexer::getTokenName(nodes[0]) << endl;
 		wchar_t oper = 0;
 		if (nodes[0] == SimpleLexer::Token::Add) {
 			match(SimpleLexer::Token::Add);
@@ -50,20 +52,21 @@ namespace parser {
 		if (oper != 0) {
 			auto Term = term();
 			auto MoreTerms = moreterms();
-			if (MoreTerms->getType() != expr::Expr::TYPE_NULL) {
+			if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 				auto ret = std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
 				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), ret, oper);
 			}
 			auto ret = expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Term, oper);
 			return ret;
 		}
+	
 		return expr::NullExpr::createNullExpr();
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::term() {
 		auto Factor = factor();
 		auto MoreFactor = morefactors();
-		if (MoreFactor->getType() != expr::Expr::TYPE_NULL) {
+		if (MoreFactor->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactor)->setLeft(Factor);
 			return MoreFactor;
 		}
@@ -85,12 +88,13 @@ namespace parser {
 		if (oper != 0) {
 			auto Factor = factor();
 			auto MoreFactors = morefactors();
-			if (MoreFactors->getType() != expr::Expr::TYPE_NULL) {
+			if (MoreFactors->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 				auto ret = std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactors)->setLeft(Factor);
 				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), ret, oper);
 			}
 			return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Factor, oper);
 		}
+	
 
 		return expr::NullExpr::createNullExpr();
 

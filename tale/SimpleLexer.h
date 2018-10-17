@@ -41,6 +41,8 @@ namespace parser {
 		}
 
 		static bool isWhiteSpace(const wchar_t ch) {
+			using namespace std;
+			//wcout << ch<<endl;
 			return ch == L' ' || ch == L'\t';
 		}
 		static bool isNumber(const std::wstring& str) {
