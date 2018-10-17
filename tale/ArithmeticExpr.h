@@ -20,8 +20,6 @@ namespace expr {
 			const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right,wchar_t op) {
 			using namespace std;
 			auto ret = std::make_shared<ArithmeticExpr>(runtime, left, right,op);
-			std::wcout<<L"left " << left->toString() << endl;
-			std::wcout<<L"right " << right->toString() << endl;
 			ret->getLeft()->setRunTime(ret);
 			ret->getRight()->setRunTime(ret);
 			return ret;

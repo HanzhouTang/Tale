@@ -74,13 +74,13 @@ TEST_F(SimpleParserTest, ParseAddAndTimes3) {
 
 
 TEST_F(SimpleParserTest, ParseSubTest) {
-	wstring content = L"1+2+3";
+	wstring content = L"1-2-3-4";
 	SimpleParser parser(content);
 	parser.init();
 	auto expr = parser.expr();
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
-	EXPECT_EQ(6, value->getNumber());
+	EXPECT_EQ(-8, value->getNumber());
 }
 
 TEST_F(SimpleParserTest, Parse2Times) {

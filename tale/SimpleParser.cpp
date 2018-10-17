@@ -60,7 +60,6 @@ namespace parser {
 				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), MoreTerms, oper);
 			}
 			auto ret = expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Term, oper);
-			wcout << ret->toString() << endl;
 			return ret;
 		}
 
