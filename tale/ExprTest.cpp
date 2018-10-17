@@ -37,14 +37,7 @@ TEST_F(ExprTest, BasicAssignTest) {
 	EXPECT_EQ(15, std::dynamic_pointer_cast<NumberExpr>(closure_new->getValue())->getNumber());
 }
 
-TEST_F(ExprTest, BasicAddTest) {
 
-	std::shared_ptr<AddExpr> addition = AddExpr::createAddExpr(nullptr, number_15, string_hello_world);
-	auto result = addition->getValue();
-	EXPECT_EQ(result->getType(), Expr::ExprType::TYPE_STRING);
-	auto r = std::dynamic_pointer_cast<StringExpr>(result);
-	EXPECT_EQ(r->getString(), L"15hello world");
-}
 TEST_F(ExprTest, ClosureTest) {
 	std::shared_ptr<AssignExpr> assign = AssignExpr::createAssignExpr(nullptr, variable, number_15);
 	auto closure_new = ClosureExpr::createClosureExpr();

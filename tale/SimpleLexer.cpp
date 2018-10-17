@@ -33,7 +33,6 @@ namespace parser {
 				str.push_back(*index1);
 			}
 			currentLexeme = str;
-			//wcout << L"(" << currentLexeme << L")" << endl;
 			state = State::endString;
 			return Token::String;
 		}

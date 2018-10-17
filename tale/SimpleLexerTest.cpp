@@ -75,3 +75,4 @@ TEST_F(SimpleLexerTest, ParenthesesTest) {
 	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
 	lexer.init();
 }
+

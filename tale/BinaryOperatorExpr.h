@@ -13,12 +13,12 @@ namespace expr {
 			return std::make_shared<BinaryOperatorExpr>(runtime, l, r);
 		}
 
-		std::shared_ptr<Expr> setLeft(const std::shared_ptr<Expr>& l) {
+		void setLeft(const std::shared_ptr<Expr>& l) {
 			left = l;
 			left->setRunTime(shared_from_this());
 		}
 
-		std::shared_ptr<Expr> setRight(const std::shared_ptr<Expr>& r) {
+		void setRight(const std::shared_ptr<Expr>& r) {
 			right = r;
 			right->setRunTime(shared_from_this());
 		}

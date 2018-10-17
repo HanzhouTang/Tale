@@ -13,6 +13,7 @@ namespace expr {
 			auto right = std::dynamic_pointer_cast<NumberExpr>(r);
 			return NumberExpr::createNumberExpr(getRunTime(), left->getNumber() + right->getNumber());
 		}
+		/*
 		else if (l->getType() == TYPE_STRING && r->getType() == TYPE_NUMBER) {
 			std::wostringstream ret;
 			auto left = std::dynamic_pointer_cast<StringExpr>(l);
@@ -27,7 +28,9 @@ namespace expr {
 			ret << left->getNumber() << right->getString();
 			return StringExpr::createStringExpr(getRunTime(), ret.str());
 		}
-		else if (l->getType() == TYPE_STRING && r->getType() == TYPE_STRING) {
+		*/
+		/*else*/ 
+		if (l->getType() == TYPE_STRING && r->getType() == TYPE_STRING) {
 			auto left = std::dynamic_pointer_cast<StringExpr>(l);
 			auto right = std::dynamic_pointer_cast<StringExpr>(r);
 			return StringExpr::createStringExpr(getRunTime(), left->getString() + right->getString());

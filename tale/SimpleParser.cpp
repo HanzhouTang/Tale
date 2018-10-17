@@ -5,6 +5,9 @@
 #include"ArithmeticExpr.h"
 #include"NumberExpr.h"
 #include"Utility.h"
+#include"AddExpr.h"
+#include"BinaryOperatorExpr.h"
+#include"StringExpr.h"
 using namespace Utility;
 namespace parser {
 	bool SimpleParser::match(parser::SimpleLexer::Token t) {
@@ -53,13 +56,14 @@ namespace parser {
 			auto Term = term();
 			auto MoreTerms = moreterms();
 			if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-				auto ret = std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
-				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), ret, oper);
+				std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
+				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), MoreTerms, oper);
 			}
 			auto ret = expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Term, oper);
+			wcout << ret->toString() << endl;
 			return ret;
 		}
-	
+
 		return expr::NullExpr::createNullExpr();
 	}
 
@@ -89,12 +93,12 @@ namespace parser {
 			auto Factor = factor();
 			auto MoreFactors = morefactors();
 			if (MoreFactors->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-				auto ret = std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactors)->setLeft(Factor);
-				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), ret, oper);
+				std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactors)->setLeft(Factor);
+				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), MoreFactors, oper);
 			}
 			return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Factor, oper);
 		}
-	
+
 
 		return expr::NullExpr::createNullExpr();
 
@@ -116,6 +120,42 @@ namespace parser {
 		}
 		throwError({ SimpleLexer::Token::Number,SimpleLexer::Token::LParen,
 			SimpleLexer::Token::Variable }, token, __LINE__);
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::str() {
+		auto Str = substr();
+		auto MoreSubStrs = moresubstrs();
+		if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
+			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(Str);
+			return MoreSubStrs;
+		}
+		return Str;
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::substr() {
+		auto token = lexer.getNextToken();
+		if (token == SimpleLexer::Token::Quote) {
+			match(SimpleLexer::Token::String);
+			auto str = lexer.currentLexeme;
+			match(SimpleLexer::Token::Quote);
+			return expr::StringExpr::createStringExpr(str);
+		}
+		return expr::NullExpr::createNullExpr();
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::moresubstrs() {
+		auto tokens = lexer.lookAheadK(1);
+		if (tokens[0] == SimpleLexer::Token::Add) {
+			match(SimpleLexer::Token::Add);
+			auto SubStr = substr();
+			auto MoreSubStrs = moresubstrs();
+			if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
+				std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(SubStr);
+				return MoreSubStrs;
+			}
+			return expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), SubStr);
+		}
+		return expr::NullExpr::createNullExpr();
 	}
 
 	void SimpleParser::init() {

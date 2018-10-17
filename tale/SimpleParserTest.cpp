@@ -5,6 +5,7 @@
 #include"ClosureExpr.h"
 #include"AssignExpr.h"
 #include"VariableExpr.h"
+#include"StringExpr.h"
 #include"ExprLiteral.h"
 using namespace std;
 using namespace expr;
@@ -71,6 +72,28 @@ TEST_F(SimpleParserTest, ParseAddAndTimes3) {
 	EXPECT_EQ(2812, number->getNumber());
 }
 
+
+TEST_F(SimpleParserTest, ParseSubTest) {
+	wstring content = L"1+2+3";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(6, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, Parse2Times) {
+	wstring content = L"1*2*3";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(6, value->getNumber());
+}
+
+
 TEST_F(SimpleParserTest, InvalidTest) {
 	wstring content = L"(123)[]";
 	SimpleParser parser(content);
@@ -80,3 +103,22 @@ TEST_F(SimpleParserTest, InvalidTest) {
 	EXPECT_EQ(SimpleLexer::Token::LBrace, token);
 }
 
+TEST_F(SimpleParserTest, StringTest) {
+	wstring content = L"\"hello world\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto str = parser.str();
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, str->getType());
+	auto ret = std::dynamic_pointer_cast<expr::StringExpr>(str);
+	EXPECT_EQ(L"hello world", ret->getString());
+}
+
+TEST_F(SimpleParserTest, AdvanceStringTest) {
+	wstring content = L"\"I can find job in\" +\" US\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto ret = parser.str();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, ret->getType());
+	auto str = std::dynamic_pointer_cast<expr::StringExpr>(ret->getValue());
+	EXPECT_EQ(L"I can find job in US", str->getString());
+}
