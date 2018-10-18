@@ -1,7 +1,7 @@
 #pragma once
 #include"SimpleLexer.h"
 #include "Expr.h"
-
+#include<deque>
 namespace parser {
 
 	struct SimpleParser {
@@ -14,10 +14,10 @@ namespace parser {
 		//SimpleLexer::LexerNode consume();
 		//===============for math expression =====================
 		std::shared_ptr<expr::Expr> expr();
-		std::shared_ptr<expr::Expr> term();
-		std::shared_ptr<expr::Expr> moreterms();
-		std::shared_ptr<expr::Expr> factor();
-		std::shared_ptr<expr::Expr> morefactors();
+		void term(std::deque<std::shared_ptr<expr::Expr>>&);
+		void moreterms(std::deque<std::shared_ptr<expr::Expr>>&);
+		void factor(std::deque<std::shared_ptr<expr::Expr>>&);
+		void morefactors(std::deque<std::shared_ptr<expr::Expr>>&);
 		//===============for string =============================
 		std::shared_ptr<expr::Expr> str();
 		std::shared_ptr<expr::Expr> substr();

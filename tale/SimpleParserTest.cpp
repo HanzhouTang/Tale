@@ -19,14 +19,27 @@ TEST_F(SimpleParserTest, AddTwoNumber) {
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
 	EXPECT_EQ(1559, value->getNumber());
 }
+
 TEST_F(SimpleParserTest, ParseAddAndTimes) {
+	using namespace std;
 	wstring content = L"123+456*23";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	//wcout << expr->toString() << endl;
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(10611, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, ParenthesesTest) {
+	wstring content = L"(123+456)";
 	SimpleParser parser(content);
 	parser.init();
 	auto expr = parser.expr();
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
-	EXPECT_EQ(10611, value->getNumber());
+	EXPECT_EQ(579, value->getNumber());
 }
 
 
@@ -74,6 +87,7 @@ TEST_F(SimpleParserTest, ParseAddAndTimes3) {
 
 
 TEST_F(SimpleParserTest, ParseSubTest) {
+	using namespace std;
 	wstring content = L"1-2-3-4";
 	SimpleParser parser(content);
 	parser.init();
@@ -82,6 +96,7 @@ TEST_F(SimpleParserTest, ParseSubTest) {
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
 	EXPECT_EQ(-8, value->getNumber());
 }
+
 
 TEST_F(SimpleParserTest, Parse2Times) {
 	wstring content = L"1*2*3";
@@ -95,7 +110,8 @@ TEST_F(SimpleParserTest, Parse2Times) {
 
 
 TEST_F(SimpleParserTest, InvalidTest) {
-	wstring content = L"(123)[]";
+	using namespace std;
+	wstring content = L"(123+567)[]";
 	SimpleParser parser(content);
 	parser.init();
 	auto expr = parser.expr();

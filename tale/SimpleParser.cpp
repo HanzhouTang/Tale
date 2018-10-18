@@ -8,6 +8,7 @@
 #include"AddExpr.h"
 #include"BinaryOperatorExpr.h"
 #include"StringExpr.h"
+#include<stack>
 using namespace Utility;
 namespace parser {
 	bool SimpleParser::match(parser::SimpleLexer::Token t) {
@@ -30,19 +31,38 @@ namespace parser {
 
 
 	std::shared_ptr<expr::Expr> SimpleParser::expr() {
-		auto Term = term();
-		auto MoreTerms = moreterms();
-		if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-			std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
-			return MoreTerms;
+		using namespace std;
+		std::deque<std::shared_ptr<expr::Expr>> queue;
+		term(queue);
+		moreterms(queue);
+		std::stack<std::shared_ptr<expr::Expr>> stack;
+		for (auto& x : queue) {
+			//wcout << x->toString() << endl;
+			if (x->getType() != expr::Expr::TYPE_BINARYOPERATION) {
+				stack.push(x);
+			}
+			else {
+				auto l = std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(x)->getLeft();
+				if (l->getType() == expr::Expr::TYPE_NULL) {
+					auto right = stack.top();
+					stack.pop();
+					auto left = stack.top();
+					stack.pop();
+					std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(x)->setLeft(left);
+					std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(x)->setRight(right);
+				}
+				stack.push(x);
+			}
 		}
-		return Term;
+		if (stack.size() == 1) {
+			return stack.top();
+		}
+		quitWithError(__LINE__, __FILE__, L"stack has more than one element");
 	}
 
-	std::shared_ptr<expr::Expr> SimpleParser::moreterms() {
+	void  SimpleParser::moreterms(std::deque<std::shared_ptr<expr::Expr>>& queue) {
 		auto nodes = lexer.lookAheadK(1);
 		using namespace std;
-		//wcout<<SimpleLexer::getTokenName(nodes[0]) << endl;
 		wchar_t oper = 0;
 		if (nodes[0] == SimpleLexer::Token::Add) {
 			match(SimpleLexer::Token::Add);
@@ -53,30 +73,20 @@ namespace parser {
 			oper = L'-';
 		}
 		if (oper != 0) {
-			auto Term = term();
-			auto MoreTerms = moreterms();
-			if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-				std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreTerms)->setLeft(Term);
-				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), MoreTerms, oper);
-			}
-			auto ret = expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Term, oper);
-			return ret;
+			term(queue);
+			queue.push_back(expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(),
+				expr::NullExpr::createNullExpr(), oper));
+			moreterms(queue);
+			return;
 		}
-
-		return expr::NullExpr::createNullExpr();
 	}
 
-	std::shared_ptr<expr::Expr> SimpleParser::term() {
-		auto Factor = factor();
-		auto MoreFactor = morefactors();
-		if (MoreFactor->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-			std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactor)->setLeft(Factor);
-			return MoreFactor;
-		}
-		return Factor;
+	void SimpleParser::term(std::deque<std::shared_ptr<expr::Expr>>& queue) {
+		factor(queue);
+		morefactors(queue);
 	}
 
-	std::shared_ptr<expr::Expr> SimpleParser::morefactors() {
+	void SimpleParser::morefactors(std::deque<std::shared_ptr<expr::Expr>>& queue) {
 		auto tokens = lexer.lookAheadK(1);
 		wchar_t oper = 0;
 		if (tokens[0] == SimpleLexer::Token::Times) {
@@ -89,37 +99,35 @@ namespace parser {
 		}
 
 		if (oper != 0) {
-			auto Factor = factor();
-			auto MoreFactors = morefactors();
-			if (MoreFactors->getType() == expr::Expr::TYPE_BINARYOPERATION) {
-				std::dynamic_pointer_cast<expr::ArithmeticExpr>(MoreFactors)->setLeft(Factor);
-				return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), MoreFactors, oper);
-			}
-			return expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(), Factor, oper);
+			factor(queue);
+			queue.push_back(expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(),
+				expr::NullExpr::createNullExpr(), oper));
+			morefactors(queue);
 		}
-
-
-		return expr::NullExpr::createNullExpr();
 
 	}
 
-	std::shared_ptr<expr::Expr> SimpleParser::factor() {
+	void SimpleParser::factor(std::deque<std::shared_ptr<expr::Expr>>& queue) {
 		auto token = lexer.getNextToken();
 		if (token == SimpleLexer::Token::Number) {
 			auto number = wstr2floats(lexer.currentLexeme);
-			return expr::NumberExpr::createNumberExpr(number[0]);
+			queue.push_back(expr::NumberExpr::createNumberExpr(number[0]));
+			return;
 		}
 		else if (token == SimpleLexer::Token::LParen) {
-			auto ret = expr();
+			auto Expr = expr();
 			match(SimpleLexer::Token::RParen);
-			return ret;
+			queue.push_back(Expr);
+			return;
 		}
 		else if (token == SimpleLexer::Token::Variable) {
-			return expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
+			queue.push_back(expr::VariableExpr::createVariableExpr(lexer.currentLexeme));
+			return;
 		}
 		throwError({ SimpleLexer::Token::Number,SimpleLexer::Token::LParen,
 			SimpleLexer::Token::Variable }, token, __LINE__);
 	}
+
 
 	std::shared_ptr<expr::Expr> SimpleParser::str() {
 		auto Str = substr();
