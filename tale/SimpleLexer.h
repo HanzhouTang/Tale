@@ -46,7 +46,7 @@ namespace parser {
 				index0(i0),index1(i1),currentLexeme(l),token(t),state(s)
 			{}
 			bool operator ==(const Status& other) const {
-				return index0 == other.index0 && index1 == other.index1 && state == other.state;
+				return &*index0 == &*other.index0 && &*index1 == &*other.index1 && state == other.state;
 			}
 			//may need calculate distance from beginning
 			Status(){}

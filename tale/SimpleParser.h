@@ -44,9 +44,12 @@ namespace parser {
 		//===============for element ============================
 		std::shared_ptr<expr::Expr> element();
 		//===============for assign =============================
-	
 		std::shared_ptr<expr::Expr> assign();
-
+		//===============for map ================================
+		std::shared_ptr<expr::Expr> map();
+		std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>> pair();
+		std::vector<std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>>> pairs();
+		std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>> morepair();
 
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
