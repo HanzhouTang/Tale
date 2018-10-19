@@ -2,21 +2,21 @@
 namespace parser {
 	const std::set<std::wstring> SimpleLexer::delimiters =
 	{
-		L"[",L"]",L",",L"{",L"}",L"*",L"-",L"+",L"/",L"(",L")",L"=",L"<",L">",L";",L"\"",L"\n",L"\"",L" "
+		L"[",L"]",L",",L"{",L"}",L"*",L"-",L"+",L"/",L"(",L")",L"=",L"<",L">",L";",L"\"",L"\n",L"\"",L" ",L":"
 	};
 	const std::map<std::wstring, SimpleLexer::Token> SimpleLexer::lexeme2token = {
 	{L"[",Token::LBrace},{L"]",Token::RBrace},{L",",Token::Comma},{L"{",Token::LCurlyBrace},
 	{L"}",Token::RCurlyBrace},{L"*",Token::Times},{L"-",Token::Minus},{L"+",Token::Add},{L"/",Token::Div},
 	{L"(",Token::LParen},{L")",Token::RParen},{L"=",Token::Eql},{L"<",Token::Less},{L">",Token::Greater},
 	{L";",Token::Smicolon},{L"\"",Token::Quote},{L"\n",Token::Newline} , {L"and",Token::Add},{L"or",Token::Or},
-	{L"if",Token::If},{L"else",Token::Else}
+	{L"if",Token::If},{L"else",Token::Else},{L":",Token::Colon}
 	};
 
 	const std::vector<std::wstring> SimpleLexer::TokenNames = {
 		L"LBrace",L"RBrace", L"Comma",L"LCurlyBrace",L"RCurlyBrace", L"Times", L"Minus",
 		L"Add", L"Div", L"LParen", L"RParen", L"Eql", L"Less", L"Greater", L"And",L"Or", L"Smicolon"
 		, L"If", L"Else", L"Quote", L"Invalid", L"Variable",L"Newline", L"EndofContent",L"Number",
-		L"String"
+		L"String",L"Colon"
 	};
 	
 	SimpleLexer::Token SimpleLexer::getNextToken() {

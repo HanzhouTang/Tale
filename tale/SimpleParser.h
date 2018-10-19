@@ -19,12 +19,13 @@ namespace parser {
 				result = expr::NullExpr::createNullExpr();
 			}
 		};
-		typedef std::unordered_map<SimpleLexer::Status, MemoResult, SimpleLexer::StatusHasher> MomoMap;
+		typedef std::unordered_map<SimpleLexer::Status, MemoResult, SimpleLexer::StatusHasher> MemoMap;
 		//===================record maps==========================
-		MomoMap moresubstrMap;
-		MomoMap substrMap;
-		MomoMap strMap;
-		MomoMap exprMap;
+		MemoMap moresubstrMap;
+		MemoMap substrMap;
+		MemoMap strMap;
+		MemoMap exprMap;
+		MemoMap assignMap;
 
 		//std::shared_ptr<expr::Expr> parse();
 		SimpleParser(const std::wstring& content) : lexer(content) {}
@@ -41,11 +42,10 @@ namespace parser {
 		std::shared_ptr<expr::Expr> substr();
 		std::shared_ptr<expr::Expr> moresubstrs();
 		//===============for element ============================
-
-		//===============for assign =============================
 		std::shared_ptr<expr::Expr> element();
+		//===============for assign =============================
+	
 		std::shared_ptr<expr::Expr> assign();
-		std::shared_ptr<expr::EqualExpr> moresssign();
 
 
 		void init();

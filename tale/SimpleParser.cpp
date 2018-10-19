@@ -8,6 +8,7 @@
 #include"AddExpr.h"
 #include"BinaryOperatorExpr.h"
 #include"StringExpr.h"
+#include"AssignExpr.h"
 #include<stack>
 using namespace Utility;
 namespace parser {
@@ -255,4 +256,44 @@ namespace parser {
 	void SimpleParser::init() {
 		lexer.init();
 	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::assign() {
+		auto status = lexer.get();
+		if (assignMap.find(status) != assignMap.end()) {
+			auto result = assignMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
+		auto token = lexer.lookAheadK(1)[0];
+		if (token != SimpleLexer::Token::Variable) {
+			MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+			assignMap[status] = result;
+			return expr::NullExpr::createNullExpr();
+		}
+		lexer.save();
+		match(SimpleLexer::Token::Variable);
+		auto variableName = lexer.currentLexeme;
+		token = lexer.lookAheadK(1)[0];
+		if (token != SimpleLexer::Token::Eql) {
+			lexer.restore();
+			MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+			assignMap[status] = result;
+			return expr::NullExpr::createNullExpr();
+		}
+		match(SimpleLexer::Token::Eql);
+		auto e = element();
+		if (e->getType() == expr::Expr::TYPE_NULL) {
+			lexer.restore();
+			MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+			assignMap[status] = result;
+			return expr::NullExpr::createNullExpr();
+		}
+		lexer.pop();
+		auto variable = expr::VariableExpr::createVariableExpr(variableName);
+		auto ret = expr::AssignExpr::createAssignExpr(variable, e);
+		MemoResult result(ret, lexer.get());
+		assignMap[status] = result;
+		return ret;
+	}
+
 }

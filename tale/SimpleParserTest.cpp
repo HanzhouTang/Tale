@@ -232,3 +232,31 @@ TEST_F(SimpleParserTest, TestStrAddNumber) {
 	auto second = parser.element();
 	EXPECT_EQ(Expr::ExprType::TYPE_NULL, second->getType());
 }
+
+
+TEST_F(SimpleParserTest, AssignTest) {
+	wstring content = L"a = 1234";
+	SimpleParser parser(content);
+	parser.init();
+	auto assign = parser.assign();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, assign->getType());
+	//wcout << assign->toString() << endl;
+}
+
+TEST_F(SimpleParserTest, AssignTest1) {
+	wstring content = L"a = 1234 +1234+ 40";
+	SimpleParser parser(content);
+	parser.init();
+	auto assign = parser.assign();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, assign->getType());
+	//wcout << assign->toString() << endl;
+}
+
+TEST_F(SimpleParserTest, AssignTest2) {
+	wstring content = L"a = \"fda\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto assign = parser.assign();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, assign->getType());
+	//wcout << assign->toString() << endl;
+}
