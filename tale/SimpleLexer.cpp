@@ -72,11 +72,7 @@ namespace parser {
 	}
 
 	std::vector<SimpleLexer::Token> SimpleLexer::lookAheadK(int k) {
-		auto _state = state;
-		auto _index0 = index0;
-		auto _index1 = index1;
-		auto _currentLexeme = currentLexeme;
-		auto _token = token;
+		save();
 		std::vector<Token> tokens;
 		for (int i = 0; i < k; i++) {
 			auto t = getNextToken();
@@ -85,11 +81,7 @@ namespace parser {
 				break;
 			}
 		}
-		state = _state;
-		index0 = _index0;
-		index1 = _index1;
-		currentLexeme = _currentLexeme;
-		token = _token;
+		restore();
 		return tokens;
 	}
 

@@ -14,11 +14,11 @@ namespace parser {
 	bool SimpleParser::match(parser::SimpleLexer::Token t) {
 		auto token = lexer.getNextToken();
 		if (token == t) return true;
-		throwError({ t }, token, __LINE__);
+		throwNotMatchError({ t }, token, __LINE__);
 		return false;
 	}
 
-	void SimpleParser::throwError(const std::vector<parser::SimpleLexer::Token>& expectedToken, parser::SimpleLexer::Token realToken, int lineNumber) {
+	void SimpleParser::throwNotMatchError(const std::vector<parser::SimpleLexer::Token>& expectedToken, parser::SimpleLexer::Token realToken, int lineNumber) {
 		std::wostringstream buffer;
 		buffer << L"Expected Token type < ";
 		for (auto x : expectedToken) {
@@ -30,10 +30,22 @@ namespace parser {
 	}
 
 
+	//when is the best time to clear map?
 	std::shared_ptr<expr::Expr> SimpleParser::expr() {
 		using namespace std;
+		auto status = lexer.get();
+		if (exprMap.find(status) != exprMap.end()) {
+			auto after = exprMap[status];
+			lexer.set(after.newStatus);
+			return after.result;
+		}
 		std::deque<std::shared_ptr<expr::Expr>> queue;
 		term(queue);
+		if (queue.size() == 0) {
+			MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+			exprMap[status] = result;
+			return expr::NullExpr::createNullExpr();
+		}
 		moreterms(queue);
 		std::stack<std::shared_ptr<expr::Expr>> stack;
 		for (auto& x : queue) {
@@ -55,29 +67,38 @@ namespace parser {
 			}
 		}
 		if (stack.size() == 1) {
+			MemoResult result(stack.top(), lexer.get());
+			exprMap[status] = result;
 			return stack.top();
 		}
 		quitWithError(__LINE__, __FILE__, L"stack has more than one element");
 	}
 
 	void  SimpleParser::moreterms(std::deque<std::shared_ptr<expr::Expr>>& queue) {
+		auto status = lexer.get();
 		auto nodes = lexer.lookAheadK(1);
 		using namespace std;
 		wchar_t oper = 0;
 		if (nodes[0] == SimpleLexer::Token::Add) {
+			lexer.save();
 			match(SimpleLexer::Token::Add);
 			oper = L'+';
 		}
 		else if (nodes[0] == SimpleLexer::Token::Minus) {
+			lexer.save();
 			match(SimpleLexer::Token::Minus);
 			oper = L'-';
 		}
+		auto size = queue.size();
 		if (oper != 0) {
 			term(queue);
-			queue.push_back(expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(),
-				expr::NullExpr::createNullExpr(), oper));
-			moreterms(queue);
-			return;
+			if (size != queue.size()) {
+				lexer.pop();
+				queue.push_back(expr::ArithmeticExpr::createArithmeticExpr(expr::NullExpr::createNullExpr(),
+					expr::NullExpr::createNullExpr(), oper));
+				moreterms(queue);
+			}
+			else { lexer.restore(); }
 		}
 	}
 
@@ -108,61 +129,127 @@ namespace parser {
 	}
 
 	void SimpleParser::factor(std::deque<std::shared_ptr<expr::Expr>>& queue) {
-		auto token = lexer.getNextToken();
+		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Token::Number) {
+			match(SimpleLexer::Token::Number);
 			auto number = wstr2floats(lexer.currentLexeme);
 			queue.push_back(expr::NumberExpr::createNumberExpr(number[0]));
 			return;
 		}
 		else if (token == SimpleLexer::Token::LParen) {
+			match(SimpleLexer::Token::LParen);
 			auto Expr = expr();
 			match(SimpleLexer::Token::RParen);
 			queue.push_back(Expr);
 			return;
 		}
 		else if (token == SimpleLexer::Token::Variable) {
+			match(SimpleLexer::Token::Variable);
 			queue.push_back(expr::VariableExpr::createVariableExpr(lexer.currentLexeme));
 			return;
 		}
-		throwError({ SimpleLexer::Token::Number,SimpleLexer::Token::LParen,
+		/*throwNotMatchError({ SimpleLexer::Token::Number,SimpleLexer::Token::LParen,
 			SimpleLexer::Token::Variable }, token, __LINE__);
+		*/
 	}
 
 
 	std::shared_ptr<expr::Expr> SimpleParser::str() {
+		auto status = lexer.get();
+		if (strMap.find(status) != strMap.end()) {
+			auto result = strMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
 		auto Str = substr();
+		if (Str->getType() == expr::Expr::TYPE_NULL) {
+			auto ret = expr::NullExpr::createNullExpr();
+			MemoResult result(ret, lexer.get());
+			strMap[status] = result;
+			return ret;
+		}
 		auto MoreSubStrs = moresubstrs();
 		if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(Str);
+			MemoResult result(MoreSubStrs, lexer.get());
+			strMap[status] = result;
 			return MoreSubStrs;
 		}
+		MemoResult result(Str, lexer.get());
+		strMap[status] = result;
 		return Str;
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::substr() {
-		auto token = lexer.getNextToken();
+		auto status = lexer.get();
+		if (substrMap.find(status) != substrMap.end()) {
+			auto result = substrMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
+		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Token::Quote) {
+			match(SimpleLexer::Token::Quote);
 			match(SimpleLexer::Token::String);
 			auto str = lexer.currentLexeme;
 			match(SimpleLexer::Token::Quote);
-			return expr::StringExpr::createStringExpr(str);
+			auto ret = expr::StringExpr::createStringExpr(str);
+			MemoResult result(ret, lexer.get());
+			substrMap[status] = result;
+			return ret;
 		}
+		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+		substrMap[status] = result;
 		return expr::NullExpr::createNullExpr();
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::moresubstrs() {
+		auto status = lexer.get();
+		if (moresubstrMap.find(status) != moresubstrMap.end()) {
+			auto result = moresubstrMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
 		auto tokens = lexer.lookAheadK(1);
 		if (tokens[0] == SimpleLexer::Token::Add) {
+			lexer.save();
 			match(SimpleLexer::Token::Add);
 			auto SubStr = substr();
 			auto MoreSubStrs = moresubstrs();
 			if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
 				std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(SubStr);
+				MemoResult result(MoreSubStrs, lexer.get());
+				moresubstrMap[status] = result;
 				return MoreSubStrs;
 			}
-			return expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), SubStr);
+
+			else if (SubStr->getType() != expr::Expr::TYPE_NULL) {
+				lexer.pop();
+				auto ret = expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), SubStr);
+				MemoResult result(ret, lexer.get());
+				moresubstrMap[status] = result;
+				return ret;
+			}
+
+			else {
+				lexer.restore();
+				MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+				moresubstrMap[status] = result;
+				return expr::NullExpr::createNullExpr();
+			}
 		}
+		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
+		moresubstrMap[status] = result;
 		return expr::NullExpr::createNullExpr();
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::element()
+	{
+		auto x = expr();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			return x;
+		}
+		return str();
 	}
 
 	void SimpleParser::init() {

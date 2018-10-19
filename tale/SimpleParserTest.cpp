@@ -119,6 +119,32 @@ TEST_F(SimpleParserTest, InvalidTest) {
 	EXPECT_EQ(SimpleLexer::Token::LBrace, token);
 }
 
+
+
+TEST_F(SimpleParserTest, InvalidTest1) {
+	using namespace std;
+	wstring content = L"[]";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(expr::Expr::TYPE_NULL, expr->getType());
+	auto token = parser.lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::LBrace, token);
+}
+
+
+TEST_F(SimpleParserTest, InvalidTest2) {
+	using namespace std;
+	wstring content = L"[]";
+	SimpleParser parser(content);
+	parser.init();
+	auto str = parser.str();
+	EXPECT_EQ(expr::Expr::TYPE_NULL, str->getType());
+	auto token = parser.lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::LBrace, token);
+}
+
+
 TEST_F(SimpleParserTest, StringTest) {
 	wstring content = L"\"hello world\"";
 	SimpleParser parser(content);
@@ -137,4 +163,72 @@ TEST_F(SimpleParserTest, AdvanceStringTest) {
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, ret->getType());
 	auto str = std::dynamic_pointer_cast<expr::StringExpr>(ret->getValue());
 	EXPECT_EQ(L"I can find job in US", str->getString());
+}
+
+TEST_F(SimpleParserTest, ElementTest) {
+	wstring content = L"\"hello world\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto str = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, str->getType());
+	auto ret = std::dynamic_pointer_cast<expr::StringExpr>(str);
+	EXPECT_EQ(L"hello world", ret->getString());
+}
+
+TEST_F(SimpleParserTest, ElementTes1) {
+	wstring content = L"(123+456)*23";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(13317, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, ElementTes2) {
+	wstring content = L"\"hello world\" 1234";
+	SimpleParser parser(content);
+	parser.init();
+	auto str = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, str->getType());
+	auto ret = std::dynamic_pointer_cast<expr::StringExpr>(str);
+	EXPECT_EQ(L"hello world", ret->getString());
+	auto number = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, number->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(number->getValue());
+	EXPECT_EQ(1234, value->getNumber());
+}
+
+
+TEST_F(SimpleParserTest, InvalidTest_AddStrAndNumber) {
+	wstring content = L"\"hello world\"+1234";
+	SimpleParser parser(content);
+	parser.init();
+	auto first = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, first->getType());
+	auto second = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_NULL, second->getType());
+}
+
+TEST_F(SimpleParserTest, InvalidTest_AddNumberAndStr) {
+	wstring content = L"1234+ \"hello world\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto first = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, first->getType());
+	auto second = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_NULL, second->getType());
+}
+
+
+TEST_F(SimpleParserTest, TestStrAddNumber) {
+	wstring content = L"1234+ 123 + \"hello world\"";
+	SimpleParser parser(content);
+	parser.init();
+	auto first = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, first->getType());
+	auto result = std::dynamic_pointer_cast<expr::NumberExpr>(first->getValue());
+	EXPECT_EQ(1357, result->getNumber());
+	auto second = parser.element();
+	EXPECT_EQ(Expr::ExprType::TYPE_NULL, second->getType());
 }
