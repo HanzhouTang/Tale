@@ -48,7 +48,7 @@ namespace expr {
 
 	std::wstring MapExpr::toString() {
 		std::wostringstream buf;
-		buf << Expr::toString()<<L"\n{";
+		buf << Expr::toString()<<L"{";
 		for (auto& x : map) {
 			buf << x.first <<L" : "<< x.second->toString() << L"\n";
 		}

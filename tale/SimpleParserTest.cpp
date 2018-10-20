@@ -260,3 +260,45 @@ TEST_F(SimpleParserTest, AssignTest2) {
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, assign->getType());
 	//wcout << assign->toString() << endl;
 }
+
+TEST_F(SimpleParserTest, MapTest) {
+	wstring content = L"{\"hello\":\"world\",}";
+	SimpleParser parser(content);
+	parser.init();
+	auto map = parser.map();
+	
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
+	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
+	auto x = MAP->get(L"hello");
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x->getType());
+	auto str = std::dynamic_pointer_cast<StringExpr>(x);
+	EXPECT_EQ(L"world" , str->getString());
+}
+
+TEST_F(SimpleParserTest, EmptyMapTest) {
+	wstring content = L"{}";
+	SimpleParser parser(content);
+	parser.init();
+	auto map = parser.map();
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
+}
+
+// after this send my resume to lyft
+TEST_F(SimpleParserTest, AdvanceMapTest_InnerMap) {
+	wstring content = L"{\"hello\":{\"beautiful\":\"life\"},\"math\": 1+2+ 3 }";
+	SimpleParser parser(content);
+	parser.init();
+	auto map = parser.map();
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
+	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
+	auto x = MAP->get(L"math");
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, x->getType());
+	auto number = std::dynamic_pointer_cast<NumberExpr>(x->getValue());
+	EXPECT_EQ(6,number->getNumber());
+	auto y = MAP->get(L"hello");
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, y->getType());
+	auto MAPY = std::dynamic_pointer_cast<MapExpr>(y);
+	auto life = MAPY->get(L"beautiful");
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, life->getType());
+	EXPECT_EQ(L"life", std::dynamic_pointer_cast<expr::StringExpr>(life)->getString());
+}

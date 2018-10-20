@@ -9,6 +9,7 @@
 #include"BinaryOperatorExpr.h"
 #include"StringExpr.h"
 #include"AssignExpr.h"
+#include"MapExpr.h"
 #include<stack>
 using namespace Utility;
 namespace parser {
@@ -246,11 +247,24 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
+		lexer.save();
 		auto x = expr();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
 			return x;
 		}
-		return str();
+		x = str();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return x;
+		}
+		x = map();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return x;
+		}
+		lexer.restore();
+		return expr::NullExpr::createNullExpr();
 	}
 
 	void SimpleParser::init() {
@@ -295,5 +309,110 @@ namespace parser {
 		assignMap[status] = result;
 		return ret;
 	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::map()
+	{
+		auto status = lexer.get();
+		if (mapMap.find(status) != mapMap.end()) {
+			auto result = mapMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
+		lexer.save();
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::LCurlyBrace) {
+			match(SimpleLexer::Token::LCurlyBrace);
+			auto x = pairs();
+			token = lexer.lookAheadK(1)[0];
+			if (token == SimpleLexer::Token::RCurlyBrace) {
+				match(SimpleLexer::Token::RCurlyBrace);
+				std::unordered_map<expr::MapExpr::KeyType, std::shared_ptr<expr::Expr>> map;
+				for (auto pair : x) {
+					auto key = std::get<0>(pair);
+					auto value = std::get<1>(pair);
+					map.emplace(key, value);
+				}
+				lexer.pop();
+				auto ret = expr::MapExpr::createMapExpr(map);
+				MemoResult result(ret, lexer.get());
+				mapMap[status] = result;
+				return ret;
+			}
+			else {
+				lexer.restore();
+				auto ret = expr::NullExpr::createNullExpr();
+				MemoResult result(ret, lexer.get());
+				mapMap[status] = result;
+				return ret;
+			}
+
+		}
+		else {
+			lexer.restore();
+			auto ret = expr::NullExpr::createNullExpr();
+			MemoResult result(ret, lexer.get());
+			mapMap[status] = result;
+			return ret;
+		}
+	}
+
+	SimpleParser::Pair SimpleParser::pair()
+	{
+		lexer.save();
+		auto Str = str();
+		if (Str->getType() == expr::Expr::TYPE_NULL) {
+			lexer.restore();
+			return Pair(L"",expr::NullExpr::createNullExpr());
+		}
+		auto token = lexer.lookAheadK(1)[0];
+		if (token != SimpleLexer::Token::Colon) {
+			lexer.restore();
+			return Pair(L"", expr::NullExpr::createNullExpr());
+		}
+		match(SimpleLexer::Token::Colon);
+		auto value = element();
+		if (value->getType() == expr::Expr::TYPE_NULL) {
+			lexer.restore();
+			return Pair(L"", expr::NullExpr::createNullExpr());
+		}
+		auto key = std::dynamic_pointer_cast<expr::StringExpr>(Str->getValue())->getString();
+		lexer.pop();
+		return Pair(key, value);
+	}
+
+	std::deque<SimpleParser::Pair> SimpleParser::pairs()
+	{
+		lexer.save();
+		auto Pair = pair();
+		auto key = std::get<0>(Pair);
+		auto value = std::get<1>(Pair);
+		if (key == L"" && value->getType() == expr::Expr::TYPE_NULL) {
+			lexer.restore();
+			return 	std::deque<SimpleParser::Pair>();
+		}
+		auto Morepairs = morepairs();
+		Morepairs.emplace_back(key, value);
+		lexer.pop();
+		return Morepairs;
+	}
+
+	std::deque<SimpleParser::Pair> SimpleParser::morepairs()
+	{
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::Comma) {
+			match(SimpleLexer::Token::Comma);
+			auto Pair = pair();
+			auto key = std::get<0>(Pair);
+			auto value = std::get<1>(Pair);
+			if (key == L"" && value->getType() == expr::Expr::TYPE_NULL) {
+				return std::deque<SimpleParser::Pair>();
+			}
+			auto Morepairs = morepairs();
+			Morepairs.emplace_back(Pair);
+			return Morepairs;
+		}
+		return std::deque<SimpleParser::Pair>();
+	}
+
 
 }

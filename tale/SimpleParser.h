@@ -2,6 +2,7 @@
 #include"SimpleLexer.h"
 #include "Expr.h"
 #include"NullExpr.h"
+#include"MapExpr.h"
 #include<deque>
 #include<unordered_map>
 namespace parser {
@@ -26,6 +27,7 @@ namespace parser {
 		MemoMap strMap;
 		MemoMap exprMap;
 		MemoMap assignMap;
+		MemoMap mapMap;
 
 		//std::shared_ptr<expr::Expr> parse();
 		SimpleParser(const std::wstring& content) : lexer(content) {}
@@ -46,10 +48,11 @@ namespace parser {
 		//===============for assign =============================
 		std::shared_ptr<expr::Expr> assign();
 		//===============for map ================================
+		typedef std::tuple<expr::MapExpr::KeyType, std::shared_ptr<expr::Expr>> Pair;
 		std::shared_ptr<expr::Expr> map();
-		std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>> pair();
-		std::vector<std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>>> pairs();
-		std::tuple<std::shared_ptr<expr::Expr>, std::shared_ptr<expr::Expr>> morepair();
+		Pair pair();
+		std::deque<Pair> pairs();
+		std::deque<Pair>  morepairs();
 
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
