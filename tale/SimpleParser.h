@@ -28,7 +28,8 @@ namespace parser {
 		MemoMap exprMap;
 		MemoMap assignMap;
 		MemoMap mapMap;
-
+		MemoMap stateMap;
+		MemoMap closureMap;
 		//std::shared_ptr<expr::Expr> parse();
 		SimpleParser(const std::wstring& content) : lexer(content) {}
 		SimpleParser(std::wstring&& content) :lexer(std::move(content)) {}
@@ -53,6 +54,11 @@ namespace parser {
 		Pair pair();
 		std::deque<Pair> pairs();
 		std::deque<Pair>  morepairs();
+		//==============for statement ==========================
+		std::shared_ptr<expr::Expr> state();
+		std::deque<std::shared_ptr<expr::Expr>> states();
+		//==============for closure ============================
+		std::shared_ptr<expr::Expr> closure();
 
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);

@@ -12,7 +12,7 @@ namespace parser {
 	struct SimpleLexer {
 		enum Token {
 			LBrace=0, RBrace, Comma,LCurlyBrace, RCurlyBrace, Times, Minus,
-			Add, Div, LParen, RParen, Eql, Less, Greater, And,Or, Smicolon
+			Add, Div, LParen, RParen, Eql, Less, Greater, And,Or, Semicolon
 			, If, Else, Quote, Invalid, Variable,Newline, EndofContent,Number,
 			String,Colon
 		};

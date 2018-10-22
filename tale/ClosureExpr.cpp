@@ -35,6 +35,7 @@ namespace expr {
 	std::shared_ptr<Expr> ClosureExpr::getValue()
 	{
 		std::shared_ptr<Expr> ret = NullExpr::createNullExpr();
+		if (expressions.size() == 0) { return ret; }
 		for (const auto& x : expressions) {
 			if (x->getType() == TYPE_RETURN) {
 				return x->getValue();

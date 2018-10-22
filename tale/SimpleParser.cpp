@@ -10,7 +10,9 @@
 #include"StringExpr.h"
 #include"AssignExpr.h"
 #include"MapExpr.h"
+#include"ClosureExpr.h"
 #include<stack>
+#include<functional>
 using namespace Utility;
 namespace parser {
 	bool SimpleParser::match(parser::SimpleLexer::Token t) {
@@ -263,6 +265,11 @@ namespace parser {
 			lexer.pop();
 			return x;
 		}
+		x = closure();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return x;
+		}
 		lexer.restore();
 		return expr::NullExpr::createNullExpr();
 	}
@@ -320,12 +327,12 @@ namespace parser {
 		}
 		lexer.save();
 		auto token = lexer.lookAheadK(1)[0];
-		if (token == SimpleLexer::Token::LCurlyBrace) {
-			match(SimpleLexer::Token::LCurlyBrace);
+		if (token == SimpleLexer::Token::LBrace) {
+			match(SimpleLexer::Token::LBrace);
 			auto x = pairs();
 			token = lexer.lookAheadK(1)[0];
-			if (token == SimpleLexer::Token::RCurlyBrace) {
-				match(SimpleLexer::Token::RCurlyBrace);
+			if (token == SimpleLexer::Token::RBrace) {
+				match(SimpleLexer::Token::RBrace);
 				std::unordered_map<expr::MapExpr::KeyType, std::shared_ptr<expr::Expr>> map;
 				for (auto pair : x) {
 					auto key = std::get<0>(pair);
@@ -362,7 +369,7 @@ namespace parser {
 		auto Str = str();
 		if (Str->getType() == expr::Expr::TYPE_NULL) {
 			lexer.restore();
-			return Pair(L"",expr::NullExpr::createNullExpr());
+			return Pair(L"", expr::NullExpr::createNullExpr());
 		}
 		auto token = lexer.lookAheadK(1)[0];
 		if (token != SimpleLexer::Token::Colon) {
@@ -414,5 +421,111 @@ namespace parser {
 		return std::deque<SimpleParser::Pair>();
 	}
 
+	std::shared_ptr<expr::Expr> SimpleParser::state() {
+		auto status = lexer.get();
+		if (stateMap.find(status) != stateMap.end()) {
+			auto result = stateMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
+		auto x = assign();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			auto token = lexer.lookAheadK(1)[0];
+			bool matching = false;
+			if (token == SimpleLexer::Token::Semicolon) {
+				match(SimpleLexer::Token::Semicolon);
+				matching = true;
+			}
+			else if (token == SimpleLexer::Token::Newline) {
+				match(SimpleLexer::Token::Newline);
+				matching = true;
+			}
+			else if (token == SimpleLexer::Token::EndofContent) {
+				matching = true;
+			}
+			if (matching) {
+				MemoResult result(x, lexer.get());
+				stateMap.emplace(status, result);
+				return x;
+			}
+		}
+		x = element();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			auto token = lexer.lookAheadK(1)[0];
+			bool matching = false;
+			if (token == SimpleLexer::Token::Semicolon) {
+				match(SimpleLexer::Token::Semicolon);
+				matching = true;
+			}
+			else if (token == SimpleLexer::Token::Newline) {
+				match(SimpleLexer::Token::Newline);
+				matching = true;
+			}
+			else if (token == SimpleLexer::Token::EndofContent) {
+				matching = true;
+			}
+			if (matching) {
+				MemoResult result(x, lexer.get());
+				stateMap.emplace(status, result);
+				return x;
+			}
+		}
+		x = expr::NullExpr::createNullExpr();
+		MemoResult result(x, lexer.get());
+		stateMap.emplace(status, result);
+		return x;
 
+	}
+
+	std::deque<std::shared_ptr<expr::Expr>> SimpleParser::states() {
+
+		auto State = state();
+		if (State->getType() == expr::Expr::TYPE_NULL) {
+			return std::deque<std::shared_ptr<expr::Expr>>();
+		}
+		auto ret = states();
+		ret.emplace_front(State);
+		return ret;
+
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::closure() {
+		auto status = lexer.get();
+		if (closureMap.find(status) != closureMap.end()) {
+			auto result = closureMap[status];
+			lexer.set(result.newStatus);
+			return result.result;
+		}
+		lexer.save();
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::LCurlyBrace) {
+			match(SimpleLexer::Token::LCurlyBrace);
+			auto States = states();
+			token = lexer.lookAheadK(1)[0];
+			if (token == SimpleLexer::Token::RCurlyBrace) {
+				match(SimpleLexer::Token::RCurlyBrace);
+				auto closure = expr::ClosureExpr::createClosureExpr();
+				for (auto& x : States) {
+					closure->addExpression(x);
+				}
+				lexer.pop();
+				MemoResult result(closure, lexer.get());
+				stateMap.emplace(status, result);
+				return closure;
+			}
+			else {
+				auto nullexpr = expr::NullExpr::createNullExpr();
+				lexer.restore();
+				MemoResult result(nullexpr, lexer.get());
+				stateMap.emplace(status, result);
+				return nullexpr;
+			}
+		}
+		lexer.pop();
+		auto nullexpr = expr::NullExpr::createNullExpr();
+		MemoResult result(nullexpr, lexer.get());
+		stateMap.emplace(status, result);
+		return nullexpr;
+	}
 }
+

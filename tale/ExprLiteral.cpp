@@ -40,5 +40,9 @@ namespace expr {
 	std::shared_ptr<EqualExpr> operator <<=(const std::shared_ptr<Expr>& left, const std::shared_ptr<Expr>& right) {
 		return EqualExpr::createEqualExpr(left, right);
 	}
+	std::wostream& operator<<(std::wostream& os, std::shared_ptr<expr::Expr> e) {
+		os << e->toString();
+		return os;
+	}
 
 }

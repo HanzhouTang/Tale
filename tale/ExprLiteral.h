@@ -17,4 +17,5 @@ namespace expr {
 	std::shared_ptr<VariableExpr> operator ""_variableExpr(const wchar_t* value, std::size_t);
 	std::shared_ptr<NumberExpr> operator ""_expr(long double value);
 	std::shared_ptr<NumberExpr> operator ""_expr(unsigned long long int value);
+	std::wostream& operator<<(std::wostream& os, std::shared_ptr<expr::Expr>);
 }

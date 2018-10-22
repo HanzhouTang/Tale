@@ -262,7 +262,7 @@ TEST_F(SimpleParserTest, AssignTest2) {
 }
 
 TEST_F(SimpleParserTest, MapTest) {
-	wstring content = L"{\"hello\":\"world\",}";
+	wstring content = L"[\"hello\":\"world\",]";
 	SimpleParser parser(content);
 	parser.init();
 	auto map = parser.map();
@@ -276,7 +276,7 @@ TEST_F(SimpleParserTest, MapTest) {
 }
 
 TEST_F(SimpleParserTest, EmptyMapTest) {
-	wstring content = L"{}";
+	wstring content = L"[]";
 	SimpleParser parser(content);
 	parser.init();
 	auto map = parser.map();
@@ -285,7 +285,7 @@ TEST_F(SimpleParserTest, EmptyMapTest) {
 
 // after this send my resume to lyft
 TEST_F(SimpleParserTest, AdvanceMapTest_InnerMap) {
-	wstring content = L"{\"hello\":{\"beautiful\":\"life\"},\"math\": 1+2+ 3 }";
+	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ]";
 	SimpleParser parser(content);
 	parser.init();
 	auto map = parser.map();
@@ -301,4 +301,84 @@ TEST_F(SimpleParserTest, AdvanceMapTest_InnerMap) {
 	auto life = MAPY->get(L"beautiful");
 	EXPECT_EQ(Expr::ExprType::TYPE_STRING, life->getType());
 	EXPECT_EQ(L"life", std::dynamic_pointer_cast<expr::StringExpr>(life)->getString());
+}
+
+TEST_F(SimpleParserTest, StatesTest) {
+	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ]";
+	SimpleParser parser(content);
+	parser.init();
+	auto map = parser.states()[0];
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
+	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
+	auto x = MAP->get(L"math");
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, x->getType());
+	auto number = std::dynamic_pointer_cast<NumberExpr>(x->getValue());
+	EXPECT_EQ(6, number->getNumber());
+	auto y = MAP->get(L"hello");
+	EXPECT_EQ(Expr::ExprType::TYPE_MAP, y->getType());
+	auto MAPY = std::dynamic_pointer_cast<MapExpr>(y);
+	auto life = MAPY->get(L"beautiful");
+	EXPECT_EQ(Expr::ExprType::TYPE_STRING, life->getType());
+	EXPECT_EQ(L"life", std::dynamic_pointer_cast<expr::StringExpr>(life)->getString());
+
+}
+
+TEST_F(SimpleParserTest, StatesTest1) {
+	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ]1+2+3";
+	SimpleParser parser(content);
+	parser.init();
+	auto states = parser.states();
+	EXPECT_EQ(0, states.size());
+}
+
+TEST_F(SimpleParserTest, StatesTest2) {
+	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ];1+2+3";
+	SimpleParser parser(content);
+	parser.init();
+	auto states = parser.states();
+	EXPECT_EQ(2, states.size());
+}
+TEST_F(SimpleParserTest, StatesTest3) {
+	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ];1+2+3[]";
+	SimpleParser parser(content);
+	parser.init();
+	auto states = parser.states();
+	EXPECT_EQ(1, states.size());
+}
+
+TEST_F(SimpleParserTest, ClosureTest) {
+	wstring content = L"{1+2+3;}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto ret = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, ret->getType());
+	auto number = std::dynamic_pointer_cast<expr::NumberExpr>(ret);
+	EXPECT_EQ(6, number->getNumber());
+}
+
+TEST_F(SimpleParserTest, ClosureTest1) {
+	wstring content = L"{a=6;a+3;}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto ret = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, ret->getType());
+	auto number = std::dynamic_pointer_cast<expr::NumberExpr>(ret);
+	EXPECT_EQ(9, number->getNumber());
+}
+
+TEST_F(SimpleParserTest, ClosureTest2) {
+	wstring content = L"{a=6;{a+3;};}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto ret = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, ret->getType());
+	wcout << ret << endl;
+	auto number = std::dynamic_pointer_cast<expr::NumberExpr>(ret->getValue());
+	EXPECT_EQ(9, number->getNumber());
 }
