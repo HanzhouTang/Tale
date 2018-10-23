@@ -48,8 +48,9 @@ TEST_F(ExprTest, ClosureTest) {
 	closure_inside->addExpression(add1);
 	closure_new->addExpression(closure_inside);
 	auto ret = closure_new->getValue();
-	EXPECT_EQ(ret->getType(), Expr::ExprType::TYPE_NUMBER);
-	EXPECT_EQ(std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber(), 16);
+	EXPECT_EQ(ret->getType(), Expr::ExprType::TYPE_CLOSURE);
+	auto number = ret->getValue();
+	EXPECT_EQ(std::dynamic_pointer_cast<NumberExpr>(number)->getNumber(), 16);
 }
 
 

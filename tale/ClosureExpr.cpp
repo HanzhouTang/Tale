@@ -36,13 +36,18 @@ namespace expr {
 	{
 		std::shared_ptr<Expr> ret = NullExpr::createNullExpr();
 		if (expressions.size() == 0) { return ret; }
-		for (const auto& x : expressions) {
+	
+		for (int i = 0; i < expressions.size()-1;i++) {
+			auto& x = expressions[i];
 			if (x->getType() == TYPE_RETURN) {
 				return x->getValue();
 			}
 			ret = x->getValue();
 		}
-		return ret;
+		auto& content = expressions.back();
+		if (content->getType() == TYPE_VARIABLE ||content->getType()== TYPE_CONDITION ||content->getType()== TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
+			return content->getValue();
+		return content;
 	}
 
 	void ClosureExpr::store(const std::shared_ptr<Expr>& start) {

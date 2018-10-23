@@ -378,7 +378,6 @@ TEST_F(SimpleParserTest, ClosureTest2) {
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto ret = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, ret->getType());
-	wcout << ret << endl;
 	auto number = std::dynamic_pointer_cast<expr::NumberExpr>(ret->getValue());
 	EXPECT_EQ(9, number->getNumber());
 }
