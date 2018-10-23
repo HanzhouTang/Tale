@@ -385,7 +385,22 @@ TEST_F(SimpleParserTest, ClosureTest2) {
 }
 
 
+
 TEST_F(SimpleParserTest, FunctionTest) {
+	wstring content = L"{def add(a,b){\"\" + a +b +\"!\" ;};}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.closure();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto function = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, function->getType());
+	auto f = std::dynamic_pointer_cast<expr::FunctionExpr>(function);
+	auto result = f->getValue({ L"hello"_expr,L" world"_expr });
+	wcout << result << endl;
+}
+
+
+TEST_F(SimpleParserTest, FunctionTest1) {
 	wstring content = L"{def add(a,b){a+b;};}";
 	SimpleParser parser(content);
 	parser.init();
@@ -394,8 +409,10 @@ TEST_F(SimpleParserTest, FunctionTest) {
 	auto function = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, function->getType());
 	auto f = std::dynamic_pointer_cast<expr::FunctionExpr>(function);
-	auto result = f->getValue({ 1_expr,3_expr });
+	auto result = f->getValue({ 1_expr,2_expr });
 	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
-	EXPECT_EQ(4, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+	EXPECT_EQ(3, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+	
 }
 
+// support number and string

@@ -203,6 +203,14 @@ namespace parser {
 			substrMap[status] = result;
 			return ret;
 		}
+		else if (token == SimpleLexer::Variable) {
+			match(SimpleLexer::Token::Variable);
+			auto ret = expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
+			MemoResult result(ret, lexer.get());
+			substrMap[status] = result;
+			return ret;
+
+		}
 		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
 		substrMap[status] = result;
 		return expr::NullExpr::createNullExpr();
@@ -223,9 +231,10 @@ namespace parser {
 			auto MoreSubStrs = moresubstrs();
 			if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
 				std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(SubStr);
-				MemoResult result(MoreSubStrs, lexer.get());
+				auto ret = expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), MoreSubStrs);
+				MemoResult result(ret, lexer.get());
 				moresubstrMap[status] = result;
-				return MoreSubStrs;
+				return ret;
 			}
 
 			else if (SubStr->getType() != expr::Expr::TYPE_NULL) {
