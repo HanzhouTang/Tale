@@ -59,6 +59,11 @@ namespace parser {
 		std::deque<std::shared_ptr<expr::Expr>> states();
 		//==============for closure ============================
 		std::shared_ptr<expr::Expr> closure();
+		//==============for functions ==========================
+		std::shared_ptr<expr::Expr> func();
+		std::wstring funcName();
+		std::deque<std::wstring> funcParameters();
+		std::deque<std::wstring> moreFuncParameters();
 
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);

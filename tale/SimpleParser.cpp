@@ -11,6 +11,7 @@
 #include"AssignExpr.h"
 #include"MapExpr.h"
 #include"ClosureExpr.h"
+#include"FunctionExpr.h"
 #include<stack>
 #include<functional>
 using namespace Utility;
@@ -266,6 +267,11 @@ namespace parser {
 			return x;
 		}
 		x = closure();
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return x;
+		}
+		x = func();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			lexer.pop();
 			return x;
@@ -526,6 +532,73 @@ namespace parser {
 		MemoResult result(nullexpr, lexer.get());
 		stateMap.emplace(status, result);
 		return nullexpr;
+	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::func() {
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Def) {
+			match(SimpleLexer::Def);
+			auto FunctionName = funcName();
+			token = lexer.lookAheadK(1)[0];
+			if (token == SimpleLexer::LParen) {
+				match(SimpleLexer::LParen);
+				auto parameters = funcParameters();
+				match(SimpleLexer::RParen);
+				token = lexer.lookAheadK(1)[0];
+				if (token == SimpleLexer::Newline) {
+					match(SimpleLexer::Newline);
+				}
+				auto Closure = closure();
+				auto function = expr::FunctionExpr::createFunctionExpr();
+				function->setClosure(std::dynamic_pointer_cast<expr::ClosureExpr>(Closure));
+				function->setSignature(std::vector<std::wstring>(parameters.begin(),parameters.end()));
+				if (FunctionName != L"") {
+					auto variable = expr::VariableExpr::createVariableExpr(FunctionName);
+					auto assign = expr::AssignExpr::createAssignExpr(variable, function);
+					return assign;
+				}
+				return function;
+			}
+		}
+		else {
+			return expr::NullExpr::createNullExpr();
+		}
+	}
+
+	std::wstring SimpleParser::funcName() {
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::Variable) {
+			match(SimpleLexer::Token::Variable);
+			return lexer.currentLexeme;
+		}
+		return L"";
+	}
+
+	std::deque<std::wstring> SimpleParser::funcParameters() {
+		auto token = lexer.lookAheadK(1)[0];
+		std::wstring first=L"";
+		if (token == SimpleLexer::Token::Variable) {
+			match(SimpleLexer::Token::Variable);
+			first = lexer.currentLexeme;
+		}
+		auto parameters = moreFuncParameters();
+		if (first != L"") {
+			parameters.emplace_front(first);
+		}
+		return parameters;
+	}
+
+	std::deque<std::wstring> SimpleParser::moreFuncParameters() {
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::Comma) {
+			match(SimpleLexer::Token::Comma);
+			match(SimpleLexer::Token::Variable);
+			auto param = lexer.currentLexeme;
+			auto MoreParams = moreFuncParameters();
+			MoreParams.emplace_front(param);
+			return MoreParams;
+		}
+		return 	std::deque<std::wstring>();
 	}
 }
 

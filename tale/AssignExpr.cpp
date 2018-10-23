@@ -8,7 +8,13 @@ namespace expr {
 	std::shared_ptr<Expr> AssignExpr::getValue() {
 		auto runtime = getRunTime();
 		auto variable = std::dynamic_pointer_cast<VariableExpr>(getLeft());
-		auto result = getRight()->getValue();
+		std::shared_ptr<expr::Expr> result;
+		if (getRight()->getType() != Expr::TYPE_FUNCTION) {
+			result = getRight()->getValue();
+		}
+		else {
+			result = getRight();
+		}
 		auto ret = setVariable(variable, result);
 		if (ret->getType() == TYPE_NULL) {
 			if (runtime->getType() != TYPE_CLOSURE) {
