@@ -63,6 +63,7 @@ namespace expr {
 		ret->getter = FunctionExpr::createFunctionExpr();
 		auto closure_getter = ClosureExpr::createClosureExpr();
 		closure_getter->addVarable(L"map", ret);
+		
 		closure_getter->addExpression(
 			ReturnExpr::createReturnExpr(
 					(*closure_getter->getVariable(L"map"_variableExpr))({ L"key"_variableExpr })		

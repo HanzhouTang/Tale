@@ -8,6 +8,7 @@
 #include"StringExpr.h"
 #include"ExprLiteral.h"
 #include"FunctionExpr.h"
+#include"CallExpr.h"
 using namespace std;
 using namespace expr;
 using namespace parser;
@@ -390,13 +391,13 @@ TEST_F(SimpleParserTest, FunctionTest) {
 	wstring content = L"{def add(a,b){\"\" + a +b +\"!\" ;};}";
 	SimpleParser parser(content);
 	parser.init();
-	auto closure = parser.closure();
+	auto closure = parser.element();
+	wcout << closure << endl;
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto function = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, function->getType());
 	auto f = std::dynamic_pointer_cast<expr::FunctionExpr>(function);
 	auto result = f->getValue({ L"hello"_expr,L" world"_expr });
-	wcout << result << endl;
 }
 
 
@@ -412,7 +413,28 @@ TEST_F(SimpleParserTest, FunctionTest1) {
 	auto result = f->getValue({ 1_expr,2_expr });
 	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
 	EXPECT_EQ(3, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
-	
+}
+
+TEST_F(SimpleParserTest, CallTest) {
+	wstring content = L"add(1,2)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.callable();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_VARIABLE, callable->getType());
+	auto variableName = std::dynamic_pointer_cast<expr::VariableExpr>(callable)->getName();
+	EXPECT_EQ(L"add", variableName);
+}
+
+TEST_F(SimpleParserTest, CallTest1) {
+	wstring content = L"def (a,b){a+b;}(1,2)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.callable();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
 }
 
 // support number and string

@@ -1,5 +1,7 @@
 #pragma once
 #include"Expr.h"
+#include"NullExpr.h"
+#include"Utility.h"
 namespace expr {
 	struct CallExpr :Expr {
 		std::vector<std::shared_ptr<Expr>> parameters;
@@ -11,7 +13,12 @@ namespace expr {
 			parameters = p;
 		}
 		std::shared_ptr<Expr> getCallable() {
+			if (callable->getType() == Expr::TYPE_VARIABLE) {
+				return callable->getValue();
+			}
 			return callable;
+			//Utility::quitWithError(__LINE__, __FILE__, L"type " + callable->getTypeString() + L" cannot be callable");
+			//return NullExpr::createNullExpr();
 		}
 		std::vector<std::shared_ptr<Expr>> getParameters() { return parameters; }
 		CallExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& f,

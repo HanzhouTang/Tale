@@ -385,17 +385,15 @@ TEST_F(ExprTest, ReserveTest) {
 
 TEST_F(ExprTest, BasicMapTest) {
 	auto map = MapExpr::createMapExpr({ { L"x",1_expr },{ L"x1",L"hello world"_expr } });
+	
 	auto getter = map->getGetter();
 	auto setter = map->getSetter();
-
 	auto x = getter->getValue({ L"x"_expr });
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, x->getType());
 	EXPECT_EQ(1, std::dynamic_pointer_cast<NumberExpr>(x)->getNumber());
-
 	auto x1 = getter->getValue({ L"x1"_expr });
 	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x1->getType());
 	EXPECT_EQ(L"hello world", std::dynamic_pointer_cast<StringExpr>(x1)->getString());
-
 	setter->getValue({ L"x"_expr,L"a test"_expr });
 
 	auto x_new = getter->getValue({ L"x"_expr });
@@ -435,7 +433,7 @@ a+=1;
 }
 g()
 return g;
-
+}
 */
 
 TEST_F(ExprTest, PrintTest) {
@@ -453,10 +451,10 @@ TEST_F(ExprTest, PrintTest) {
 	closure_outter->addExpression(functionInside);
 	closure_outter->addExpression(ReturnExpr::createReturnExpr(nullptr, functionInside));
 	function->setClosure(closure_outter);
-
 	auto f = FunctionExpr::createFunctionExpr();
 	auto closure = ClosureExpr::createClosureExpr();
 	closure->addExpression(L"f"_variableExpr << CallExpr::createCallExpr(function));
 	closure->addExpression(CallExpr::createCallExpr(print, { CallExpr::createCallExpr(L"f"_variableExpr) }));
 	f->setClosure(closure);
+	f->getValue();
 }

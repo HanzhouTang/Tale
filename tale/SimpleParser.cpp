@@ -12,6 +12,7 @@
 #include"MapExpr.h"
 #include"ClosureExpr.h"
 #include"FunctionExpr.h"
+#include"CallExpr.h"
 #include<stack>
 #include<functional>
 using namespace Utility;
@@ -259,27 +260,48 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
+		using namespace std;
 		lexer.save();
 		auto x = expr();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			lexer.pop();
 			return x;
 		}
+		lexer.restore();
+		lexer.save();
 		x = str();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
+			wcout << "string " << x->toString() << endl;
 			lexer.pop();
 			return x;
 		}
+		lexer.restore();
+		lexer.save();
 		x = map();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			lexer.pop();
 			return x;
 		}
+		lexer.restore();
+		lexer.save();
 		x = closure();
+		wcout << "current lexeme " << lexer.currentLexeme << endl;
+		wcout << "here closure" << L"type " << x->getType() << std::endl;
+		if (x->getType() != expr::Expr::TYPE_NULL) {
+			std::wcout << L"type " << x->getType() << std::endl;
+			std::wcout << "clousre" << std::endl;
+			lexer.pop();
+			return x;
+		}
+		lexer.restore();
+		lexer.save();
+		x = callable();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			lexer.pop();
 			return x;
 		}
+		lexer.restore();
+		lexer.save();
 		x = func();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			lexer.pop();
@@ -287,6 +309,30 @@ namespace parser {
 		}
 		lexer.restore();
 		return expr::NullExpr::createNullExpr();
+	}
+
+	std::deque<std::shared_ptr<expr::Expr>> SimpleParser::elementlists()
+	{
+		auto Element = element();
+		if (Element->getType() == expr::Expr::TYPE_NULL) {
+			return std::deque<std::shared_ptr<expr::Expr>>();
+		}
+		auto MoreElements = moreelements();
+		MoreElements.emplace_front(Element);
+		return MoreElements;
+	}
+
+	std::deque<std::shared_ptr<expr::Expr>> SimpleParser::moreelements()
+	{
+		auto tokens = lexer.lookAheadK(1)[0];
+		if (tokens == SimpleLexer::Token::Comma) {
+			match(SimpleLexer::Token::Comma);
+			auto Element = element();
+			auto MoreElements = moreelements();
+			MoreElements.emplace_front(Element);
+			return MoreElements;
+		}
+		return std::deque<std::shared_ptr<expr::Expr>>();
 	}
 
 	void SimpleParser::init() {
@@ -437,12 +483,14 @@ namespace parser {
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::state() {
+		using namespace std;
 		auto status = lexer.get();
 		if (stateMap.find(status) != stateMap.end()) {
 			auto result = stateMap[status];
 			lexer.set(result.newStatus);
 			return result.result;
 		}
+		lexer.save();
 		auto x = assign();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
 			auto token = lexer.lookAheadK(1)[0];
@@ -459,14 +507,19 @@ namespace parser {
 				matching = true;
 			}
 			if (matching) {
+				lexer.pop();
 				MemoResult result(x, lexer.get());
 				stateMap.emplace(status, result);
 				return x;
 			}
 		}
+		lexer.restore();
+		lexer.save();
 		x = element();
 		if (x->getType() != expr::Expr::TYPE_NULL) {
+			wcout << "in state here" << endl;
 			auto token = lexer.lookAheadK(1)[0];
+			wcout << "__state__ " << SimpleLexer::getTokenName(token) << endl;
 			bool matching = false;
 			if (token == SimpleLexer::Token::Semicolon) {
 				match(SimpleLexer::Token::Semicolon);
@@ -480,11 +533,15 @@ namespace parser {
 				matching = true;
 			}
 			if (matching) {
+				lexer.pop();
 				MemoResult result(x, lexer.get());
 				stateMap.emplace(status, result);
+				//dao zheli l 
+				wcout << L"ret statement " << x->toString() << endl;
 				return x;
 			}
 		}
+		lexer.restore();
 		x = expr::NullExpr::createNullExpr();
 		MemoResult result(x, lexer.get());
 		stateMap.emplace(status, result);
@@ -493,11 +550,12 @@ namespace parser {
 	}
 
 	std::deque<std::shared_ptr<expr::Expr>> SimpleParser::states() {
-
+		using namespace std;
 		auto State = state();
 		if (State->getType() == expr::Expr::TYPE_NULL) {
 			return std::deque<std::shared_ptr<expr::Expr>>();
 		}
+		wcout << L"states " << endl;
 		auto ret = states();
 		ret.emplace_front(State);
 		return ret;
@@ -505,6 +563,8 @@ namespace parser {
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::closure() {
+		using namespace std;
+		wcout << "closure start" << endl;
 		auto status = lexer.get();
 		if (closureMap.find(status) != closureMap.end()) {
 			auto result = closureMap[status];
@@ -514,29 +574,35 @@ namespace parser {
 		lexer.save();
 		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Token::LCurlyBrace) {
+			wcout << "Is a lcurlyBrace" << endl;
 			match(SimpleLexer::Token::LCurlyBrace);
+			wcout << "in closure " << lexer.currentLexeme << endl;
+			auto TOKENS = lexer.lookAheadK(3);
+			for (auto x : TOKENS) {
+				wcout << SimpleLexer::getTokenName(x) << " ";
+			}
+			wcout << endl;
+			wcout << "in clousre ==================before states()===============" << endl;
 			auto States = states();
-			token = lexer.lookAheadK(1)[0];
-			if (token == SimpleLexer::Token::RCurlyBrace) {
-				match(SimpleLexer::Token::RCurlyBrace);
-				auto closure = expr::ClosureExpr::createClosureExpr();
-				for (auto& x : States) {
-					closure->addExpression(x);
-				}
-				lexer.pop();
-				MemoResult result(closure, lexer.get());
-				stateMap.emplace(status, result);
-				return closure;
+			wcout << "in clousre ==================after states()===============" << endl;
+			TOKENS = lexer.lookAheadK(3);
+			for (auto x : TOKENS) {
+				wcout << "!"<<SimpleLexer::getTokenName(x) << " ";
 			}
-			else {
-				auto nullexpr = expr::NullExpr::createNullExpr();
-				lexer.restore();
-				MemoResult result(nullexpr, lexer.get());
-				stateMap.emplace(status, result);
-				return nullexpr;
+			wcout << endl;
+			match(SimpleLexer::Token::RCurlyBrace);
+			auto closure = expr::ClosureExpr::createClosureExpr();
+			for (auto& x : States) {
+				closure->addExpression(x);
 			}
+			lexer.pop();
+			MemoResult result(closure, lexer.get());
+			stateMap.emplace(status, result);
+			wcout << L"ret closure " << endl;
+			return closure;
+
 		}
-		lexer.pop();
+		lexer.restore();
 		auto nullexpr = expr::NullExpr::createNullExpr();
 		MemoResult result(nullexpr, lexer.get());
 		stateMap.emplace(status, result);
@@ -544,6 +610,8 @@ namespace parser {
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::func() {
+		using namespace std;
+		wcout << "in func" << endl;
 		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Def) {
 			match(SimpleLexer::Def);
@@ -560,7 +628,7 @@ namespace parser {
 				auto Closure = closure();
 				auto function = expr::FunctionExpr::createFunctionExpr();
 				function->setClosure(std::dynamic_pointer_cast<expr::ClosureExpr>(Closure));
-				function->setSignature(std::vector<std::wstring>(parameters.begin(),parameters.end()));
+				function->setSignature(std::vector<std::wstring>(parameters.begin(), parameters.end()));
 				if (FunctionName != L"") {
 					auto variable = expr::VariableExpr::createVariableExpr(FunctionName);
 					auto assign = expr::AssignExpr::createAssignExpr(variable, function);
@@ -585,7 +653,7 @@ namespace parser {
 
 	std::deque<std::wstring> SimpleParser::funcParameters() {
 		auto token = lexer.lookAheadK(1)[0];
-		std::wstring first=L"";
+		std::wstring first = L"";
 		if (token == SimpleLexer::Token::Variable) {
 			match(SimpleLexer::Token::Variable);
 			first = lexer.currentLexeme;
@@ -608,6 +676,50 @@ namespace parser {
 			return MoreParams;
 		}
 		return 	std::deque<std::wstring>();
+	}
+	std::shared_ptr<expr::Expr> SimpleParser::callable()
+	{
+		auto tokens = lexer.lookAheadK(2);
+		if (tokens[0] == SimpleLexer::Token::Variable&& tokens[1] == SimpleLexer::Token::LParen) {
+			match(SimpleLexer::Token::Variable);
+			auto VariableName = lexer.currentLexeme;
+			match(SimpleLexer::Token::LParen);
+			auto ElementLists = elementlists();
+			auto Params = std::vector<std::shared_ptr<expr::Expr>>(ElementLists.begin(), ElementLists.end());
+			match(SimpleLexer::Token::RParen);
+			auto variable = expr::VariableExpr::createVariableExpr(VariableName);
+			return expr::CallExpr::createCallExpr(variable, Params);
+		}
+
+		// need support callable for curry
+
+
+		//lexer.save();
+		//auto function = func();
+		////std::wcout << "it's a function" << std::endl;
+		////std::wcout << function->toString() << std::endl;
+		//if (function->getType() == expr::Expr::TYPE_FUNCTION) {
+
+		//	auto token = lexer.lookAheadK(1)[0];
+		//	if (token == SimpleLexer::Token::LParen) {
+		//		match(SimpleLexer::Token::LParen);
+		//		auto ElementLists = elementlists();
+		//		auto Params = std::vector<std::shared_ptr<expr::Expr>>(ElementLists.begin(), ElementLists.end());
+		//		match(SimpleLexer::Token::RParen);
+		//		lexer.pop();
+		//		return expr::CallExpr::createCallExpr(function, Params);
+		//	}
+		//	else {
+		//		std::wcout << "distinguish from function" << std::endl;
+		//		lexer.restore();
+		//	}
+		//}
+		//else {
+		//	//std::wcout << "!!!" << std::endl;
+		//	lexer.restore();
+		//	//std::wcout << "restore " << std::endl;
+		//}
+		return expr::NullExpr::createNullExpr();
 	}
 }
 

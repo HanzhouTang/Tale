@@ -48,11 +48,12 @@ namespace expr {
 	std::shared_ptr<CallExpr> CallExpr::createCallExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& f,
 		const std::vector<std::shared_ptr<Expr>>& param)
 	{
+		using namespace std;
 		auto ret = std::make_shared<CallExpr>(runtime, f, param);
 		for (auto& x : ret->getParameters()) {
 			x->setRunTime(ret);
 		}
-		ret->getCallable()->setRunTime(ret);
+		ret->callable->setRunTime(ret);
 		return ret;
 	}
 }
