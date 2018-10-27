@@ -12,6 +12,7 @@
 using namespace std;
 using namespace expr;
 using namespace parser;
+
 TEST_F(SimpleParserTest, AddTwoNumber) {
 	wstring content = L"1234+325";
 	SimpleParser parser(content);
@@ -448,6 +449,52 @@ TEST_F(SimpleParserTest, CallTest1) {
 	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
 	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
 	EXPECT_EQ(3, answer);
+
+}
+
+TEST_F(SimpleParserTest, CallTest2) {
+	wstring content = L"def (a,b){a+b;}(1,2)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
+	EXPECT_EQ(3, answer);
+
+}
+
+TEST_F(SimpleParserTest, CallTest3) {
+	wstring content = L"def (){}()";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
+}
+
+TEST_F(SimpleParserTest, CallTest4) {
+	wstring content = L"def (a){}(1)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
+}
+
+TEST_F(SimpleParserTest, CallTest5) {
+	wstring content = L"def (){}()()";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+	EXPECT_EQ(expr::Expr::TYPE_CALL, callable->getType());
 }
 
 // support number and string

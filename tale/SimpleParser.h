@@ -71,6 +71,9 @@ namespace parser {
 		//==============for callable ===========================
 		std::shared_ptr<expr::Expr> callable();
 		std::shared_ptr<expr::Expr> callobject();
+		std::deque<std::deque<std::shared_ptr<expr::Expr>>> paramlists();
+		std::deque<std::deque<std::shared_ptr<expr::Expr>>> moreparamlists();
+		std::tuple<bool,std::deque<std::shared_ptr<expr::Expr>>> paramlist();
 		
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
