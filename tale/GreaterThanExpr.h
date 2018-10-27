@@ -31,6 +31,5 @@ namespace expr {
 			return ret;
 		}
 		std::shared_ptr<Expr> getValue() override;
-
 	};
 }

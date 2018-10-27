@@ -27,6 +27,50 @@ TEST_F(ExprTest, BasicVariableTest) {
 	EXPECT_THAT(variable_new->getValue()->toString(), EndsWith(L"15"));
 }
 
+TEST_F(ExprTest, AndExprTest) {
+	using namespace std;
+	auto T = expr::BooleanExpr::createBooleanExpr(true);
+	auto F = expr::BooleanExpr::createBooleanExpr(false);
+	auto test = expr::AndExpr::createAndExpr(T, F);
+	wcout << test->toString() << endl;
+	auto result = test->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_BOOLEAN, result->getType());
+	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
+}
+
+TEST_F(ExprTest, OrExprTest) {
+	using namespace std;
+	auto T = expr::BooleanExpr::createBooleanExpr(true);
+	auto F = expr::BooleanExpr::createBooleanExpr(false);
+	auto test = expr::OrExpr::createOrExpr(T, F);
+	wcout << test->toString()<< endl;
+	auto result = test->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_BOOLEAN, result->getType());
+	EXPECT_EQ(true, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
+}
+
+TEST_F(ExprTest, NotExprTest) {
+	using namespace std;
+	auto T = expr::BooleanExpr::createBooleanExpr(true);
+	auto test = expr::NotExpr::createNotExpr(T);
+	wcout << test->toString() << endl;
+	auto result = test->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_BOOLEAN, result->getType());
+	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
+}
+
+TEST_F(ExprTest, OrExprNotExprTest) {
+	using namespace std;
+	auto T = expr::BooleanExpr::createBooleanExpr(true);
+	auto F = expr::BooleanExpr::createBooleanExpr(false);
+	auto test = expr::NotExpr::createNotExpr(expr::OrExpr::createOrExpr(T, F));
+	wcout << test->toString() << endl;
+	auto result = test->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_BOOLEAN, result->getType());
+	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
+}
+
+
 TEST_F(ExprTest, BasicAssignTest) {
 	std::shared_ptr<AssignExpr> assign = AssignExpr::createAssignExpr(nullptr, variable, number_15);
 	auto closure_new = ClosureExpr::createClosureExpr();

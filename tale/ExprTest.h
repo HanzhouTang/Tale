@@ -20,6 +20,9 @@
 #include"MapExpr.h"
 #include"ExternalFunctionExpr.h"
 #include"ExprLibrary.h"
+#include"AndExpr.h"
+#include"NotExpr.h"
+#include"OrExpr.h"
 
 struct ExprTest : testing::Test {
 	std::shared_ptr<expr::NumberExpr> number_15;

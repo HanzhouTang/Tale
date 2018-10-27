@@ -23,6 +23,17 @@ TEST_F(SimpleParserTest, AddTwoNumber) {
 	EXPECT_EQ(1559, value->getNumber());
 }
 
+TEST_F(SimpleParserTest, NumberTest) {
+	wstring content = L"-123";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(-123, value->getNumber());
+}
+
+
 TEST_F(SimpleParserTest, ParseAddAndTimes) {
 	using namespace std;
 	wstring content = L"123+456*23";

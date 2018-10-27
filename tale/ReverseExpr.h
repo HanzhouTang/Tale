@@ -22,6 +22,5 @@ namespace expr {
 			return createReverseExpr(getRunTime(), expr->clone());
 		}
 		virtual std::shared_ptr<Expr> getValue() override;
-
 	};
 }

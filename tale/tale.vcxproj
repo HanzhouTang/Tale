@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AddExpr.cpp" />
+    <ClCompile Include="AndExpr.cpp" />
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="ArithmeticExpr.cpp" />
     <ClCompile Include="AssignExpr.cpp" />
@@ -160,10 +161,13 @@
     <ClCompile Include="FunctionExpr.cpp" />
     <ClCompile Include="GreaterThanExpr.cpp" />
     <ClCompile Include="ExprLibrary.cpp" />
+    <ClCompile Include="LessThanExpr.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapExpr.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NotExpr.cpp" />
     <ClCompile Include="NullExpr.cpp" />
+    <ClCompile Include="OrExpr.cpp" />
     <ClCompile Include="ReturnExpr.cpp" />
     <ClCompile Include="ReverseExpr.cpp" />
     <ClCompile Include="SimpleLexer.cpp" />
@@ -180,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddExpr.h" />
+    <ClInclude Include="AndExpr.h" />
     <ClInclude Include="AppBase.h" />
     <ClInclude Include="ArithmeticExpr.h" />
     <ClInclude Include="AssignExpr.h" />
@@ -200,8 +205,11 @@
     <ClInclude Include="FunctionExpr.h" />
     <ClInclude Include="GreaterThanExpr.h" />
     <ClInclude Include="ExprLibrary.h" />
+    <ClInclude Include="LessThanExpr.h" />
     <ClInclude Include="MapExpr.h" />
+    <ClInclude Include="NotExpr.h" />
     <ClInclude Include="NullExpr.h" />
+    <ClInclude Include="OrExpr.h" />
     <ClInclude Include="ReturnExpr.h" />
     <ClInclude Include="ReverseExpr.h" />
     <ClInclude Include="SimpleLexerTest.h" />

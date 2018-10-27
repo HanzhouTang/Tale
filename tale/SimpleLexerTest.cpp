@@ -76,3 +76,68 @@ TEST_F(SimpleLexerTest, ParenthesesTest) {
 	lexer.init();
 }
 
+TEST_F(SimpleLexerTest, EqlEqlTest) {
+	wstring content = L"a==b";
+	SimpleLexer lexer(content);
+	lexer.init();
+	auto token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"a", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EqlEql, token);
+	EXPECT_EQ(L"==", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"b", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
+	lexer.init();
+}
+
+TEST_F(SimpleLexerTest, EqlTestNew) {
+	wstring content = L"a=b";
+	SimpleLexer lexer(content);
+	lexer.init();
+	auto token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"a", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Eql, token);
+	EXPECT_EQ(L"=", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"b", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
+	lexer.init();
+}
+
+TEST_F(SimpleLexerTest, TrueTest) {
+	wstring content = L"a true";
+	SimpleLexer lexer(content);
+	lexer.init();
+	auto token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"a", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::True, token);
+	EXPECT_EQ(L"true", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
+	lexer.init();
+}
+
+TEST_F(SimpleLexerTest, FalseTest) {
+	wstring content = L"a false";
+	SimpleLexer lexer(content);
+	lexer.init();
+	auto token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::Variable, token);
+	EXPECT_EQ(L"a", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::False, token);
+	EXPECT_EQ(L"false", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
+	lexer.init();
+}

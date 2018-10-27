@@ -9,14 +9,15 @@ namespace parser {
 	{L"}",Token::RCurlyBrace},{L"*",Token::Times},{L"-",Token::Minus},{L"+",Token::Add},{L"/",Token::Div},
 	{L"(",Token::LParen},{L")",Token::RParen},{L"=",Token::Eql},{L"<",Token::Less},{L">",Token::Greater},
 	{L";",Token::Semicolon},{L"\"",Token::Quote},{L"\n",Token::Newline} , {L"and",Token::Add},{L"or",Token::Or},
-	{L"if",Token::If},{L"else",Token::Else},{L":",Token::Colon},{L"def",{Token::Def}}
+	{L"if",Token::If},{L"else",Token::Else},{L":",Token::Colon},{L"def",Token::Def},{ L"true",Token::True }
+	,{ L"false",Token::False }
 	};
 
 	const std::vector<std::wstring> SimpleLexer::TokenNames = {
 		L"LBrace",L"RBrace", L"Comma",L"LCurlyBrace",L"RCurlyBrace", L"Times", L"Minus",
 		L"Add", L"Div", L"LParen", L"RParen", L"Eql", L"Less", L"Greater", L"And",L"Or", L"Semicolon"
 		, L"If", L"Else", L"Quote", L"Invalid", L"Variable",L"Newline", L"EndofContent",L"Number",
-		L"String",L"Colon",L"Def"
+		L"String",L"Colon",L"Def",L"EqlEql",L"True",L"False"
 	};
 	
 	SimpleLexer::Token SimpleLexer::getNextToken() {
@@ -53,6 +54,14 @@ namespace parser {
 				state = State::inString;
 			}
 		}
+		if (currentLexeme == L"=") {
+			auto nextChar = peek();
+			if (nextChar == L'=') {
+				index1++;
+				currentLexeme = L"==";
+				return Token::EqlEql;
+			}
+		}
 		//wcout << L"(" << currentLexeme << L")" << endl;
 		if (lexeme2token.count(currentLexeme)) {
 			return lexeme2token.find(currentLexeme)->second;
@@ -66,6 +75,7 @@ namespace parser {
 		return Token::Invalid;
 	}
 	// if no string 
+
 
 	wchar_t SimpleLexer::peek() {
 		return *(index1);

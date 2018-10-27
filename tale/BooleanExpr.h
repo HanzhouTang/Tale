@@ -3,6 +3,11 @@
 namespace expr {
 	struct BooleanExpr : Expr {
 		bool value;
+		virtual std::wstring toString() override {
+			std::wostringstream ret;
+			ret << TypeList[getType()] << L"@" << shared_from_this() <<" value "<<value;
+			return ret.str();
+		}
 		BooleanExpr(const std::shared_ptr<Expr>& runtime, bool v) :
 			Expr(runtime), value(v) {
 			setType(TYPE_BOOLEAN);
@@ -17,7 +22,5 @@ namespace expr {
 			return createBooleanExpr(getRunTime(), value);
 		}
 		bool getBoolValue() { return value; }
-
-
 	};
 }
