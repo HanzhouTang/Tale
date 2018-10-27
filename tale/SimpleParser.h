@@ -30,6 +30,8 @@ namespace parser {
 		MemoMap mapMap;
 		MemoMap stateMap;
 		MemoMap closureMap;
+		MemoMap funcMap;
+		MemoMap callableMap;
 		//std::shared_ptr<expr::Expr> parse();
 		SimpleParser(const std::wstring& content) : lexer(content) {}
 		SimpleParser(std::wstring&& content) :lexer(std::move(content)) {}

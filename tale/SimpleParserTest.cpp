@@ -392,7 +392,7 @@ TEST_F(SimpleParserTest, FunctionTest) {
 	SimpleParser parser(content);
 	parser.init();
 	auto closure = parser.element();
-	wcout << closure << endl;
+	//wcout << closure << endl;
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto function = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, function->getType());
@@ -432,7 +432,7 @@ TEST_F(SimpleParserTest, BASICTEST) {
 	SimpleParser parser(content);
 	parser.init();
 	auto result = parser.element();
-	wcout << result->toString() << endl;
+	//wcout << result->toString() << endl;
 }
 
 
