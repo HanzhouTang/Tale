@@ -263,7 +263,7 @@ namespace parser {
 		using namespace std;
 		auto fs = { &SimpleParser::expr , &SimpleParser::str,
 			&SimpleParser::map, &SimpleParser::closure,
-			&SimpleParser::callable, &SimpleParser::func };
+			&SimpleParser::func,&SimpleParser::callable };
 		for (auto f : fs) {
 			lexer.save();
 			auto x = (this->*f)();
@@ -617,16 +617,13 @@ namespace parser {
 			lexer.set(result.newStatus);
 			return result.result;
 		}
-		auto tokens = lexer.lookAheadK(2);
-		if (tokens[0] == SimpleLexer::Token::Variable&& tokens[1] == SimpleLexer::Token::LParen) {
-			match(SimpleLexer::Token::Variable);
-			auto VariableName = lexer.currentLexeme;
+		auto Callobject = callobject();
+		if (Callobject->getType() != expr::Expr::TYPE_NULL) {
 			match(SimpleLexer::Token::LParen);
 			auto ElementLists = elementlists();
 			auto Params = std::vector<std::shared_ptr<expr::Expr>>(ElementLists.begin(), ElementLists.end());
 			match(SimpleLexer::Token::RParen);
-			auto variable = expr::VariableExpr::createVariableExpr(VariableName);
-			auto callable = expr::CallExpr::createCallExpr(variable, Params);
+			auto callable = expr::CallExpr::createCallExpr(Callobject, Params);
 			MemoResult result(callable, lexer.get());
 			callableMap.emplace(status, result);
 			return callable;
@@ -635,5 +632,25 @@ namespace parser {
 		callableMap.emplace(status, result);
 		return expr::NullExpr::createNullExpr();
 	}
+
+	std::shared_ptr<expr::Expr> SimpleParser::callobject()
+	{
+		auto token = lexer.lookAheadK(1)[0];
+		lexer.save();
+		if (token == SimpleLexer::Token::Variable) {
+			match(SimpleLexer::Token::Variable);
+			auto VariableName = lexer.currentLexeme;
+			lexer.pop();
+			return expr::VariableExpr::createVariableExpr(VariableName);
+		}
+		auto Func = func();
+		if (Func->getType() == expr::Expr::TYPE_FUNCTION) {
+			lexer.pop();
+			return Func;
+		}
+		lexer.restore();
+		return expr::NullExpr::createNullExpr();
+	}
+
 }
 

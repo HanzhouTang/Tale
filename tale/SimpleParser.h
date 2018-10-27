@@ -70,6 +70,7 @@ namespace parser {
 		std::deque<std::wstring> moreFuncParameters();
 		//==============for callable ===========================
 		std::shared_ptr<expr::Expr> callable();
+		std::shared_ptr<expr::Expr> callobject();
 		
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
