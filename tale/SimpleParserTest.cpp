@@ -427,14 +427,23 @@ TEST_F(SimpleParserTest, CallTest) {
 	EXPECT_EQ(L"add", variableName);
 }
 
-TEST_F(SimpleParserTest, CallTest1) {
-	wstring content = L"def (a,b){a+b;}(1,2)";
+TEST_F(SimpleParserTest, BASICTEST) {
+	wstring content = L"a";
 	SimpleParser parser(content);
 	parser.init();
-	auto call = parser.callable();
-	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
-	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
-	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
+	auto result = parser.element();
+	wcout << result->toString() << endl;
 }
+
+
+//TEST_F(SimpleParserTest, CallTest1) {
+//	wstring content = L"def (a,b){a+b;}(1,2)";
+//	SimpleParser parser(content);
+//	parser.init();
+//	auto call = parser.callable();
+//	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
+//	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
+//	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
+//}
 
 // support number and string

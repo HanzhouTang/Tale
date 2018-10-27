@@ -261,53 +261,18 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
 		using namespace std;
-		lexer.save();
-		auto x = expr();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			lexer.pop();
-			return x;
+		auto fs = { &SimpleParser::expr , &SimpleParser::str,
+			&SimpleParser::map, &SimpleParser::closure, 
+			&SimpleParser::callable, &SimpleParser::func};
+		for (auto f : fs) {
+			lexer.save();
+			auto x = (this->*f)();
+			if (x->getType() != expr::Expr::TYPE_NULL) {
+				lexer.pop();
+				return x;
+			}
+			lexer.restore();
 		}
-		lexer.restore();
-		lexer.save();
-		x = str();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			wcout << "string " << x->toString() << endl;
-			lexer.pop();
-			return x;
-		}
-		lexer.restore();
-		lexer.save();
-		x = map();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			lexer.pop();
-			return x;
-		}
-		lexer.restore();
-		lexer.save();
-		x = closure();
-		wcout << "current lexeme " << lexer.currentLexeme << endl;
-		wcout << "here closure" << L"type " << x->getType() << std::endl;
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			std::wcout << L"type " << x->getType() << std::endl;
-			std::wcout << "clousre" << std::endl;
-			lexer.pop();
-			return x;
-		}
-		lexer.restore();
-		lexer.save();
-		x = callable();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			lexer.pop();
-			return x;
-		}
-		lexer.restore();
-		lexer.save();
-		x = func();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			lexer.pop();
-			return x;
-		}
-		lexer.restore();
 		return expr::NullExpr::createNullExpr();
 	}
 
@@ -490,63 +455,40 @@ namespace parser {
 			lexer.set(result.newStatus);
 			return result.result;
 		}
-		lexer.save();
-		auto x = assign();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			auto token = lexer.lookAheadK(1)[0];
-			bool matching = false;
-			if (token == SimpleLexer::Token::Semicolon) {
-				match(SimpleLexer::Token::Semicolon);
-				matching = true;
+		auto fs = { &SimpleParser::assign,&SimpleParser::element };
+		for (auto f : fs) {
+			lexer.save();
+			auto x = (this->*f)();
+			if (x->getType() != expr::Expr::TYPE_NULL) {
+				wcout << "in state here" << endl;
+				auto token = lexer.lookAheadK(1)[0];
+				wcout << "__state__ " << SimpleLexer::getTokenName(token) << endl;
+				bool matching = false;
+				if (token == SimpleLexer::Token::Semicolon) {
+					match(SimpleLexer::Token::Semicolon);
+					matching = true;
+				}
+				else if (token == SimpleLexer::Token::Newline) {
+					match(SimpleLexer::Token::Newline);
+					matching = true;
+				}
+				else if (token == SimpleLexer::Token::EndofContent) {
+					matching = true;
+				}
+				if (matching) {
+					lexer.pop();
+					MemoResult result(x, lexer.get());
+					stateMap.emplace(status, result);
+					wcout << L"ret statement " << x->toString() << endl;
+					return x;
+				}
 			}
-			else if (token == SimpleLexer::Token::Newline) {
-				match(SimpleLexer::Token::Newline);
-				matching = true;
-			}
-			else if (token == SimpleLexer::Token::EndofContent) {
-				matching = true;
-			}
-			if (matching) {
-				lexer.pop();
-				MemoResult result(x, lexer.get());
-				stateMap.emplace(status, result);
-				return x;
-			}
+			lexer.restore();
 		}
-		lexer.restore();
-		lexer.save();
-		x = element();
-		if (x->getType() != expr::Expr::TYPE_NULL) {
-			wcout << "in state here" << endl;
-			auto token = lexer.lookAheadK(1)[0];
-			wcout << "__state__ " << SimpleLexer::getTokenName(token) << endl;
-			bool matching = false;
-			if (token == SimpleLexer::Token::Semicolon) {
-				match(SimpleLexer::Token::Semicolon);
-				matching = true;
-			}
-			else if (token == SimpleLexer::Token::Newline) {
-				match(SimpleLexer::Token::Newline);
-				matching = true;
-			}
-			else if (token == SimpleLexer::Token::EndofContent) {
-				matching = true;
-			}
-			if (matching) {
-				lexer.pop();
-				MemoResult result(x, lexer.get());
-				stateMap.emplace(status, result);
-				//dao zheli l 
-				wcout << L"ret statement " << x->toString() << endl;
-				return x;
-			}
-		}
-		lexer.restore();
-		x = expr::NullExpr::createNullExpr();
+		auto x = expr::NullExpr::createNullExpr();
 		MemoResult result(x, lexer.get());
 		stateMap.emplace(status, result);
 		return x;
-
 	}
 
 	std::deque<std::shared_ptr<expr::Expr>> SimpleParser::states() {
