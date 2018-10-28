@@ -28,9 +28,39 @@ TEST_F(SimpleParserTest, NumberTest) {
 	SimpleParser parser(content);
 	parser.init();
 	auto expr = parser.expr();
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, expr->getType());
+	EXPECT_EQ(Expr::ExprType::TYPE_UNARY_OPERATOR, expr->getType());
 	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
 	EXPECT_EQ(-123, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, NumberTest1) {
+	wstring content = L"-123 - 12345";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(-12468, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, NumberTest2) {
+	wstring content = L"-123 - -12345";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(12222, value->getNumber());
+}
+
+TEST_F(SimpleParserTest, NumberTest3) {
+	wstring content = L"-123--12345";
+	SimpleParser parser(content);
+	parser.init();
+	auto expr = parser.expr();
+	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, expr->getType());
+	auto value = std::dynamic_pointer_cast<expr::NumberExpr>(expr->getValue());
+	EXPECT_EQ(12222, value->getNumber());
 }
 
 
@@ -468,6 +498,7 @@ TEST_F(SimpleParserTest, CallTest2) {
 	SimpleParser parser(content);
 	parser.init();
 	auto call = parser.element();
+	//wcout << call->toString() << endl;
 	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
 	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
 	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, callable->getType());
@@ -475,7 +506,6 @@ TEST_F(SimpleParserTest, CallTest2) {
 	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
 	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
 	EXPECT_EQ(3, answer);
-
 }
 
 TEST_F(SimpleParserTest, CallTest3) {
@@ -506,6 +536,32 @@ TEST_F(SimpleParserTest, CallTest5) {
 	EXPECT_EQ(expr::Expr::TYPE_CALL, call->getType());
 	auto callable = std::dynamic_pointer_cast<expr::CallExpr>(call)->callable;
 	EXPECT_EQ(expr::Expr::TYPE_CALL, callable->getType());
+}
+
+TEST_F(SimpleParserTest, CallTest6) {
+	wstring content = L"-def (a,b){a+b;}(1,2)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	//wcout << call->toString() << endl;
+	EXPECT_EQ(expr::Expr::TYPE_UNARY_OPERATOR, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
+	EXPECT_EQ(-3, answer);
+}
+
+TEST_F(SimpleParserTest, CallTest7) {
+	wstring content = L"-def (a,b){a+b;}(1,2)*def (a){a+3;}(3)";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.element();
+	//wcout << call->toString() << endl;
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
+	EXPECT_EQ(-18, answer);
 }
 
 // support number and string

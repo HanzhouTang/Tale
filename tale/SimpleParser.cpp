@@ -12,6 +12,7 @@
 #include"MapExpr.h"
 #include"ClosureExpr.h"
 #include"FunctionExpr.h"
+#include"ReverseExpr.h"
 #include"CallExpr.h"
 #include<stack>
 #include<functional>
@@ -134,29 +135,47 @@ namespace parser {
 
 	}
 
-	void SimpleParser::factor(std::deque<std::shared_ptr<expr::Expr>>& queue) {
+	std::shared_ptr<expr::Expr> SimpleParser::factorHelper() {
 		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Token::Number) {
 			match(SimpleLexer::Token::Number);
 			auto number = wstr2floats(lexer.currentLexeme);
-			queue.push_back(expr::NumberExpr::createNumberExpr(number[0]));
-			return;
+			return expr::NumberExpr::createNumberExpr(number[0]);
 		}
 		else if (token == SimpleLexer::Token::LParen) {
 			match(SimpleLexer::Token::LParen);
 			auto Expr = expr();
 			match(SimpleLexer::Token::RParen);
-			queue.push_back(Expr);
-			return;
+			return Expr;
 		}
 		else if (token == SimpleLexer::Token::Variable) {
 			match(SimpleLexer::Token::Variable);
-			queue.push_back(expr::VariableExpr::createVariableExpr(lexer.currentLexeme));
-			return;
+			return expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
 		}
-		/*throwNotMatchError({ SimpleLexer::Token::Number,SimpleLexer::Token::LParen,
-			SimpleLexer::Token::Variable }, token, __LINE__);
-		*/
+		lexer.save();
+		auto call = callable();
+		if (call->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return call;
+		}
+		lexer.restore();
+		//quitWithError(__LINE__, __FILE__, L"undefined factor");
+		return expr::NullExpr::createNullExpr();
+	}
+
+	void SimpleParser::factor(std::deque<std::shared_ptr<expr::Expr>>& queue) {
+		auto token = lexer.lookAheadK(1)[0];
+		if (token == SimpleLexer::Token::Minus) {
+			match(SimpleLexer::Token::Minus);
+			auto Factor = factorHelper();
+			if (Factor->getType() != expr::Expr::TYPE_NULL) {
+				queue.push_back(expr::ReverseExpr::createReverseExpr(Factor));
+			}
+		}
+		auto Factor = factorHelper();
+		if (Factor->getType() != expr::Expr::TYPE_NULL) {
+			queue.push_back(Factor);
+		}
 	}
 
 

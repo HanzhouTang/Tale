@@ -41,6 +41,7 @@ namespace parser {
 		void term(std::deque<std::shared_ptr<expr::Expr>>&);
 		void moreterms(std::deque<std::shared_ptr<expr::Expr>>&);
 		void factor(std::deque<std::shared_ptr<expr::Expr>>&);
+		std::shared_ptr<expr::Expr>  factorHelper();
 		void morefactors(std::deque<std::shared_ptr<expr::Expr>>&);
 		//===============for string =============================
 		std::shared_ptr<expr::Expr> str();
