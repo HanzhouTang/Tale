@@ -10,14 +10,14 @@ namespace parser {
 	{L"(",Token::LParen},{L")",Token::RParen},{L"=",Token::Eql},{L"<",Token::Less},{L">",Token::Greater},
 	{L";",Token::Semicolon},{L"\"",Token::Quote},{L"\n",Token::Newline} , {L"and",Token::Add},{L"or",Token::Or},
 	{L"if",Token::If},{L"else",Token::Else},{L":",Token::Colon},{L"def",Token::Def},{ L"true",Token::True }
-	,{ L"false",Token::False }
+	,{ L"false",Token::False }	,{ L"not",Token::Not }
 	};
 
 	const std::vector<std::wstring> SimpleLexer::TokenNames = {
 		L"LBrace",L"RBrace", L"Comma",L"LCurlyBrace",L"RCurlyBrace", L"Times", L"Minus",
 		L"Add", L"Div", L"LParen", L"RParen", L"Eql", L"Less", L"Greater", L"And",L"Or", L"Semicolon"
 		, L"If", L"Else", L"Quote", L"Invalid", L"Variable",L"Newline", L"EndofContent",L"Number",
-		L"String",L"Colon",L"Def",L"EqlEql",L"True",L"False"
+		L"String",L"Colon",L"Def",L"EqlEql",L"True",L"False",L"Not"
 	};
 	
 	SimpleLexer::Token SimpleLexer::getNextToken() {

@@ -32,6 +32,7 @@ namespace parser {
 		MemoMap closureMap;
 		MemoMap funcMap;
 		MemoMap callableMap;
+		MemoMap compareMap;
 		//std::shared_ptr<expr::Expr> parse();
 		SimpleParser(const std::wstring& content) : lexer(content) {}
 		SimpleParser(std::wstring&& content) :lexer(std::move(content)) {}
@@ -76,6 +77,15 @@ namespace parser {
 		std::deque<std::deque<std::shared_ptr<expr::Expr>>> moreparamlists();
 		std::tuple<bool,std::deque<std::shared_ptr<expr::Expr>>> paramlist();
 		
+		//=============for boolean ==============================
+
+		std::shared_ptr<expr::Expr> compare();
+		std::shared_ptr<expr::Expr> booleanterm();
+		std::shared_ptr<expr::Expr> boolean();
+		std::shared_ptr<expr::Expr> morebooleanterms();
+
+
+
 		void init();
 		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
 		bool match(SimpleLexer::Token t);

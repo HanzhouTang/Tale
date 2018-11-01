@@ -157,3 +157,19 @@ TEST_F(SimpleLexerTest, MinusNumberTest) {
 	lexer.init();
 }
 
+
+TEST_F(SimpleLexerTest, TrueFalseTest) {
+	wstring content = L"true false";
+	SimpleLexer lexer(content);
+	lexer.init();
+	auto token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::True, token);
+	EXPECT_EQ(L"true", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::False, token);
+	EXPECT_EQ(L"false", lexer.currentLexeme);
+	token = lexer.getNextToken();
+	EXPECT_EQ(SimpleLexer::Token::EndofContent, token);
+	lexer.init();
+}
+

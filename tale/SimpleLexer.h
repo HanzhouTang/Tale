@@ -14,7 +14,7 @@ namespace parser {
 			LBrace=0, RBrace, Comma,LCurlyBrace, RCurlyBrace, Times, Minus,
 			Add, Div, LParen, RParen, Eql, Less, Greater, And,Or, Semicolon
 			, If, Else, Quote, Invalid, Variable,Newline, EndofContent,Number,
-			String,Colon,Def,EqlEql,True,False
+			String,Colon,Def,EqlEql,True,False,Not
 		};
 		static const std::vector<std::wstring> TokenNames;
 		static std::wstring getTokenName(Token t) {

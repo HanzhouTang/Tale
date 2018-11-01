@@ -8,6 +8,7 @@
 #include"StringExpr.h"
 #include"ExprLiteral.h"
 #include"FunctionExpr.h"
+#include"BooleanExpr.h"
 #include"CallExpr.h"
 using namespace std;
 using namespace expr;
@@ -564,4 +565,81 @@ TEST_F(SimpleParserTest, CallTest7) {
 	EXPECT_EQ(-18, answer);
 }
 
+
+// f(1==2) it's possible 
+// thus compare should be element
+
+TEST_F(SimpleParserTest, CompareTest) {
+	wstring content = L"123==234";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.compare();
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue();
+	EXPECT_EQ(false, answer);
+}
+
+TEST_F(SimpleParserTest, CompareInvalidTest) {
+	wstring content = L"123";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.compare();
+	EXPECT_EQ(expr::Expr::TYPE_NULL, call->getType());
+}
+
+
+TEST_F(SimpleParserTest, BooleanTest) {
+	wstring content = L"123==123";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.boolean();
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue();
+	EXPECT_EQ(true, answer);
+}
+
+TEST_F(SimpleParserTest, BooleanTest1) {
+	wstring content = L"123<123";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.boolean();
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue();
+	EXPECT_EQ(false, answer);
+}
+
+TEST_F(SimpleParserTest, BooleanTest2) {
+	wstring content = L"123<123 or true";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.boolean();
+	wcout << call->toString() << endl;
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue();
+	EXPECT_EQ(true, answer);
+}
+
+TEST_F(SimpleParserTest, BooleanTest3) {
+	wstring content = L"123<123 or not 123>456";
+	SimpleParser parser(content);
+	parser.init();
+	auto call = parser.boolean();
+	wcout << endl<<call->toString() << endl;
+	EXPECT_EQ(expr::Expr::TYPE_BINARYOPERATION, call->getType());
+	auto result = call->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue();
+	EXPECT_EQ(true, answer);
+}
+
 // support number and string
+// assign and str should belong to element
+// at least, str should belong to element
