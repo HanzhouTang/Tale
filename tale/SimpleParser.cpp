@@ -60,6 +60,7 @@ namespace parser {
 			exprMap[status] = result;
 			return expr::NullExpr::createNullExpr();
 		}
+		//wcout << "in expr term " << queue.front()->toString() << endl;
 		moreterms(queue);
 		std::stack<std::shared_ptr<expr::Expr>> stack;
 		for (auto& x : queue) {
@@ -89,8 +90,11 @@ namespace parser {
 	}
 
 	void  SimpleParser::moreterms(std::deque<std::shared_ptr<expr::Expr>>& queue) {
+		using namespace std;
 		auto status = lexer.get();
 		auto nodes = lexer.lookAheadK(1);
+		//wcout << "In moreTerms nodes[0] " << SimpleLexer::getTokenName(nodes[0])<<" lexeme "<<lexer.currentLexeme<< endl;
+
 		using namespace std;
 		wchar_t oper = 0;
 		if (nodes[0] == SimpleLexer::Token::Add) {
@@ -653,6 +657,7 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::compare()
 	{
 		// need to create template class handle different scenario
+		using namespace std;
 		auto status = lexer.get();
 		if (compareMap.find(status) != compareMap.end()) {
 			auto result = compareMap[status];
@@ -666,11 +671,11 @@ namespace parser {
 			lexer.save();
 			left = (this->*f)();
 			if (left->getType() != expr::Expr::TYPE_NULL) {
-				lexer.pop();
 				break;
 			}
 			lexer.restore();
 		}
+		//wcout << "In compare left " << left->toString() << endl;
 		SimpleLexer::Token token;
 		if (!left || left->getType() == expr::Expr::TYPE_NULL) {
 			left = expr::NullExpr::createNullExpr();
@@ -679,6 +684,7 @@ namespace parser {
 			return left;
 		}
 		token = lexer.lookAheadK(1)[0];
+		//wcout << "In compare token " << SimpleLexer::getTokenName(token) << endl;
 		if (token == SimpleLexer::EqlEql) {
 			match(SimpleLexer::EqlEql);
 		}
@@ -689,6 +695,7 @@ namespace parser {
 			match(SimpleLexer::Greater);
 		}
 		else {
+			lexer.restore();
 			//throwNotMatchError({ SimpleLexer::EqlEql,SimpleLexer::Less,SimpleLexer::Greater }, token, __LINE__);
 			MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
 			compareMap.emplace(status, result);
@@ -704,7 +711,9 @@ namespace parser {
 			}
 			lexer.restore();
 		}
+		//wcout << "In compare right " << right->toString() << endl;
 		if (!right || right->getType() == expr::Expr::TYPE_NULL) {
+			lexer.restore();// restore from begining. 
 			right = expr::NullExpr::createNullExpr();
 			MemoResult result(left, lexer.get());
 			compareMap.emplace(status, result);
@@ -720,6 +729,7 @@ namespace parser {
 		else {
 			ret = expr::GreaterThanExpr::createGreaterThanExpr(left, right);
 		}
+		lexer.pop(); // pop the begin store point;
 		MemoResult result(ret, lexer.get());
 		compareMap.emplace(status, result);
 		return ret;
@@ -729,7 +739,7 @@ namespace parser {
 	{
 		using namespace std;
 		auto token = lexer.lookAheadK(1)[0];
-		wcout << L"in booleanterm token: " << SimpleLexer::getTokenName(token)<<endl;
+		//wcout << L"in booleanterm token: " << SimpleLexer::getTokenName(token)<<endl;
 		if (token == SimpleLexer::True) {
 			match(SimpleLexer::True);
 			return expr::BooleanExpr::createBooleanExpr(true);
@@ -739,10 +749,19 @@ namespace parser {
 		}
 		else if (token == SimpleLexer::Token::Not) {
 			match(SimpleLexer::Token::Not);
-			return expr::NotExpr::createNotExpr(booleanterm());
+			return expr::NotExpr::createNotExpr(boolean());
 		}
-		cout << "before compare" << endl;
-		return compare();
+		else if (token == SimpleLexer::Token::LParen) {
+			//wcout << "here" << endl;
+			match(SimpleLexer::Token::LParen);
+			auto ret = boolean();
+			match(SimpleLexer::Token::RParen);
+			return ret;
+		}
+		//cout << "before compare" << endl;
+		auto cmp = compare();
+		//wcout <<"cmp "<< cmp->toString() << endl;
+		return cmp;
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::boolean()
@@ -753,7 +772,7 @@ namespace parser {
 			return Term;
 		}
 		auto MoreTerms = morebooleanterms();
-		wcout<<L"More Terms "<< MoreTerms->toString() << endl;
+		//wcout<<L"More Terms "<< MoreTerms->toString() << endl;
 		if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreTerms)->setLeft(Term);
 			return MoreTerms;
@@ -785,14 +804,14 @@ namespace parser {
 		second = morebooleanterms();
 		if (second->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(second)->setLeft(first);
-			if (token == SimpleLexer::Token::Add) {
+			if (token == SimpleLexer::Token::And) {
 				return expr::AndExpr::createAndExpr(expr::NullExpr::createNullExpr(), second);
 			}
 			else if (token == SimpleLexer::Token::Or) {
 				return expr::OrExpr::createOrExpr(expr::NullExpr::createNullExpr(), second);
 			}
 		}
-		if (token == SimpleLexer::Token::Add) {
+		if (token == SimpleLexer::Token::And) {
 			return expr::AndExpr::createAndExpr(expr::NullExpr::createNullExpr(), first);
 		}
 		else if (token == SimpleLexer::Token::Or) {
