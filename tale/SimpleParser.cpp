@@ -293,7 +293,7 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
 		using namespace std;
-		auto fs = { &SimpleParser::expr , &SimpleParser::str,
+		auto fs = { &SimpleParser::expr , &SimpleParser::str,&SimpleParser::boolean,
 			&SimpleParser::map,&SimpleParser::IF, &SimpleParser::closure,
 			&SimpleParser::callable,&SimpleParser::func };
 		for (auto f : fs) {
@@ -747,6 +747,7 @@ namespace parser {
 			return expr::BooleanExpr::createBooleanExpr(true);
 		}
 		else if (token == SimpleLexer::False) {
+			match(SimpleLexer::False);
 			return  expr::BooleanExpr::createBooleanExpr(false);
 		}
 		else if (token == SimpleLexer::Token::Not) {

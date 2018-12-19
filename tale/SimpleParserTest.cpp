@@ -792,6 +792,69 @@ TEST_F(SimpleParserTest, Functest_new1) {
 	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
 }
 
+TEST_F(SimpleParserTest, Functest_new2) {
+
+	wstring content = L"{add = def (a){a+22;}; add(5);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+
+TEST_F(SimpleParserTest, Functest_new3) {
+
+	wstring content = L"{condition = 5; add = def (a){if condition == 5 {a+22;} else {a-22;};}; add(5);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+TEST_F(SimpleParserTest, Functest_new4) {
+
+	wstring content = L"{condition = 6; add = def (a){if condition == 5 {a+22;} else {a-22;};}; add(5);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(-17, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+
+TEST_F(SimpleParserTest, Functest_new5) {
+
+	wstring content = L"{ def is0(a){if a==0 {1;} else {0;}; }; is0(0);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(1, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+TEST_F(SimpleParserTest, Functest_new6) {
+
+	wstring content = L"{ def is0(a){if a==0 {true;} else {false;}; }; is0(1);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_BOOLEAN, result->getType());
+	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
+}
+
+//need add support for return 
 // support number and string
 // assign and str should belong to element
 // at least, str should belong to element
