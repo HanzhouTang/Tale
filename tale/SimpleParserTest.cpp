@@ -854,6 +854,27 @@ TEST_F(SimpleParserTest, Functest_new6) {
 	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
 }
 
+//TEST_F(SimpleParserTest, Functest_recursion1) {
+//	wstring content = L"{ def accum(a){if a==0 {0;} else {a + accum(a-1);}; };}";
+//	SimpleParser parser(content);
+//	parser.init();
+//	auto closure = parser.element();
+//	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+//	auto result = closure->getValue();
+//	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
+//}
+//
+//
+//TEST_F(SimpleParserTest, Functest_recursion2) {
+//	wstring content = L"{ def accum(a){if a==0 {0;} else {a + accum(a-1);}; }; accum(10);}";
+//	SimpleParser parser(content);
+//	parser.init();
+//	auto closure = parser.element();
+//	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+//	auto result = closure->getValue();
+//	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
+//}
+
 //need add support for return 
 // support number and string
 // assign and str should belong to element

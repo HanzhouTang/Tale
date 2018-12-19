@@ -502,3 +502,68 @@ TEST_F(ExprTest, PrintTest) {
 	f->setClosure(closure);
 	f->getValue();
 }
+
+/*
+f(x){
+if(x==0){return 0;}
+return x+f(x-1);}
+
+expected:
+f(10) == 55
+*/
+TEST_F(ExprTest, RecurisionAccumTest) {
+	auto function = FunctionExpr::createFunctionExpr();
+	auto closure_new = ClosureExpr::createClosureExpr();
+	function->setSignature({ L"x" });
+	auto variable = L"x"_variableExpr;
+	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(-1)) });
+	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
+		NumberExpr::createNumberExpr(0)),
+		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(0)),
+		ReturnExpr::createReturnExpr(
+			AddExpr::createAddExpr(call, variable)
+		));
+	closure_new->addExpression(con);
+	function->setClosure(closure_new);
+	EXPECT_EQ(call, function->getRunTime());
+	EXPECT_EQ(function, closure_new->getRunTime());
+	auto ret = function->getValue({ NumberExpr::createNumberExpr(10) });
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
+
+	auto ret1 = function->getValue({ NumberExpr::createNumberExpr(8) });
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret1->getType());
+	EXPECT_EQ(36, std::dynamic_pointer_cast<NumberExpr>(ret1)->getNumber());
+
+}
+
+/*
+f(x){
+if(x==0){return 0;}
+return x+f(x-1);}
+
+expected:
+f(10) == 55
+*/
+TEST_F(ExprTest, RecurisionAccumTest1) {
+	auto function = FunctionExpr::createFunctionExpr();
+	auto closure_new = ClosureExpr::createClosureExpr();
+	auto closure_outter = ClosureExpr::createClosureExpr();
+	function->setSignature({ L"x" });
+	auto variable = L"x"_variableExpr;
+	auto call = CallExpr::createCallExpr(L"accum"_variableExpr, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(-1)) });
+	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
+		NumberExpr::createNumberExpr(0)),
+		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(0)),
+		ReturnExpr::createReturnExpr(
+			AddExpr::createAddExpr(call, variable)
+		));
+	closure_new->addExpression(con);
+	function->setClosure(closure_new);
+	auto assign = expr::AssignExpr::createAssignExpr(L"accum"_variableExpr, function);
+	closure_new->addExpression(assign);
+	closure_new->addExpression(CallExpr::createCallExpr(L"accum"_variableExpr, { 10_expr }));
+	auto ret = closure_new->getValue();
+	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
+}
