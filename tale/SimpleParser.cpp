@@ -21,6 +21,7 @@
 #include"NotExpr.h"
 #include"AndExpr.h"
 #include"OrExpr.h"
+#include"ConditionExpr.h"
 #include<stack>
 #include<functional>
 using namespace Utility;
@@ -147,6 +148,13 @@ namespace parser {
 	}
 
 	std::shared_ptr<expr::Expr> SimpleParser::factorHelper() {
+		lexer.save();
+		auto call = callable();
+		if (call->getType() != expr::Expr::TYPE_NULL) {
+			lexer.pop();
+			return call;
+		}
+		lexer.restore();
 		auto token = lexer.lookAheadK(1)[0];
 		if (token == SimpleLexer::Token::Number) {
 			match(SimpleLexer::Token::Number);
@@ -163,13 +171,7 @@ namespace parser {
 			match(SimpleLexer::Token::Variable);
 			return expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
 		}
-		lexer.save();
-		auto call = callable();
-		if (call->getType() != expr::Expr::TYPE_NULL) {
-			lexer.pop();
-			return call;
-		}
-		lexer.restore();
+		
 		//quitWithError(__LINE__, __FILE__, L"undefined factor");
 		return expr::NullExpr::createNullExpr();
 	}
@@ -292,7 +294,7 @@ namespace parser {
 	{
 		using namespace std;
 		auto fs = { &SimpleParser::expr , &SimpleParser::str,
-			&SimpleParser::map, &SimpleParser::closure,
+			&SimpleParser::map,&SimpleParser::IF, &SimpleParser::closure,
 			&SimpleParser::callable,&SimpleParser::func };
 		for (auto f : fs) {
 			lexer.save();
@@ -822,7 +824,7 @@ namespace parser {
 
 
 
-
+	/* function to support f()()()...*/
 	std::deque<std::deque<std::shared_ptr<expr::Expr>>> SimpleParser::paramlists() {
 		auto Paramlist = paramlist();
 		auto existParamlist = std::get<0>(Paramlist);
@@ -832,7 +834,7 @@ namespace parser {
 			MoreParamlists.emplace_front(ParamL);
 			return MoreParamlists;
 		}
-		quitWithError(__LINE__, __FILE__, L"MUST contain (");
+		//quitWithError(__LINE__, __FILE__, L"function definition must contain (");
 		return std::deque<std::deque<std::shared_ptr<expr::Expr>>>();
 	}
 
@@ -887,12 +889,15 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::callobject()
 	{
-		auto tokens = lexer.lookAheadK(2);
+		using namespace std;
+		auto tokens = lexer.lookAheadK(1);
 		lexer.save();
 		if (tokens[0] == SimpleLexer::Token::Variable) {
+			//wcout << "in callobject get varaible as callobject " << endl;
 			match(SimpleLexer::Token::Variable);
 			auto VariableName = lexer.currentLexeme;
 			lexer.pop();
+			//wcout << "in callobject variable name " << VariableName << endl;
 			return expr::VariableExpr::createVariableExpr(VariableName);
 		}
 
@@ -907,3 +912,38 @@ namespace parser {
 
 }
 
+std::shared_ptr<expr::Expr> parser::SimpleParser::IF()
+{
+	using namespace std;
+	auto token = lexer.lookAheadK(1)[0];
+	if (token != SimpleLexer::Token::If) {
+		return expr::NullExpr::createNullExpr();
+	}
+	std::shared_ptr<expr::Expr> condition = expr::NullExpr::createNullExpr();
+	std::shared_ptr<expr::Expr> ifStatement = expr::NullExpr::createNullExpr();
+	std::shared_ptr<expr::Expr> elseStatement = expr::NullExpr::createNullExpr();
+	match(SimpleLexer::Token::If);
+	//wcout << "if statement" << endl;
+	condition = boolean();
+	//wcout << "condition " << condition->toString() << endl;
+	if (condition->getType() == expr::Expr::TYPE_NULL) {
+		quitWithError(__LINE__, __FILE__, L"if statement without boolean condition");
+		return expr::NullExpr::createNullExpr();
+	}
+	ifStatement = closure();
+	//wcout << "ifStatement " << ifStatement->toString() << endl;
+	if (ifStatement->getType() == expr::Expr::TYPE_NULL) {
+		quitWithError(__LINE__, __FILE__, L"if statement without closure");
+		return expr::NullExpr::createNullExpr();
+	}
+	token = lexer.lookAheadK(1)[0];
+	if (token == SimpleLexer::Token::Else) {
+		match(SimpleLexer::Token::Else);
+		elseStatement = closure();
+		if (elseStatement->getType() == expr::Expr::TYPE_NULL) {
+			quitWithError(__LINE__, __FILE__, L"else statement without closure");
+			return expr::NullExpr::createNullExpr();
+		}
+	}
+	return expr::ConditionExpr::createConditionExpr(condition, ifStatement, elseStatement);
+}

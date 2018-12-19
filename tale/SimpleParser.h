@@ -84,6 +84,9 @@ namespace parser {
 		std::shared_ptr<expr::Expr> boolean();
 		std::shared_ptr<expr::Expr> morebooleanterms();
 
+		//=============for if ===================================
+		std::shared_ptr<expr::Expr> IF();
+
 
 
 		void init();

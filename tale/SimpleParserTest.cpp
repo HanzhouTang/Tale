@@ -755,8 +755,42 @@ TEST_F(SimpleParserTest, BooleanTest6) {
 }
 
 
+TEST_F(SimpleParserTest, IfTest) {
+	wstring content = L"{a=-1; b=\"hello\"; if(a==2){b=3;}else {b=4;};b; }";
+	SimpleParser parser(content);
+	parser.init();
+	auto condition = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, condition->getType());
+	auto result = condition->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber();
+	EXPECT_EQ(4, answer);
+}
 
+TEST_F(SimpleParserTest, Functest_new) {
 
+	wstring content = L"{def add(a){a+22;}; add;}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
+	auto answer = std::dynamic_pointer_cast<expr::FunctionExpr>(result)->getValue({5_expr});
+	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(answer)->getNumber());
+}
+
+TEST_F(SimpleParserTest, Functest_new1) {
+
+	wstring content = L"{def add(a){a+22;}; add(5);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
 
 // support number and string
 // assign and str should belong to element
