@@ -38,7 +38,7 @@ namespace expr {
 		std::wostringstream buf;
 		// when varibale doesn't exist, it also work 
 		buf << callable->toString();
-		buf << L"( ";
+		buf << L"_call( ";
 		for (auto& x : parameters) {
 			buf << x->toString() << L" , ";
 		}

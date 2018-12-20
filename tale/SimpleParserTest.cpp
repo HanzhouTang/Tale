@@ -854,26 +854,69 @@ TEST_F(SimpleParserTest, Functest_new6) {
 	EXPECT_EQ(false, std::dynamic_pointer_cast<expr::BooleanExpr>(result)->getBoolValue());
 }
 
-//TEST_F(SimpleParserTest, Functest_recursion1) {
-//	wstring content = L"{ def accum(a){if a==0 {0;} else {a + accum(a-1);}; };}";
-//	SimpleParser parser(content);
-//	parser.init();
-//	auto closure = parser.element();
-//	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
-//	auto result = closure->getValue();
-//	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
-//}
-//
-//
-//TEST_F(SimpleParserTest, Functest_recursion2) {
-//	wstring content = L"{ def accum(a){if a==0 {0;} else {a + accum(a-1);}; }; accum(10);}";
-//	SimpleParser parser(content);
-//	parser.init();
-//	auto closure = parser.element();
-//	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
-//	auto result = closure->getValue();
-//	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
-//}
+TEST_F(SimpleParserTest, Functest_recursion1) {
+	wstring content = L"{ def accum(a){if a==0 {0;} else {a + accum(a-1);}; };}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
+}
+
+
+TEST_F(SimpleParserTest, Functest_recursion2) {
+	wstring content = L"{ def accum(a){if a==0 {0;} else { a + accum(a-1);}; }; accum(10);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(55,std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+// fib test
+TEST_F(SimpleParserTest, Functest_recursion3) {
+	wstring content = L"{ def fib(a){if a==1 {1;} else { if a==2 {1;} else{fib(a-1) + fib(a-2);};}; }; fib(12);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(144, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+//fuc test 
+TEST_F(SimpleParserTest, Functest_function_as_parameter) {
+	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+10;}; f1(10);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(20, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+//fuc test
+//try to solve this problem
+//maybe clone issue.
+TEST_F(SimpleParserTest, Functest_function_as_parameter1) {
+	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+10;}; f(10,f1);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(20, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
+
+
+
+
 
 //need add support for return 
 // support number and string
