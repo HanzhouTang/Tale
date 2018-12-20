@@ -45,7 +45,7 @@ namespace parser {
 				std::wstring l,Token t,State s):
 				index0(i0),index1(i1),currentLexeme(l),token(t),state(s)
 			{}
-			bool operator ==(const Status& other) const {
+			inline bool operator ==(const Status& other) const {
 				return &*index0 == &*other.index0 && &*index1 == &*other.index1 && state == other.state;
 			}
 			//may need calculate distance from beginning
@@ -54,7 +54,7 @@ namespace parser {
 		};
 
 		struct StatusHasher {
-			std::size_t operator()(const Status& s) const {
+			inline std::size_t operator()(const Status& s) const {
 				using namespace std;
 				return hash<wchar_t*>{}(&*s.index0) ^ (hash<wchar_t*>{}(&*s.index1) << 1) ^ (hash<int>{}(s.state) << 2);
 			}
@@ -114,7 +114,7 @@ namespace parser {
 		}
 		SimpleLexer(const std::wstring& str) :content(str){}
 		SimpleLexer(std::wstring&& str) :content(std::move(str)){}
-		void init() {
+		inline void init() {
 		
 			index0 = index1 = content.begin();
 			token = Invalid;

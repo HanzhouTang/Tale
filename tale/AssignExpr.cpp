@@ -6,6 +6,8 @@
 namespace expr {
 	using namespace Utility;
 	std::shared_ptr<Expr> AssignExpr::getValue() {
+		using namespace std;
+		wcout << "in assignexpr getValue " << endl;
 		auto runtime = getRunTime();
 		auto variable = std::dynamic_pointer_cast<VariableExpr>(getLeft());
 		std::shared_ptr<expr::Expr> result;
@@ -14,6 +16,7 @@ namespace expr {
 		}
 		else {
 			result = getRight();
+			wcout << "right hand is a variable" << endl;
 		}
 		auto ret = setVariable(variable, result);
 		if (ret->getType() == TYPE_NULL) {

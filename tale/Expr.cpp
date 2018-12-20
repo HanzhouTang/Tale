@@ -17,10 +17,12 @@ namespace expr {
 
 
 	std::shared_ptr<Expr> Expr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
+		using namespace std;
 		if (getRunTime() == nullptr) {
 			quitWithError(__LINE__, __FILE__, L"the variable " + variable->getName() + L" doesn't exist ");
 			return NullExpr::createNullExpr();
 		}
+		wcout << "type: " << getTypeString() << endl;
 		return getRunTime()->getVariable(variable);
 	}
 

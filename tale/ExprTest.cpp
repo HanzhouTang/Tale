@@ -313,81 +313,81 @@ TEST_F(ExprTest, FunctionTest1) {
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
 	EXPECT_EQ(2, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
 }
-
-/*
-f(x){
-if(x==10){return 10;}
-return x+f(x+1);}
-
-expected:
-f(10) == 10
-f(9) == 19
-f(0) == 55
-*/
-TEST_F(ExprTest, RecurisionTest) {
-	auto function = FunctionExpr::createFunctionExpr();
-	auto closure_new = ClosureExpr::createClosureExpr();
-	function->setSignature({ L"x" });
-	auto variable = L"x"_variableExpr;
-	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(1)) });
-	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
-		NumberExpr::createNumberExpr(10)),
-		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(10)),
-		ReturnExpr::createReturnExpr(
-			AddExpr::createAddExpr(call, variable)
-		));
-	closure_new->addExpression(con);
-	function->setClosure(closure_new);
-	EXPECT_EQ(call, function->getRunTime());
-	EXPECT_EQ(function, closure_new->getRunTime());
-	auto ret = function->getValue({ NumberExpr::createNumberExpr(0) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
-	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
-
-	auto ret1 = function->getValue({ NumberExpr::createNumberExpr(8) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret1->getType());
-	EXPECT_EQ(27, std::dynamic_pointer_cast<NumberExpr>(ret1)->getNumber());
-
-}
-
-
-
-/*
-f(x){
-if(x==1) return 1
-if(x==2 ) return 1
-return f(x-1)+f(x-2);
-*/
-
-TEST_F(ExprTest, FibonacciTest) {
-	auto function = FunctionExpr::createFunctionExpr();
-	auto closure_new = ClosureExpr::createClosureExpr();
-	function->setSignature({ L"x" });
-	auto variable = L"x"_variableExpr;
-	auto con1 = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable, NumberExpr::createNumberExpr(2)),
-		NumberExpr::createNumberExpr(1),
-		ReturnExpr::createReturnExpr(
-			AddExpr::createAddExpr(
-				CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable, NumberExpr::createNumberExpr(-1)) }),
-				CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable, NumberExpr::createNumberExpr(-2)) })
-			)
-		)
-	);
-
-	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
-		NumberExpr::createNumberExpr(1)),
-		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(1)), con1);
-	closure_new->addExpression(con);
-	function->setClosure(closure_new);
-	EXPECT_EQ(function, closure_new->getRunTime());
-	auto ret2 = function->getValue({ NumberExpr::createNumberExpr(4) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
-	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
-
-	auto ret3 = function->getValue({ NumberExpr::createNumberExpr(12) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
-	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
-}
+//
+///*
+//f(x){
+//if(x==10){return 10;}
+//return x+f(x+1);}
+//
+//expected:
+//f(10) == 10
+//f(9) == 19
+//f(0) == 55
+//*/
+//TEST_F(ExprTest, RecurisionTest) {
+//	auto function = FunctionExpr::createFunctionExpr();
+//	auto closure_new = ClosureExpr::createClosureExpr();
+//	function->setSignature({ L"x" });
+//	auto variable = L"x"_variableExpr;
+//	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(1)) });
+//	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
+//		NumberExpr::createNumberExpr(10)),
+//		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(10)),
+//		ReturnExpr::createReturnExpr(
+//			AddExpr::createAddExpr(call, variable)
+//		));
+//	closure_new->addExpression(con);
+//	function->setClosure(closure_new);
+//	EXPECT_EQ(call, function->getRunTime());
+//	EXPECT_EQ(function, closure_new->getRunTime());
+//	auto ret = function->getValue({ NumberExpr::createNumberExpr(0) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+//	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
+//
+//	auto ret1 = function->getValue({ NumberExpr::createNumberExpr(8) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret1->getType());
+//	EXPECT_EQ(27, std::dynamic_pointer_cast<NumberExpr>(ret1)->getNumber());
+//
+//}
+//
+//
+//
+///*
+//f(x){
+//if(x==1) return 1
+//if(x==2 ) return 1
+//return f(x-1)+f(x-2);
+//*/
+//
+//TEST_F(ExprTest, FibonacciTest) {
+//	auto function = FunctionExpr::createFunctionExpr();
+//	auto closure_new = ClosureExpr::createClosureExpr();
+//	function->setSignature({ L"x" });
+//	auto variable = L"x"_variableExpr;
+//	auto con1 = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable, NumberExpr::createNumberExpr(2)),
+//		NumberExpr::createNumberExpr(1),
+//		ReturnExpr::createReturnExpr(
+//			AddExpr::createAddExpr(
+//				CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable, NumberExpr::createNumberExpr(-1)) }),
+//				CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable, NumberExpr::createNumberExpr(-2)) })
+//			)
+//		)
+//	);
+//
+//	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
+//		NumberExpr::createNumberExpr(1)),
+//		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(1)), con1);
+//	closure_new->addExpression(con);
+//	function->setClosure(closure_new);
+//	EXPECT_EQ(function, closure_new->getRunTime());
+//	auto ret2 = function->getValue({ NumberExpr::createNumberExpr(4) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
+//	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
+//
+//	auto ret3 = function->getValue({ NumberExpr::createNumberExpr(12) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
+//	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
+//}
 
 TEST_F(ExprTest, LiteralTest) {
 	auto number10 = 10.0_expr;
@@ -402,30 +402,30 @@ TEST_F(ExprTest, LiteralTest) {
 	EXPECT_EQ(Expr::ExprType::TYPE_STRING, str->getType());
 	EXPECT_EQ(L"hello world", str->getString());
 }
-
-TEST_F(ExprTest, ReserveTest) {
-	auto function = FunctionExpr::createFunctionExpr();
-	auto closure_new = ClosureExpr::createClosureExpr();
-	function->setSignature({ L"x" });
-	auto variable = L"x"_variableExpr;
-	auto con1 = ConditionExpr::createConditionExpr(variable <<= 2_expr,
-		1_expr,
-		ReturnExpr::createReturnExpr((*function)({ variable - 1_expr }) + (*function)({ variable - 2_expr }))
-	);
-
-	auto con = ConditionExpr::createConditionExpr(variable <<= 1_expr, ReturnExpr::createReturnExpr(1_expr), con1);
-	closure_new->addExpression(con);
-	function->setClosure(closure_new);
-	EXPECT_EQ(function, closure_new->getRunTime());
-	auto ret2 = function->getValue({ 4_expr });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
-	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
-
-	auto ret3 = function->getValue({ 12_expr });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
-	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
-}
-
+//
+//TEST_F(ExprTest, ReserveTest) {
+//	auto function = FunctionExpr::createFunctionExpr();
+//	auto closure_new = ClosureExpr::createClosureExpr();
+//	function->setSignature({ L"x" });
+//	auto variable = L"x"_variableExpr;
+//	auto con1 = ConditionExpr::createConditionExpr(variable <<= 2_expr,
+//		1_expr,
+//		ReturnExpr::createReturnExpr((*function)({ variable - 1_expr }) + (*function)({ variable - 2_expr }))
+//	);
+//
+//	auto con = ConditionExpr::createConditionExpr(variable <<= 1_expr, ReturnExpr::createReturnExpr(1_expr), con1);
+//	closure_new->addExpression(con);
+//	function->setClosure(closure_new);
+//	EXPECT_EQ(function, closure_new->getRunTime());
+//	auto ret2 = function->getValue({ 4_expr });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret2->getType());
+//	EXPECT_EQ(3, std::dynamic_pointer_cast<NumberExpr>(ret2)->getNumber());
+//
+//	auto ret3 = function->getValue({ 12_expr });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret3->getType());
+//	EXPECT_EQ(144, std::dynamic_pointer_cast<NumberExpr>(ret3)->getNumber());
+//}
+//
 
 TEST_F(ExprTest, BasicMapTest) {
 	auto map = MapExpr::createMapExpr({ { L"x",1_expr },{ L"x1",L"hello world"_expr } });
@@ -502,40 +502,40 @@ TEST_F(ExprTest, PrintTest) {
 	f->setClosure(closure);
 	f->getValue();
 }
-
-/*
-f(x){
-if(x==0){return 0;}
-return x+f(x-1);}
-
-expected:
-f(10) == 55
-*/
-TEST_F(ExprTest, RecurisionAccumTest) {
-	auto function = FunctionExpr::createFunctionExpr();
-	auto closure_new = ClosureExpr::createClosureExpr();
-	function->setSignature({ L"x" });
-	auto variable = L"x"_variableExpr;
-	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(-1)) });
-	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
-		NumberExpr::createNumberExpr(0)),
-		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(0)),
-		ReturnExpr::createReturnExpr(
-			AddExpr::createAddExpr(call, variable)
-		));
-	closure_new->addExpression(con);
-	function->setClosure(closure_new);
-	EXPECT_EQ(call, function->getRunTime());
-	EXPECT_EQ(function, closure_new->getRunTime());
-	auto ret = function->getValue({ NumberExpr::createNumberExpr(10) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
-	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
-
-	auto ret1 = function->getValue({ NumberExpr::createNumberExpr(8) });
-	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret1->getType());
-	EXPECT_EQ(36, std::dynamic_pointer_cast<NumberExpr>(ret1)->getNumber());
-
-}
+//
+///*
+//f(x){
+//if(x==0){return 0;}
+//return x+f(x-1);}
+//
+//expected:
+//f(10) == 55
+//*/
+//TEST_F(ExprTest, RecurisionAccumTest) {
+//	auto function = FunctionExpr::createFunctionExpr();
+//	auto closure_new = ClosureExpr::createClosureExpr();
+//	function->setSignature({ L"x" });
+//	auto variable = L"x"_variableExpr;
+//	auto call = CallExpr::createCallExpr(function, { AddExpr::createAddExpr(variable,NumberExpr::createNumberExpr(-1)) });
+//	auto con = ConditionExpr::createConditionExpr(EqualExpr::createEqualExpr(variable,
+//		NumberExpr::createNumberExpr(0)),
+//		ReturnExpr::createReturnExpr(NumberExpr::createNumberExpr(0)),
+//		ReturnExpr::createReturnExpr(
+//			AddExpr::createAddExpr(call, variable)
+//		));
+//	closure_new->addExpression(con);
+//	function->setClosure(closure_new);
+//	EXPECT_EQ(call, function->getRunTime());
+//	EXPECT_EQ(function, closure_new->getRunTime());
+//	auto ret = function->getValue({ NumberExpr::createNumberExpr(10) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
+//	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
+//
+//	auto ret1 = function->getValue({ NumberExpr::createNumberExpr(8) });
+//	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret1->getType());
+//	EXPECT_EQ(36, std::dynamic_pointer_cast<NumberExpr>(ret1)->getNumber());
+//
+//}
 
 /*
 f(x){
@@ -546,6 +546,7 @@ expected:
 f(10) == 55
 */
 TEST_F(ExprTest, RecurisionAccumTest1) {
+	using namespace std;
 	auto function = FunctionExpr::createFunctionExpr();
 	auto closure_new = ClosureExpr::createClosureExpr();
 	auto closure_outter = ClosureExpr::createClosureExpr();
@@ -559,11 +560,18 @@ TEST_F(ExprTest, RecurisionAccumTest1) {
 			AddExpr::createAddExpr(call, variable)
 		));
 	closure_new->addExpression(con);
+	wcout << "con runtime " << con->getRunTime()->getTypeString() << endl;
 	function->setClosure(closure_new);
+	wcout << "closure_new runtime " << closure_new->getRunTime()->getTypeString() << endl;
 	auto assign = expr::AssignExpr::createAssignExpr(L"accum"_variableExpr, function);
-	closure_new->addExpression(assign);
-	closure_new->addExpression(CallExpr::createCallExpr(L"accum"_variableExpr, { 10_expr }));
-	auto ret = closure_new->getValue();
+	wcout << "function runtime " << function->getRunTime()->getTypeString() << endl;
+	closure_outter->addExpression(assign);
+	wcout << "assign runtime " << assign->getRunTime()->getTypeString() << endl;
+	closure_outter->addExpression(CallExpr::createCallExpr(L"accum"_variableExpr, { 10_expr }));
+	wcout << "====================================================" << endl;
+	auto ret = closure_outter->getValue();
+	wcout << "recursionAccumTest1 after get value" << endl;
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
 	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
+	
 }

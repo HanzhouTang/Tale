@@ -12,14 +12,16 @@ namespace expr {
 	}
 
 	std::shared_ptr<Expr> CallExpr::getValue() {
+		using namespace std;
 		auto param = getParameters();
+		wcout << "here" << endl;
 		auto callObject = getCallable();
 		if (param.size() == 0) {
 			return callObject->getValue();
 		}
 		else {
-			auto run = callObject->getRunTime();
-			callObject->setRunTime(shared_from_this());
+			//auto run = callObject->getRunTime();
+			//callObject->setRunTime(shared_from_this()); //? why 
 			std::vector<std::shared_ptr<Expr>> args;
 			for (int i = 0; i < parameters.size(); i++) {
 				auto x = parameters[i]->getValue();
@@ -28,7 +30,7 @@ namespace expr {
 			store(shared_from_this());
 			auto ret = callObject->getValue(args);
 			restore(shared_from_this());
-			callObject->setRunTime(run);
+			//callObject->setRunTime(run);
 			return ret;
 		}
 	}
@@ -36,15 +38,21 @@ namespace expr {
 	std::wstring CallExpr::toString()
 	{
 		std::wostringstream buf;
-		buf << L"call( ";
+		// when varibale doesn't exist, it also work 
+		buf << callable->toString();
+		buf << L" call( ";
 		for (auto& x : parameters) {
 			buf << x->toString() << L" , ";
 		}
-		buf << L")\n{";
-		buf << getCallable()->toString() << L"}\n";
+		buf << L")";
 		return buf.str();
 	}
 
+	/*
+	Here contain an infinite circle when doing recursion.
+	The question is when directly do recursion, why no matter?
+
+	*/
 	std::shared_ptr<CallExpr> CallExpr::createCallExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& f,
 		const std::vector<std::shared_ptr<Expr>>& param)
 	{

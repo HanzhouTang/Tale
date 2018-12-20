@@ -36,7 +36,9 @@ namespace expr {
 			return ret.str();
 		}  
 		std::wstring getTypeString() {
-			return TypeList[getType()];
+			std::wostringstream ret;
+			ret<< TypeList[getType()] << L"@" << shared_from_this();
+			return ret.str();
 		}
 		virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& args) { return shared_from_this(); }
 		virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }

@@ -13,8 +13,11 @@ namespace expr {
 			parameters = p;
 		}
 		std::shared_ptr<Expr> getCallable() {
+			using namespace std;
 			if (callable->getType() == Expr::TYPE_VARIABLE) {
+				wcout << "in callexpr before get value" << endl;
 				return callable->getValue();
+				wcout << " in callexpr after get value" << endl;
 			}
 			return callable;
 			//Utility::quitWithError(__LINE__, __FILE__, L"type " + callable->getTypeString() + L" cannot be callable");
