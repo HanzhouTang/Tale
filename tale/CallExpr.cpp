@@ -12,9 +12,7 @@ namespace expr {
 	}
 
 	std::shared_ptr<Expr> CallExpr::getValue() {
-		using namespace std;
 		auto param = getParameters();
-		wcout << "here" << endl;
 		auto callObject = getCallable();
 		if (param.size() == 0) {
 			return callObject->getValue();

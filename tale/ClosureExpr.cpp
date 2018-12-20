@@ -39,17 +39,11 @@ namespace expr {
 		if (expressions.size() == 0) { return ret; }
 		
 		for (int i = 0; i < expressions.size()-1;i++) {
-			wcout << "closureExpr: before run " << i << "th sentence" << endl;
 			auto& x = expressions[i];
 			if (x->getType() == TYPE_RETURN) {
 				return x->getValue();
 			}
 			ret = x->getValue();
-			wcout << "closureExpr: after run " << i << "th sentence" << endl;
-			for (auto x : getContext()) {
-				wcout <<"variable "<< x.first << endl;
-			}
-
 		}
 		auto& content = expressions.back();
 		if (content->getType() == TYPE_VARIABLE ||content->getType()== TYPE_CONDITION ||content->getType()== TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
@@ -62,7 +56,7 @@ namespace expr {
 			return;
 		}
 		if (stack.size() > maximumRecursionDepth()) {
-			quitWithError(__LINE__, __FILE__, L"maximum recursion depth" + std::to_wstring(maximumRecursionDepth()) + L" exceeded");
+			quitWithError(__LINE__, __FILE__, L"maximum recursion depth " + std::to_wstring(maximumRecursionDepth()) + L" exceeded");
 		}
 		auto map = context;
 		//std::wcout << "add stack" << std::endl;

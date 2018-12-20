@@ -560,17 +560,11 @@ TEST_F(ExprTest, RecurisionAccumTest1) {
 			AddExpr::createAddExpr(call, variable)
 		));
 	closure_new->addExpression(con);
-	wcout << "con runtime " << con->getRunTime()->getTypeString() << endl;
 	function->setClosure(closure_new);
-	wcout << "closure_new runtime " << closure_new->getRunTime()->getTypeString() << endl;
 	auto assign = expr::AssignExpr::createAssignExpr(L"accum"_variableExpr, function);
-	wcout << "function runtime " << function->getRunTime()->getTypeString() << endl;
 	closure_outter->addExpression(assign);
-	wcout << "assign runtime " << assign->getRunTime()->getTypeString() << endl;
 	closure_outter->addExpression(CallExpr::createCallExpr(L"accum"_variableExpr, { 10_expr }));
-	wcout << "====================================================" << endl;
 	auto ret = closure_outter->getValue();
-	wcout << "recursionAccumTest1 after get value" << endl;
 	EXPECT_EQ(Expr::ExprType::TYPE_NUMBER, ret->getType());
 	EXPECT_EQ(55, std::dynamic_pointer_cast<NumberExpr>(ret)->getNumber());
 	
