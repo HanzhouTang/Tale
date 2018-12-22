@@ -7,7 +7,10 @@ namespace expr {
 
 	std::shared_ptr<Expr> ClosureExpr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
 		auto name = variable->getName();
-
+		using namespace std;
+		wcout << "closure in getVariable:" << endl;
+		wcout << toString() << endl;
+		wcout << "______________________________END_______________________________" << endl;
 		if (getContext().count(name)) {
 			return getContext()[name];
 		}
@@ -34,6 +37,7 @@ namespace expr {
 
 	std::shared_ptr<Expr> ClosureExpr::getValue()
 	{
+		using namespace std;
 		std::shared_ptr<Expr> ret = NullExpr::createNullExpr();
 		if (expressions.size() == 0) { return ret; }
 	
@@ -45,6 +49,7 @@ namespace expr {
 			ret = x->getValue();
 		}
 		auto& content = expressions.back();
+		wcout<<""
 		if (content->getType() == TYPE_VARIABLE ||content->getType()== TYPE_CONDITION ||content->getType()== TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
 			return content->getValue();
 		return content;

@@ -22,8 +22,13 @@ namespace expr {
 			//callObject->setRunTime(shared_from_this());
 			std::vector<std::shared_ptr<Expr>> args;
 			for (int i = 0; i < parameters.size(); i++) {
-				auto x = parameters[i]->getValue();
-				args.emplace_back(x);
+				if (parameters[i]->getType() != Expr::TYPE_FUNCTION) {
+					auto x = parameters[i]->getValue();
+					args.emplace_back(x);
+				}
+				else {
+					args.push_back(parameters[i]);
+				}
 			}
 			store(shared_from_this());
 			auto ret = callObject->getValue(args);

@@ -24,12 +24,19 @@ namespace expr {
 	}
 
 	std::shared_ptr<Expr> FunctionExpr::getValue(const std::vector<std::shared_ptr<Expr>>& args) {
+		using namespace std;
 		if (signature.size() == args.size()) {
+
 			for (int i = 0; i < signature.size(); i++) {
 				getClosure()->addVarable(signature[i], args[i]);
 			}
+			wcout << "closure: " << endl;
+			wcout << getClosure()->toString() << endl;
+			wcout << "______________________________END_______________________________" << endl;
 
-			return getClosure()->getValue();
+			auto ret = getClosure()->getValue();
+			wcout << "result: "<<endl << ret->toString() << endl<<endl;
+			return ret;
 		}
 		else {
 			quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
