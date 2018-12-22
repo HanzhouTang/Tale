@@ -8,9 +8,9 @@ namespace expr {
 	std::shared_ptr<Expr> ClosureExpr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
 		auto name = variable->getName();
 		using namespace std;
-		wcout << "closure in getVariable:" << endl;
+		/*wcout << "closure in getVariable:" << endl;
 		wcout << toString() << endl;
-		wcout << "______________________________END_______________________________" << endl;
+		wcout << "______________________________END_______________________________" << endl;*/
 		if (getContext().count(name)) {
 			return getContext()[name];
 		}
@@ -43,15 +43,26 @@ namespace expr {
 	
 		for (int i = 0; i < expressions.size()-1;i++) {
 			auto& x = expressions[i];
+			x->setRunTime(shared_from_this());
 			if (x->getType() == TYPE_RETURN) {
 				return x->getValue();
 			}
 			ret = x->getValue();
 		}
 		auto& content = expressions.back();
-		wcout<<""
-		if (content->getType() == TYPE_VARIABLE ||content->getType()== TYPE_CONDITION ||content->getType()== TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
+		content->setRunTime(shared_from_this());
+		//wcout << "closure getValue: here" << endl;
+		if (content->getType() == TYPE_VARIABLE || content->getType() == TYPE_CONDITION || content->getType() == TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
+		{
+			/*wcout << "content: " << endl;
+			wcout << content->toString() << endl;
+			wcout << "______________________________END_______________________________" << endl;
+			wcout << "content runtime: " << endl;
+			wcout << content->getRunTime()->toString() << endl;
+			wcout << "______________________________END_______________________________" << endl;
+			*/
 			return content->getValue();
+		}
 		return content;
 	}
 

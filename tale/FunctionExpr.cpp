@@ -30,13 +30,13 @@ namespace expr {
 			for (int i = 0; i < signature.size(); i++) {
 				getClosure()->addVarable(signature[i], args[i]);
 			}
-			wcout << "closure: " << endl;
+			/*wcout << "closure: " << endl;
 			wcout << getClosure()->toString() << endl;
-			wcout << "______________________________END_______________________________" << endl;
+			wcout << "______________________________END_______________________________" << endl;*/
 
-			auto ret = getClosure()->getValue();
-			wcout << "result: "<<endl << ret->toString() << endl<<endl;
-			return ret;
+			return getClosure()->getValue();
+			/*wcout << "result: "<<endl << ret->toString() << endl<<endl;*/
+			
 		}
 		else {
 			quitWithError(__LINE__, __FILE__, L" the signature of function doesn't match");
