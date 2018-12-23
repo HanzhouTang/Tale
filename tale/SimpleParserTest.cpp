@@ -358,7 +358,9 @@ TEST_F(SimpleParserTest, StatesTest) {
 	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ]";
 	SimpleParser parser(content);
 	parser.init();
+	wcout << "before states" << endl;
 	auto map = parser.states()[0];
+	wcout << "after states" << endl;
 	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
 	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
 	auto x = MAP->get(L"math");

@@ -49,6 +49,9 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::expr() {
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (exprMap.find(status) != exprMap.end()) {
 			auto after = exprMap[status];
 			lexer.set(after.newStatus);
@@ -61,11 +64,9 @@ namespace parser {
 			exprMap[status] = result;
 			return expr::NullExpr::createNullExpr();
 		}
-		//wcout << "in expr term " << queue.front()->toString() << endl;
 		moreterms(queue);
 		std::stack<std::shared_ptr<expr::Expr>> stack;
 		for (auto& x : queue) {
-			//wcout << x->toString() << endl;
 			if (x->getType() != expr::Expr::TYPE_BINARYOPERATION) {
 				stack.push(x);
 			}
@@ -93,10 +94,7 @@ namespace parser {
 
 	void  SimpleParser::moreterms(std::deque<std::shared_ptr<expr::Expr>>& queue) {
 		using namespace std;
-		auto status = lexer.get();
 		auto nodes = lexer.lookAheadK(1);
-		//wcout << "In moreTerms nodes[0] " << SimpleLexer::getTokenName(nodes[0])<<" lexeme "<<lexer.currentLexeme<< endl;
-
 		using namespace std;
 		wchar_t oper = 0;
 		if (nodes[0] == SimpleLexer::Token::Add) {
@@ -197,35 +195,11 @@ namespace parser {
 		}
 	}
 
-
-	//std::shared_ptr<expr::Expr> SimpleParser::str() {
-	//	auto status = lexer.get();
-	//	if (strMap.find(status) != strMap.end()) {
-	//		auto result = strMap[status];
-	//		lexer.set(result.newStatus);
-	//		return result.result;
-	//	}
-	//	auto Str = substr();
-	//	if (Str->getType() == expr::Expr::TYPE_NULL) {
-	//		auto ret = expr::NullExpr::createNullExpr();
-	//		MemoResult result(ret, lexer.get());
-	//		strMap[status] = result;
-	//		return ret;
-	//	}
-	//	auto MoreSubStrs = moresubstrs();
-	//	if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
-	//		std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(Str);
-	//		MemoResult result(MoreSubStrs, lexer.get());
-	//		strMap[status] = result;
-	//		return MoreSubStrs;
-	//	}
-	//	MemoResult result(Str, lexer.get());
-	//	strMap[status] = result;
-	//	return Str;
-	//}
-
 	std::shared_ptr<expr::Expr> SimpleParser::substr() {
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (substrMap.find(status) != substrMap.end()) {
 			auto result = substrMap[status];
 			lexer.set(result.newStatus);
@@ -247,46 +221,6 @@ namespace parser {
 		return expr::NullExpr::createNullExpr();
 	}
 
-	/*std::shared_ptr<expr::Expr> SimpleParser::moresubstrs() {
-		auto status = lexer.get();
-		if (moresubstrMap.find(status) != moresubstrMap.end()) {
-			auto result = moresubstrMap[status];
-			lexer.set(result.newStatus);
-			return result.result;
-		}
-		auto tokens = lexer.lookAheadK(1);
-		if (tokens[0] == SimpleLexer::Token::Add) {
-			lexer.save();
-			match(SimpleLexer::Token::Add);
-			auto SubStr = substr();
-			auto MoreSubStrs = moresubstrs();
-			if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
-				std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(SubStr);
-				auto ret = expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), MoreSubStrs);
-				MemoResult result(ret, lexer.get());
-				moresubstrMap[status] = result;
-				return ret;
-			}
-
-			else if (SubStr->getType() != expr::Expr::TYPE_NULL) {
-				lexer.pop();
-				auto ret = expr::AddExpr::createAddExpr(expr::NullExpr::createNullExpr(), SubStr);
-				MemoResult result(ret, lexer.get());
-				moresubstrMap[status] = result;
-				return ret;
-			}
-
-			else {
-				lexer.restore();
-				MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
-				moresubstrMap[status] = result;
-				return expr::NullExpr::createNullExpr();
-			}
-		}
-		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
-		moresubstrMap[status] = result;
-		return expr::NullExpr::createNullExpr();
-	}*/
 
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
@@ -339,6 +273,9 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::assign() {
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (assignMap.find(status) != assignMap.end()) {
 			auto result = assignMap[status];
 			lexer.set(result.newStatus);
@@ -379,6 +316,9 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::map()
 	{
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (mapMap.find(status) != mapMap.end()) {
 			auto result = mapMap[status];
 			lexer.set(result.newStatus);
@@ -484,6 +424,9 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::state() {
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (stateMap.find(status) != stateMap.end()) {
 			auto result = stateMap[status];
 			lexer.set(result.newStatus);
@@ -508,7 +451,6 @@ namespace parser {
 					matching = true;
 				}
 				if (matching) {
-					//wcout << "ret __state__ " << x->toString() << endl;
 					lexer.pop();
 					MemoResult result(x, lexer.get());
 					stateMap.emplace(status, result);
@@ -520,6 +462,7 @@ namespace parser {
 		auto x = expr::NullExpr::createNullExpr();
 		MemoResult result(x, lexer.get());
 		stateMap.emplace(status, result);
+
 		return x;
 	}
 
@@ -538,6 +481,9 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::closure() {
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (closureMap.find(status) != closureMap.end()) {
 			auto result = closureMap[status];
 			lexer.set(result.newStatus);
@@ -548,8 +494,6 @@ namespace parser {
 		if (token == SimpleLexer::Token::LCurlyBrace) {
 			match(SimpleLexer::Token::LCurlyBrace);
 			auto States = states();
-			//wcout << "in closure" << endl;
-			//wcout << "States.size "<<States.size() << endl;
 			match(SimpleLexer::Token::RCurlyBrace);
 			auto closure = expr::ClosureExpr::createClosureExpr();
 			for (auto& x : States) {
@@ -570,6 +514,9 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::func() {
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (funcMap.find(status) != funcMap.end()) {
 			auto result = funcMap[status];
 			lexer.set(result.newStatus);
@@ -660,6 +607,9 @@ namespace parser {
 		// need to create template class handle different scenario
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		if (compareMap.find(status) != compareMap.end()) {
 			auto result = compareMap[status];
 			lexer.set(result.newStatus);
@@ -676,7 +626,6 @@ namespace parser {
 			}
 			lexer.restore();
 		}
-		//wcout << "In compare left " << left->toString() << endl;
 		SimpleLexer::Token token;
 		if (!left || left->getType() == expr::Expr::TYPE_NULL) {
 			left = expr::NullExpr::createNullExpr();
@@ -685,7 +634,6 @@ namespace parser {
 			return left;
 		}
 		token = lexer.lookAheadK(1)[0];
-		//wcout << "In compare token " << SimpleLexer::getTokenName(token) << endl;
 		if (token == SimpleLexer::EqlEql) {
 			match(SimpleLexer::EqlEql);
 		}
@@ -712,7 +660,6 @@ namespace parser {
 			}
 			lexer.restore();
 		}
-		//wcout << "In compare right " << right->toString() << endl;
 		if (!right || right->getType() == expr::Expr::TYPE_NULL) {
 			lexer.restore();// restore from begining. 
 			right = expr::NullExpr::createNullExpr();
@@ -740,7 +687,6 @@ namespace parser {
 	{
 		using namespace std;
 		auto token = lexer.lookAheadK(1)[0];
-		//wcout << L"in booleanterm token: " << SimpleLexer::getTokenName(token)<<endl;
 		if (token == SimpleLexer::True) {
 			match(SimpleLexer::True);
 			return expr::BooleanExpr::createBooleanExpr(true);
@@ -754,15 +700,15 @@ namespace parser {
 			return expr::NotExpr::createNotExpr(boolean());
 		}
 		else if (token == SimpleLexer::Token::LParen) {
-			//wcout << "here" << endl;
 			match(SimpleLexer::Token::LParen);
 			auto ret = boolean();
 			match(SimpleLexer::Token::RParen);
 			return ret;
 		}
-		//cout << "before compare" << endl;
+		else if (token == SimpleLexer::Token::EndofContent) {
+			return expr::NullExpr::createNullExpr();
+		}
 		auto cmp = compare();
-		//wcout <<"cmp "<< cmp->toString() << endl;
 		return cmp;
 	}
 
@@ -774,7 +720,6 @@ namespace parser {
 			return Term;
 		}
 		auto MoreTerms = morebooleanterms();
-		//wcout<<L"More Terms "<< MoreTerms->toString() << endl;
 		if (MoreTerms->getType() == expr::Expr::TYPE_BINARYOPERATION) {
 			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreTerms)->setLeft(Term);
 			return MoreTerms;
@@ -788,7 +733,6 @@ namespace parser {
 		auto token = lexer.lookAheadK(1)[0];
 		std::shared_ptr<expr::Expr> first = expr::NullExpr::createNullExpr(),
 			second = expr::NullExpr::createNullExpr();
-		//wcout << L"in morebooleanterms token: " + SimpleLexer::getTokenName(token) << endl;
 		if (token == SimpleLexer::Token::And) {
 			match(SimpleLexer::Token::And);
 			first = booleanterm();
@@ -855,6 +799,10 @@ namespace parser {
 	{
 		using namespace std;
 		auto status = lexer.get();
+		if (status.endOfContent) {
+			return expr::NullExpr::createNullExpr();
+		}
+		auto t = callableMap.find(status);
 		if (callableMap.find(status) != callableMap.end()) {
 			auto result = callableMap[status];
 			lexer.set(result.newStatus);
@@ -925,15 +873,12 @@ std::shared_ptr<expr::Expr> parser::SimpleParser::IF()
 	std::shared_ptr<expr::Expr> ifStatement = expr::NullExpr::createNullExpr();
 	std::shared_ptr<expr::Expr> elseStatement = expr::NullExpr::createNullExpr();
 	match(SimpleLexer::Token::If);
-	//wcout << "if statement" << endl;
 	condition = boolean();
-	//wcout << "condition " << condition->toString() << endl;
 	if (condition->getType() == expr::Expr::TYPE_NULL) {
 		quitWithError(__LINE__, __FILE__, L"if statement without boolean condition");
 		return expr::NullExpr::createNullExpr();
 	}
 	ifStatement = closure();
-	//wcout << "ifStatement " << ifStatement->toString() << endl;
 	if (ifStatement->getType() == expr::Expr::TYPE_NULL) {
 		quitWithError(__LINE__, __FILE__, L"if statement without closure");
 		return expr::NullExpr::createNullExpr();

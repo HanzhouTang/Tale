@@ -37,10 +37,11 @@ namespace parser {
 		struct Status {
 			std::wstring::iterator index0, index1;
 			std::wstring currentLexeme;
+			bool endOfContent;
 			Token token;
 			State state;
 			Status(std::wstring::iterator i0, std::wstring::iterator i1,
-				std::wstring l, Token t, State s);
+				std::wstring l, Token t, State s,bool isEnded = false);
 			bool operator ==(const Status& other) const;
 			Status() = default;
 

@@ -125,6 +125,9 @@ namespace parser {
 
 	SimpleLexer::Status SimpleLexer::get()
 	{
+		if (index1 == content.end()) {
+			return Status(index0, index1, currentLexeme, token, state,true);
+		}
 		return Status(index0, index1, currentLexeme, token, state);
 	}
 	void SimpleLexer::save()
@@ -175,8 +178,8 @@ namespace parser {
 	SimpleLexer::LexerNode::LexerNode(const std::wstring & lex, Token t) : lexeme(lex), token(t) {}
 
 	SimpleLexer::Status::Status(std::wstring::iterator i0,
-		std::wstring::iterator i1, std::wstring l, Token t, State s) :
-		index0(i0), index1(i1), currentLexeme(l), token(t), state(s) {}
+		std::wstring::iterator i1, std::wstring l, Token t, State s, bool isEnded) :
+		index0(i0), index1(i1), currentLexeme(l), token(t), state(s), endOfContent(isEnded){}
 
 	bool SimpleLexer::Status::operator==(const Status & other) const
 	{
@@ -186,7 +189,11 @@ namespace parser {
 	std::size_t SimpleLexer::StatusHasher::operator()(const Status & s) const
 	{
 		using namespace std;
+		if (s.endOfContent) {
+			return  hash<wchar_t*>{}(nullptr) ^ (hash<wchar_t*>{}(nullptr) << 1) ^ (hash<int>{}(s.state) << 2);
+		}
 		return hash<wchar_t*>{}(&*s.index0) ^ (hash<wchar_t*>{}(&*s.index1) << 1) ^ (hash<int>{}(s.state) << 2);
+		
 	}
 
 };
