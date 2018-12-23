@@ -51,16 +51,8 @@ namespace expr {
 		}
 		auto& content = expressions.back();
 		content->setRunTime(shared_from_this());
-		//wcout << "closure getValue: here" << endl;
 		if (content->getType() == TYPE_VARIABLE || content->getType() == TYPE_CONDITION || content->getType() == TYPE_RETURN || content->getType() == TYPE_BINARYOPERATION || content->getType() == TYPE_CALL)
 		{
-			/*wcout << "content: " << endl;
-			wcout << content->toString() << endl;
-			wcout << "______________________________END_______________________________" << endl;
-			wcout << "content runtime: " << endl;
-			wcout << content->getRunTime()->toString() << endl;
-			wcout << "______________________________END_______________________________" << endl;
-			*/
 			return content->getValue();
 		}
 		return content;

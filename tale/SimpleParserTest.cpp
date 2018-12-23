@@ -10,9 +10,24 @@
 #include"FunctionExpr.h"
 #include"BooleanExpr.h"
 #include"CallExpr.h"
+#include"Utility.h"
 using namespace std;
 using namespace expr;
 using namespace parser;
+using namespace Utility;
+// thanks to stackoverflow <a href = "https://stackoverflow.com/questions/5419356/redirect-stdout-stderr-to-a-string"/>
+struct wcout_redirect {
+	wcout_redirect(std::wstreambuf * new_buffer)
+		: old(std::wcout.rdbuf(new_buffer))
+	{ }
+
+	~wcout_redirect() {
+		std::wcout.rdbuf(old);
+	}
+
+private:
+	std::wstreambuf * old;
+};
 
 TEST_F(SimpleParserTest, AddTwoNumber) {
 	wstring content = L"1234+325";
@@ -314,13 +329,13 @@ TEST_F(SimpleParserTest, MapTest) {
 	SimpleParser parser(content);
 	parser.init();
 	auto map = parser.map();
-	
+
 	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
 	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
 	auto x = MAP->get(L"hello");
 	EXPECT_EQ(Expr::ExprType::TYPE_STRING, x->getType());
 	auto str = std::dynamic_pointer_cast<StringExpr>(x);
-	EXPECT_EQ(L"world" , str->getString());
+	EXPECT_EQ(L"world", str->getString());
 }
 
 TEST_F(SimpleParserTest, EmptyMapTest) {
@@ -342,7 +357,7 @@ TEST_F(SimpleParserTest, AdvanceMapTest_InnerMap) {
 	auto x = MAP->get(L"math");
 	EXPECT_EQ(Expr::ExprType::TYPE_BINARYOPERATION, x->getType());
 	auto number = std::dynamic_pointer_cast<NumberExpr>(x->getValue());
-	EXPECT_EQ(6,number->getNumber());
+	EXPECT_EQ(6, number->getNumber());
 	auto y = MAP->get(L"hello");
 	EXPECT_EQ(Expr::ExprType::TYPE_MAP, y->getType());
 	auto MAPY = std::dynamic_pointer_cast<MapExpr>(y);
@@ -779,7 +794,7 @@ TEST_F(SimpleParserTest, Functest_new) {
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto result = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_FUNCTION, result->getType());
-	auto answer = std::dynamic_pointer_cast<expr::FunctionExpr>(result)->getValue({5_expr});
+	auto answer = std::dynamic_pointer_cast<expr::FunctionExpr>(result)->getValue({ 5_expr });
 	EXPECT_EQ(27, std::dynamic_pointer_cast<expr::NumberExpr>(answer)->getNumber());
 }
 
@@ -876,7 +891,7 @@ TEST_F(SimpleParserTest, Functest_recursion2) {
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto result = closure->getValue();
 	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
-	EXPECT_EQ(55,std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+	EXPECT_EQ(55, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
 }
 
 // fib test
@@ -919,7 +934,12 @@ TEST_F(SimpleParserTest, Functest_function_as_parameter1) {
 	auto closure = parser.element();
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
 	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	
+	EXPECT_THAT(output, testing::ContainsRegex("135"));
 }
 
 TEST_F(SimpleParserTest, ExternalFunctionTest) {
@@ -931,7 +951,13 @@ TEST_F(SimpleParserTest, ExternalFunctionTest) {
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
 	//wcout << closure->toString();
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
 	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	
+	EXPECT_THAT(output, testing::ContainsRegex("14"));
+	EXPECT_THAT(output, testing::ContainsRegex("hello world"));
 }
 
 
@@ -944,12 +970,63 @@ TEST_F(SimpleParserTest, ExternalFunctionTest1) {
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"set", set);
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"get", get);
-	//wcout << closure->toString();
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
 	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("world"));
+}
+
+TEST_F(SimpleParserTest, Functest_function_as_parameter2) {
+	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+\" world!\";}; print(test(\"hello\",f1));}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("hello world!"));
 }
 
 
+TEST_F(SimpleParserTest, MapFunctionTest) {
+
+	wstring content = L"{map = []; set(map,\"hello\",2); set(map,\"print\", def (x){print(x);}); p = get(map,\"print\"); data = get(map,\"hello\"); p(data); }";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"set", set);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"get", get);
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("2"));
+}
+
+TEST_F(SimpleParserTest, MapFunctionTest1) {
+
+	wstring content = L"{map = []; set(map,\"hello\",2); set(map,\"print\", def (x){print(x);}); p = get(map,\"print\")(get(map,\"hello\")); }";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"set", set);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"get", get);
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	//std::wstringstream buffer;
+	//wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	wcout << result->getTypeString();
+	//auto output = wstr2str(buffer.str());
+	//EXPECT_THAT(output, testing::ContainsRegex("2"));
+}
 
 
 
