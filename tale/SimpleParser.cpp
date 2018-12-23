@@ -836,6 +836,7 @@ namespace parser {
 	}
 
 	std::deque<std::deque<std::shared_ptr<expr::Expr>>> SimpleParser::moreparamlists() {
+		using namespace std;
 		auto Paramlist = paramlist();
 		auto existParamlist = std::get<0>(Paramlist);
 		if (existParamlist) {
@@ -860,12 +861,16 @@ namespace parser {
 		auto Callobject = callobject();
 		if (Callobject->getType() != expr::Expr::TYPE_NULL) {
 			auto ParamLists = paramlists();
+		/*	wcout << "size of paramlists: " << ParamLists.size() << endl;*/
 			std::shared_ptr<expr::Expr> Call = Callobject;
 			if (ParamLists.size() > 0) {
 				for (auto ParamList : ParamLists) {
 					auto Params = std::vector<std::shared_ptr<expr::Expr>>(ParamList.begin(), ParamList.end());
 					Call = expr::CallExpr::createCallExpr(Call, Params);
+					/*wcout << "______________________Call________________________" << endl;
+					wcout << Call->toString() << endl;*/
 				}
+				
 				lexer.pop();
 				MemoResult result(Call, lexer.get());
 				callableMap.emplace(status, result);

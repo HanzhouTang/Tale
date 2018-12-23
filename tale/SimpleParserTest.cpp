@@ -928,7 +928,7 @@ TEST_F(SimpleParserTest, Functest_function_as_parameter) {
 //try to solve this problem
 //maybe clone issue.
 TEST_F(SimpleParserTest, Functest_function_as_parameter1) {
-	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+45;}; print(test(90,f1));}";
+	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+\" world\";}; print(test(\"hello\",f1));}";
 	SimpleParser parser(content);
 	parser.init();
 	auto closure = parser.element();
@@ -939,7 +939,7 @@ TEST_F(SimpleParserTest, Functest_function_as_parameter1) {
 	auto result = closure->getValue();
 	auto output = wstr2str(buffer.str());
 	
-	EXPECT_THAT(output, testing::ContainsRegex("135"));
+	EXPECT_THAT(output, testing::ContainsRegex("hello world"));
 }
 
 TEST_F(SimpleParserTest, ExternalFunctionTest) {
@@ -1012,7 +1012,7 @@ TEST_F(SimpleParserTest, MapFunctionTest) {
 
 TEST_F(SimpleParserTest, MapFunctionTest1) {
 
-	wstring content = L"{map = []; set(map,\"hello\",2); set(map,\"print\", def (x){print(x);}); p = get(map,\"print\")(get(map,\"hello\")); }";
+	wstring content = L"{map = []; set(map,\"hello\",2); set(map,\"print\", def (x){print(x);}); get(map,\"print\")(get(map,\"hello\")); }";
 	SimpleParser parser(content);
 	parser.init();
 	auto closure = parser.element();
@@ -1020,12 +1020,12 @@ TEST_F(SimpleParserTest, MapFunctionTest1) {
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"set", set);
 	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"get", get);
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
-	//std::wstringstream buffer;
-	//wcout_redirect redirect(buffer.rdbuf());
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
 	auto result = closure->getValue();
-	wcout << result->getTypeString();
-	//auto output = wstr2str(buffer.str());
-	//EXPECT_THAT(output, testing::ContainsRegex("2"));
+	wcout <<"result"<<endl<< result->toString() << endl;
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("2"));
 }
 
 

@@ -42,12 +42,12 @@ namespace expr {
 	{
 		std::wostringstream buf;
 		// when varibale doesn't exist, it also work 
-		buf << callable->toString();
+		buf <<L"{"<< callable->toString();
 		buf << L"_call( ";
 		for (auto& x : parameters) {
 			buf << x->toString() << L" , ";
 		}
-		buf << L")";
+		buf << L")}";
 		return buf.str();
 	}
 
