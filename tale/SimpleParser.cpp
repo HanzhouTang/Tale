@@ -189,9 +189,11 @@ namespace parser {
 				queue.push_back(expr::ReverseExpr::createReverseExpr(Factor));
 			}
 		}
-		auto Factor = factorHelper();
-		if (Factor->getType() != expr::Expr::TYPE_NULL) {
-			queue.push_back(Factor);
+		else {
+			auto Factor = factorHelper();
+			if (Factor->getType() != expr::Expr::TYPE_NULL) {
+				queue.push_back(Factor);
+			}
 		}
 	}
 
