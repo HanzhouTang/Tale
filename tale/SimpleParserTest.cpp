@@ -1012,7 +1012,7 @@ TEST_F(SimpleParserTest, MapFunctionTest) {
 
 TEST_F(SimpleParserTest, MapFunctionTest1) {
 
-	wstring content = L"{map = []; set(map,\"hello\",2); set(map,\"print\", def (x){print(x);}); get(map,\"print\")(get(map,\"hello\")); }";
+	wstring content = L"{map = []; set(map,\"hello\",\"world\"); set(map,\"print\", def (x){print(x);}); get(map,\"print\")(get(map,\"hello\")); }";
 	SimpleParser parser(content);
 	parser.init();
 	auto closure = parser.element();
@@ -1023,9 +1023,8 @@ TEST_F(SimpleParserTest, MapFunctionTest1) {
 	std::wstringstream buffer;
 	wcout_redirect redirect(buffer.rdbuf());
 	auto result = closure->getValue();
-	wcout <<"result"<<endl<< result->toString() << endl;
 	auto output = wstr2str(buffer.str());
-	EXPECT_THAT(output, testing::ContainsRegex("2"));
+	EXPECT_THAT(output, testing::ContainsRegex("world"));
 }
 
 

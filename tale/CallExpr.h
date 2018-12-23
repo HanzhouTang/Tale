@@ -9,17 +9,8 @@ namespace expr {
 		void setCallable(const std::shared_ptr<Expr>& f) {
 			callable = f;
 		}
-		void setParameters(const std::vector<std::shared_ptr<Expr>>& p) {
-			parameters = p;
-		}
-		std::shared_ptr<Expr> getCallable() {
-			if (callable->getType() == Expr::TYPE_VARIABLE) {
-				return callable->getValue();
-			}
-			return callable;
-			//Utility::quitWithError(__LINE__, __FILE__, L"type " + callable->getTypeString() + L" cannot be callable");
-			//return NullExpr::createNullExpr();
-		}
+		void setParameters(const std::vector<std::shared_ptr<Expr>>& p);
+		std::shared_ptr<Expr> getCallable();
 		std::vector<std::shared_ptr<Expr>> getParameters() { return parameters; }
 		CallExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& f,
 			const std::vector<std::shared_ptr<Expr>>& param) : Expr(runtime), parameters(param), callable(f) {

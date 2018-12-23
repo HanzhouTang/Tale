@@ -12,8 +12,12 @@ namespace expr {
 	}
 
 	std::shared_ptr<Expr> CallExpr::getValue() {
+		using namespace std;
 		auto param = getParameters();
 		auto callObject = getCallable();
+		if (callObject->getType() != Expr::TYPE_FUNCTION&&callObject->getType()!=Expr::TYPE_MAP) {
+			quitWithError(__LINE__, __FILE__, L"call object must be function");
+		}
 		if (param.size() == 0) {
 			return callObject->getValue();
 		}
@@ -42,7 +46,7 @@ namespace expr {
 	{
 		std::wostringstream buf;
 		// when varibale doesn't exist, it also work 
-		buf <<L"{"<< callable->toString();
+		buf << L"{" << callable->toString();
 		buf << L"_call( ";
 		for (auto& x : parameters) {
 			buf << x->toString() << L" , ";
@@ -51,6 +55,19 @@ namespace expr {
 		return buf.str();
 	}
 
+
+	void CallExpr::setParameters(const std::vector<std::shared_ptr<Expr>>& p)
+	{
+		parameters = p;
+	}
+
+	std::shared_ptr<Expr> CallExpr::getCallable()
+	{
+		if (callable->getType() == Expr::TYPE_VARIABLE || callable->getType() == Expr::TYPE_CALL) {
+			return callable->getValue();
+		}
+		return callable;
+	}
 
 	std::shared_ptr<CallExpr> CallExpr::createCallExpr(const std::shared_ptr<Expr>& runtime, const std::shared_ptr<Expr>& f,
 		const std::vector<std::shared_ptr<Expr>>& param)
