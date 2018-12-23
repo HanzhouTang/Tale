@@ -24,7 +24,7 @@ namespace parser {
 		//===================record maps==========================
 		MemoMap moresubstrMap;
 		MemoMap substrMap;
-		MemoMap strMap;
+		//MemoMap strMap;
 		MemoMap exprMap;
 		MemoMap assignMap;
 		MemoMap mapMap;
@@ -45,9 +45,9 @@ namespace parser {
 		std::shared_ptr<expr::Expr>  factorHelper();
 		void morefactors(std::deque<std::shared_ptr<expr::Expr>>&);
 		//===============for string =============================
-		std::shared_ptr<expr::Expr> str();
+		//std::shared_ptr<expr::Expr> str();
 		std::shared_ptr<expr::Expr> substr();
-		std::shared_ptr<expr::Expr> moresubstrs();
+		//std::shared_ptr<expr::Expr> moresubstrs();
 		//===============for element ============================
 		std::shared_ptr<expr::Expr> element();
 		std::deque<std::shared_ptr<expr::Expr>> elementlists();

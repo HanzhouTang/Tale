@@ -4,6 +4,8 @@ namespace expr {
 	struct ArithmeticExpr :BinaryOperatorExpr {
 		wchar_t op;
 		std::shared_ptr<Expr> getValue() override;
+		std::shared_ptr<Expr> getValueFromTwoNumber(const std::shared_ptr<Expr>& l, const std::shared_ptr<Expr>& r);
+		std::shared_ptr<Expr> getValueFromTwoString(const std::shared_ptr<Expr>& l, const std::shared_ptr<Expr>& r);
 		virtual std::wstring toString() override {
 			std::wostringstream ret;
 			ret << L"(" << getLeft()->toString() << L") ";

@@ -161,6 +161,9 @@ namespace parser {
 			auto number = wstr2floats(lexer.currentLexeme);
 			return expr::NumberExpr::createNumberExpr(number[0]);
 		}
+		else if (token == SimpleLexer::Token::Quote) {
+			return substr();
+		}
 		else if (token == SimpleLexer::Token::LParen) {
 			match(SimpleLexer::Token::LParen);
 			auto Expr = expr();
@@ -171,7 +174,7 @@ namespace parser {
 			match(SimpleLexer::Token::Variable);
 			return expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
 		}
-		
+
 		//quitWithError(__LINE__, __FILE__, L"undefined factor");
 		return expr::NullExpr::createNullExpr();
 	}
@@ -192,31 +195,31 @@ namespace parser {
 	}
 
 
-	std::shared_ptr<expr::Expr> SimpleParser::str() {
-		auto status = lexer.get();
-		if (strMap.find(status) != strMap.end()) {
-			auto result = strMap[status];
-			lexer.set(result.newStatus);
-			return result.result;
-		}
-		auto Str = substr();
-		if (Str->getType() == expr::Expr::TYPE_NULL) {
-			auto ret = expr::NullExpr::createNullExpr();
-			MemoResult result(ret, lexer.get());
-			strMap[status] = result;
-			return ret;
-		}
-		auto MoreSubStrs = moresubstrs();
-		if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
-			std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(Str);
-			MemoResult result(MoreSubStrs, lexer.get());
-			strMap[status] = result;
-			return MoreSubStrs;
-		}
-		MemoResult result(Str, lexer.get());
-		strMap[status] = result;
-		return Str;
-	}
+	//std::shared_ptr<expr::Expr> SimpleParser::str() {
+	//	auto status = lexer.get();
+	//	if (strMap.find(status) != strMap.end()) {
+	//		auto result = strMap[status];
+	//		lexer.set(result.newStatus);
+	//		return result.result;
+	//	}
+	//	auto Str = substr();
+	//	if (Str->getType() == expr::Expr::TYPE_NULL) {
+	//		auto ret = expr::NullExpr::createNullExpr();
+	//		MemoResult result(ret, lexer.get());
+	//		strMap[status] = result;
+	//		return ret;
+	//	}
+	//	auto MoreSubStrs = moresubstrs();
+	//	if (MoreSubStrs->getType() == expr::Expr::ExprType::TYPE_BINARYOPERATION) {
+	//		std::dynamic_pointer_cast<expr::BinaryOperatorExpr>(MoreSubStrs)->setLeft(Str);
+	//		MemoResult result(MoreSubStrs, lexer.get());
+	//		strMap[status] = result;
+	//		return MoreSubStrs;
+	//	}
+	//	MemoResult result(Str, lexer.get());
+	//	strMap[status] = result;
+	//	return Str;
+	//}
 
 	std::shared_ptr<expr::Expr> SimpleParser::substr() {
 		auto status = lexer.get();
@@ -236,20 +239,12 @@ namespace parser {
 			substrMap[status] = result;
 			return ret;
 		}
-		else if (token == SimpleLexer::Variable) {
-			match(SimpleLexer::Token::Variable);
-			auto ret = expr::VariableExpr::createVariableExpr(lexer.currentLexeme);
-			MemoResult result(ret, lexer.get());
-			substrMap[status] = result;
-			return ret;
-
-		}
 		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
 		substrMap[status] = result;
 		return expr::NullExpr::createNullExpr();
 	}
 
-	std::shared_ptr<expr::Expr> SimpleParser::moresubstrs() {
+	/*std::shared_ptr<expr::Expr> SimpleParser::moresubstrs() {
 		auto status = lexer.get();
 		if (moresubstrMap.find(status) != moresubstrMap.end()) {
 			auto result = moresubstrMap[status];
@@ -288,12 +283,12 @@ namespace parser {
 		MemoResult result(expr::NullExpr::createNullExpr(), lexer.get());
 		moresubstrMap[status] = result;
 		return expr::NullExpr::createNullExpr();
-	}
+	}*/
 
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
 		using namespace std;
-		auto fs = { &SimpleParser::expr , &SimpleParser::str,&SimpleParser::boolean,
+		auto fs = { &SimpleParser::expr ,&SimpleParser::boolean,
 			&SimpleParser::map,&SimpleParser::IF, &SimpleParser::closure,
 			&SimpleParser::callable,&SimpleParser::func };
 		for (auto f : fs) {
@@ -427,7 +422,7 @@ namespace parser {
 	SimpleParser::Pair SimpleParser::pair()
 	{
 		lexer.save();
-		auto Str = str();
+		auto Str = expr();
 		if (Str->getType() == expr::Expr::TYPE_NULL) {
 			lexer.restore();
 			return Pair(L"", expr::NullExpr::createNullExpr());
@@ -443,6 +438,7 @@ namespace parser {
 			lexer.restore();
 			return Pair(L"", expr::NullExpr::createNullExpr());
 		}
+		// TODO: add type check.
 		auto key = std::dynamic_pointer_cast<expr::StringExpr>(Str->getValue())->getString();
 		lexer.pop();
 		return Pair(key, value);
@@ -667,7 +663,7 @@ namespace parser {
 			return result.result;
 		}
 
-		auto funcs = { &SimpleParser::expr, &SimpleParser::str };
+		auto funcs = { &SimpleParser::expr };
 		std::shared_ptr<expr::Expr> left;
 		for (auto f : funcs) {
 			lexer.save();
