@@ -19,7 +19,7 @@ namespace parser {
 		, L"If", L"Else", L"Quote", L"Invalid", L"Variable",L"Newline", L"EndofContent",L"Number",
 		L"String",L"Colon",L"Def",L"EqlEql",L"True",L"False",L"Not"
 	};
-	
+
 	SimpleLexer::Token SimpleLexer::getNextToken() {
 		using namespace std;
 		auto last = content.end();
@@ -74,11 +74,87 @@ namespace parser {
 		}
 		return Token::Invalid;
 	}
-	// if no string 
 
+	bool SimpleLexer::isDelimiter(const wchar_t str)
+	{
+		return delimiters.count(std::wstring(1, str));
+	}
 
+	bool SimpleLexer::isWhiteSpace(const wchar_t ch)
+	{
+		using namespace std;
+		return ch == L' ' || ch == L'\t';
+	}
+	bool SimpleLexer::isNumber(const std::wstring & str)
+	{
+		using namespace std;
+		return regex_match(str, wregex(L"[+-]?([0-9]*[.])?[0-9]+"));
+	}
+	bool SimpleLexer::isValidVariable(const std::wstring & str)
+	{
+		using namespace std;
+		return regex_match(str, wregex(L"^[a-z_]\\w*$"));
+	}
+	void SimpleLexer::init()
+	{
+		if (!content.empty()) {
+			index0 = index1 = content.begin();
+		}
+		else {
+			std::wcerr << "init simpleLexer without content" << std::endl;
+		}
+		token = Invalid;
+		state = noString;
+	}
+
+	SimpleLexer::~SimpleLexer()
+	{
+		if (!content.empty()) {
+			index0 = index1 = content.begin();
+		}
+	}
+
+	void SimpleLexer::set(const Status & status)
+	{
+		index0 = status.index0;
+		index1 = status.index1;
+		currentLexeme = status.currentLexeme;
+		token = status.token;
+		state = status.state;
+	}
+
+	SimpleLexer::Status SimpleLexer::get()
+	{
+		return Status(index0, index1, currentLexeme, token, state);
+	}
+	void SimpleLexer::save()
+	{
+		Status status(index0, index1, currentLexeme, token, state);
+		statusStack.push(status);
+	}
+
+	void SimpleLexer::pop()
+	{
+		statusStack.pop();
+	}
+	void SimpleLexer::restore()
+	{
+		auto x = statusStack.top();
+		statusStack.pop();
+
+		index0 = x.index0;
+		index1 = x.index1;
+		currentLexeme = x.currentLexeme;
+		token = x.token;
+		state = x.state;
+	}
 	wchar_t SimpleLexer::peek() {
 		return *(index1);
+	}
+
+	std::wstring SimpleLexer::getTokenName(Token t)
+	{
+		return TokenNames[t];
 	}
 
 	std::vector<SimpleLexer::Token> SimpleLexer::lookAheadK(int k) {
@@ -95,6 +171,23 @@ namespace parser {
 		return tokens;
 	}
 
+
+	SimpleLexer::LexerNode::LexerNode(const std::wstring & lex, Token t) : lexeme(lex), token(t) {}
+
+	SimpleLexer::Status::Status(std::wstring::iterator i0,
+		std::wstring::iterator i1, std::wstring l, Token t, State s) :
+		index0(i0), index1(i1), currentLexeme(l), token(t), state(s) {}
+
+	bool SimpleLexer::Status::operator==(const Status & other) const
+	{
+		return &*index0 == &*other.index0 && &*index1 == &*other.index1 && state == other.state;
+	}
+
+	std::size_t SimpleLexer::StatusHasher::operator()(const Status & s) const
+	{
+		using namespace std;
+		return hash<wchar_t*>{}(&*s.index0) ^ (hash<wchar_t*>{}(&*s.index1) << 1) ^ (hash<int>{}(s.state) << 2);
+	}
 
 };
 

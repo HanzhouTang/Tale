@@ -88,6 +88,7 @@ namespace parser {
 			return stack.top();
 		}
 		quitWithError(__LINE__, __FILE__, L"stack has more than one element");
+		return expr::NullExpr::createNullExpr();
 	}
 
 	void  SimpleParser::moreterms(std::deque<std::shared_ptr<expr::Expr>>& queue) {
