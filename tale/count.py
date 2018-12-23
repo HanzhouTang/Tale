@@ -9,12 +9,16 @@ def line_count(f):
 def statistics(path):
     files = [ x for x in os.listdir(path) if x.endswith(".h") or x.endswith(".cpp")]
     total = 0
+    ret = {}
     for f in files:
-        count = line_count(f) 
-        print("{} : {}".format(f,count))
+        count = line_count(f)
+        ret[f] = count
         total += count
-    return total
+    ret["total"] = total
+    return ret
             
 if __name__ =="__main__":
-    total = statistics(os.getcwd())
-    print("total : {}".format(total))
+    statis = statistics(os.getcwd())
+    statis = sorted(statis.items(),key = lambda x: x[1])
+    for k,v in statis:
+        print("{:30} : {:5}".format(k,v))

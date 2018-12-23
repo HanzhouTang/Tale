@@ -15,19 +15,7 @@ using namespace std;
 using namespace expr;
 using namespace parser;
 using namespace Utility;
-// thanks to stackoverflow <a href = "https://stackoverflow.com/questions/5419356/redirect-stdout-stderr-to-a-string"/>
-struct wcout_redirect {
-	wcout_redirect(std::wstreambuf * new_buffer)
-		: old(std::wcout.rdbuf(new_buffer))
-	{ }
 
-	~wcout_redirect() {
-		std::wcout.rdbuf(old);
-	}
-
-private:
-	std::wstreambuf * old;
-};
 
 TEST_F(SimpleParserTest, AddTwoNumber) {
 	wstring content = L"1234+325";

@@ -51,4 +51,14 @@ namespace Utility {
 	void warning(std::wstring info);
 	std::wstring str2wstr(const std::string& str);
 	std::string wstr2str(const std::wstring& wstr);
+	struct wcout_redirect {
+		wcout_redirect(std::wstreambuf * new_buffer)
+			: old(std::wcout.rdbuf(new_buffer))
+		{ }
+		~wcout_redirect() {
+			std::wcout.rdbuf(old);
+		}
+	private:
+		std::wstreambuf * old;
+	};
 }
