@@ -15,8 +15,13 @@ namespace expr {
 	std::shared_ptr<Expr> ExternalFunctionExpr::getValue(const std::vector<std::shared_ptr<Expr>>& parameters) {
 		std::vector<std::shared_ptr<Expr>> args;
 		for (int i = 0; i < parameters.size(); i++) {
-			auto x = parameters[i]->getValue();
-			args.emplace_back(x);
+			if (parameters[i]->getType() != Expr::TYPE_FUNCTION) {
+				auto x = parameters[i]->getValue();
+				args.emplace_back(x);
+			}
+			else {
+				args.push_back(parameters[i]);
+			}
 		}
 		return _f(args);
 	}

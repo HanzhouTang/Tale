@@ -1,4 +1,4 @@
-#include"SimpleParserTest.h"
+﻿#include"SimpleParserTest.h"
 #include"SimpleParser.h"
 #include"NumberExpr.h"
 #include"VariableExpr.h"
@@ -910,15 +910,42 @@ TEST_F(SimpleParserTest, Functest_function_as_parameter) {
 //try to solve this problem
 //maybe clone issue.
 TEST_F(SimpleParserTest, Functest_function_as_parameter1) {
-	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+10;}; test(10,f1);}";
+	wstring content = L"{ def test(a,f){ f(a); }; def f1(x){x+45;}; print(test(90,f1));}";
 	SimpleParser parser(content);
 	parser.init();
 	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
 	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
 	auto result = closure->getValue();
-	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
-	EXPECT_EQ(20, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
 }
+
+TEST_F(SimpleParserTest, ExternalFunctionTest) {
+
+	wstring content = L"{print(5 + 4 + 3 + 2,\"hello\" + \" world!\");}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
+	//wcout << closure->toString();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+}
+
+
+TEST_F(SimpleParserTest, ExternalFunctionTest1) {
+
+	wstring content = L"{map = [\"hello\":\"world\"]; print(get(map,\"hello\")); }";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.element();
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"print", print);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"set", set);
+	std::dynamic_pointer_cast<expr::ClosureExpr>(closure)->addVarable(L"get", get);
+	//wcout << closure->toString();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+}
+
 
 
 
