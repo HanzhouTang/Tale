@@ -226,7 +226,7 @@ bool Tale::initRootScene() {
 	Element::setImageFactory(m_pImageFactory);
 	Element::setTextFormat(m_pTextFormat);
 	wstring content = readFile(L"C:\\Users\\tangh\\source\\repos\\tale\\tale\\Resource\\xml\\initScene1.xml");
-	unique_ptr<SimpleXMLParser> xmlParser = make_unique<SimpleXMLParser>();
+	unique_ptr<xml::SimpleXMLParser> xmlParser = make_unique<xml::SimpleXMLParser>();
 	//cout << "before parsing" << endl;
 	xmlParser->parse(content);
 	//cout << "after parsing" << endl;

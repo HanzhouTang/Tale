@@ -25,7 +25,7 @@ shared_ptr<Sprite> Sprite::createSprite(D2D1_RECT_F position,float t, const Elem
 	return ret;
 }
 
-shared_ptr<Sprite> Sprite::createSpriteByXml(const shared_ptr<Node>& node) {
+shared_ptr<Sprite> Sprite::createSpriteByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Sprite>();
 	auto interval = Utility::wstr2floats(node->getAttribute(INTERVAL_EN));
 	if (interval.empty())

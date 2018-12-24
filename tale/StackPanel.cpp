@@ -48,7 +48,7 @@ shared_ptr<StackPanel> StackPanel::createStackPanel(D2D1_RECT_F position, Orient
 	return ret;
 }
 
-shared_ptr<StackPanel> StackPanel::createStackPanelByXml(const shared_ptr<Node>& node) {
+shared_ptr<StackPanel> StackPanel::createStackPanelByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<StackPanel>();
 	auto padding = Utility::wstr2floats(node->getAttribute(PADDING_EN));
 	if(padding.empty())

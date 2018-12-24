@@ -1,8 +1,10 @@
 #include"Node.h"
-shared_ptr<Node> Node::createNode(const wstring& name,
-	const shared_ptr<Node>& parent){
-	auto ret = make_shared<Node>();
-	ret->setParent(parent);
-	ret->setName(name);
-	return ret;
+namespace xml {
+	std::shared_ptr<Node> Node::createNode(const std::wstring& name,
+		const std::shared_ptr<Node>& parent) {
+		auto ret = std::make_shared<Node>();
+		ret->setParent(parent);
+		ret->setName(name);
+		return ret;
+	}
 }

@@ -18,7 +18,7 @@ public:
 	CallbackFunction _clickAction;
 	virtual void onPressDown(const CallbackFunction& f);
 	static shared_ptr<Button> createButton(Element::Brush, D2D1_RECT_F, Element::Brush = Brush(), ComPtr<IDWriteTextFormat> = ComPtr<IDWriteTextFormat>(nullptr), CallbackFunction f = nullptr, wstring = L"");
-	static shared_ptr<Button> createButtonByXml(const shared_ptr<Node>& node);
+	static shared_ptr<Button> createButtonByXml(const shared_ptr<xml::Node>& node);
 	void setOnClickFunction(const CallbackFunction& f) { _clickAction = f; }
 	inline void setCaption(wstring s) { caption = s; }
 	inline void setmouseHoverBrush(Brush b) { mouseHoverBrush = b; }

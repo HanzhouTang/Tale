@@ -86,7 +86,7 @@ void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
 }
 
 
-shared_ptr<Button> Button::createButtonByXml(const shared_ptr<Node>& node) {
+shared_ptr<Button> Button::createButtonByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Button>();
 	ret->setCaption(node->getValue());
 

@@ -122,7 +122,7 @@ shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
 	return ret;
 }
 
-shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
+shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& root) {
 	if (root == nullptr) return shared_ptr<Element>(nullptr);
 	const wstring& name = root->getName();
 	shared_ptr<Element> ret;
@@ -171,7 +171,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<Node>& root) {
 	return ret;
 }
 
-Element::Brush Element::getBrushFromXml(const shared_ptr<Node>& node) {
+Element::Brush Element::getBrushFromXml(const shared_ptr<xml::Node>& node) {
 	auto url = node->getAttribute(BRUSH_EN);
 	if (url.empty())
 		url = node->getAttribute(BRUSH_CH);

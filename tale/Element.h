@@ -60,8 +60,8 @@ public:
 	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);
-	static shared_ptr<Element> createElementByXml(const shared_ptr<Node>&);
+	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
-	static Brush getBrushFromXml(const shared_ptr<Node>&);
+	static Brush getBrushFromXml(const shared_ptr<xml::Node>&);
 	Element();
 };
