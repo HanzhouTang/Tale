@@ -95,6 +95,17 @@ namespace parser {
 		using namespace std;
 		return regex_match(str, wregex(L"^[a-z_]\\w*$"));
 	}
+
+	SimpleLexer::SimpleLexer(const std::wstring & str)
+		:content(str) {
+		init();
+	}
+
+	SimpleLexer::SimpleLexer(std::wstring && str)
+		: content(std::move(str)) {
+		init();
+	}
+
 	void SimpleLexer::init()
 	{
 		if (!content.empty()) {
@@ -126,7 +137,7 @@ namespace parser {
 	SimpleLexer::Status SimpleLexer::get()
 	{
 		if (index1 == content.end()) {
-			return Status(index0, index1, currentLexeme, token, state,true);
+			return Status(index0, index1, currentLexeme, token, state, true);
 		}
 		return Status(index0, index1, currentLexeme, token, state);
 	}
@@ -179,7 +190,7 @@ namespace parser {
 
 	SimpleLexer::Status::Status(std::wstring::iterator i0,
 		std::wstring::iterator i1, std::wstring l, Token t, State s, bool isEnded) :
-		index0(i0), index1(i1), currentLexeme(l), token(t), state(s), endOfContent(isEnded){}
+		index0(i0), index1(i1), currentLexeme(l), token(t), state(s), endOfContent(isEnded) {}
 
 	bool SimpleLexer::Status::operator==(const Status & other) const
 	{
@@ -193,7 +204,7 @@ namespace parser {
 			return  hash<wchar_t*>{}(nullptr) ^ (hash<wchar_t*>{}(nullptr) << 1) ^ (hash<int>{}(s.state) << 2);
 		}
 		return hash<wchar_t*>{}(&*s.index0) ^ (hash<wchar_t*>{}(&*s.index1) << 1) ^ (hash<int>{}(s.state) << 2);
-		
+
 	}
 
 };

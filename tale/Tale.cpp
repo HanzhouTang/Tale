@@ -19,6 +19,7 @@
 #include"MapExpr.h"
 #include"ExternalFunctionExpr.h"
 #include"ExprLibrary.h"
+#include"SimpleParser.h"
 #include<windowsx.h>
 using namespace Utility;
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
@@ -236,9 +237,23 @@ bool Tale::initRootScene() {
 	if (_node->getChildrenCount() != 1) {
 		quitWithError(__LINE__, __FILE__, L" 1 xml file only can have 1 root node");
 	}
-
 	auto nodeRoot = _node->getChild(0);
 	root = Element::createElementByXml(nodeRoot);
+	auto scriptNodes = _node->getNodesByName(L"Script");
+	if (scriptNodes.size() > 1) {
+		warning(L"For now, only can add one script node in a xml file");
+	}
+	if (scriptNodes.size() > 0) {
+		std::wstring scriptContent = scriptNodes[0]->getValue();
+		wcout << scriptContent << endl;
+		parser::SimpleParser parser(scriptContent);
+		auto closure = parser.element();
+		if (closure->getType() != expr::Expr::TYPE_CLOSURE) {
+			quitWithError(__LINE__, __FILE__, L"script tag must contain a closure");
+		}
+		setRuntimeEnv(closure);
+		closure->getValue();
+	}
 	return true;
 }
 

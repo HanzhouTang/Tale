@@ -6,6 +6,10 @@
 #include"Element.h"
 #include"Button.h"
 #include"MapExpr.h"
+#include"ClosureExpr.h"
+#include"ExternalFunctionExpr.h"
+#include<map>
+
 namespace expr {
 	using namespace Utility;
 	std::shared_ptr<Expr> printExpr(const std::vector <std::shared_ptr<Expr>>& args)
@@ -16,6 +20,7 @@ namespace expr {
 		std::wcout << std::endl;
 		return NullExpr::createNullExpr();
 	}
+
 	std::shared_ptr<Expr> setOnClickEvent(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {
@@ -34,21 +39,19 @@ namespace expr {
 		}
 		auto element = std::dynamic_pointer_cast<ElementExpr>(first)->getElement();
 		if (element->getType() != Element::TYPE_BUTTON) {
-			quitWithError(__LINE__, __FILE__, L"the only button can be set onclick function");
+			quitWithError(__LINE__, __FILE__, L"only button can be set onclick function");
 			return NullExpr::createNullExpr();
 		}
 		auto button = std::dynamic_pointer_cast<Button>(element);
-
-		
-
-
 		return std::shared_ptr<Expr>();
 	}
+
 	std::shared_ptr<Expr> helloWorld(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		std::wcout << "hello world" << std::endl;
 		return NullExpr::createNullExpr();
 	}
+
 	std::shared_ptr<Expr> get(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {
@@ -66,6 +69,7 @@ namespace expr {
 		auto getter = std::dynamic_pointer_cast<expr::MapExpr>(map)->getGetter();
 		return getter->getValue({ key });
 	}
+
 	std::shared_ptr<Expr> set(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 3) {
@@ -82,5 +86,22 @@ namespace expr {
 		}
 		auto setter = std::dynamic_pointer_cast<expr::MapExpr>(map)->getSetter();
 		return setter->getValue({ key,value });
+	}
+
+	std::shared_ptr<Expr> setRuntimeEnv(const std::shared_ptr<Expr>& e)
+	{
+		static std::map<std::wstring, std::shared_ptr<expr::ExternalFunctionExpr>> funcMap;
+		funcMap.emplace(L"print", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::printExpr));
+		funcMap.emplace(L"get", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::get));
+		funcMap.emplace(L"set", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::set));
+		if (e->getType() != Expr::TYPE_CLOSURE) {
+			quitWithError(__LINE__, __FILE__, L"only can set runtime env on closure");
+			return e;
+		}
+		auto closure = std::dynamic_pointer_cast<expr::ClosureExpr>(e);
+		for (auto& x : funcMap) {
+			closure->addVarable(x.first,x.second);
+		}
+		return closure;
 	}
 }

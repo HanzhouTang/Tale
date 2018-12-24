@@ -61,8 +61,8 @@ namespace parser {
 		static bool isWhiteSpace(const wchar_t ch);
 		static bool isNumber(const std::wstring& str);
 		static bool isValidVariable(const std::wstring& str);
-		SimpleLexer(const std::wstring& str) :content(str) {}
-		SimpleLexer(std::wstring&& str) :content(std::move(str)) {}
+		SimpleLexer(const std::wstring& str);
+		SimpleLexer(std::wstring&& str);
 		void init();
 		SimpleLexer() = delete;
 		~SimpleLexer();
