@@ -1,6 +1,6 @@
 #pragma once
 #include"Common.h"
-struct Node {
+struct Node : std::enable_shared_from_this<Node> {
 	wstring name;
 	wstring expressions;
 	shared_ptr<Node> parent;
@@ -19,9 +19,21 @@ struct Node {
 	void setAttribute(const wstring& key, const wstring& expressions) {
 		attributes[key] = expressions;
 	}
+	std::vector<std::shared_ptr<Node>> getNodesByName(const std::wstring& neededName) {
+		std::vector<std::shared_ptr<Node>> ret;
+		for (auto& x : children) {
+			auto childRet = x->getNodesByName(neededName);
+			if (!childRet.empty()) {
+				ret.insert(ret.end(), childRet.begin(), childRet.end());
+			}
+		}
+		if (neededName == name) {
+			ret.emplace_back(shared_from_this());
+		}
+		return ret;
+	}
 	shared_ptr<Node> getParent() const { return parent; }
 	wstring info(wstring parentStr = L"")const {
-	
 		wstring ret;
 		if (expressions.empty()) {
 			ret += (name + L"\n");
@@ -34,12 +46,12 @@ struct Node {
 		}
 		for (const auto& x : children) {
 			if (name != L"")
-				ret += (name+L"."+x->info());
+				ret += (name + L"." + x->info());
 			else {
 				ret += x->info();
 			}
 		}
-	
+
 		return ret;
 	}
 	shared_ptr<Node> getHighLevel() {

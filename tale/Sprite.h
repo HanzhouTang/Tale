@@ -2,6 +2,9 @@
 #include"Element.h"
 struct  Sprite: Element
 {
+	/*
+	Be cation, sprite works not good on debug mode
+	*/
 	vector<Brush> brushes;
 	float interval;
 	float dt;
