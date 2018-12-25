@@ -232,25 +232,27 @@ bool Tale::initRootScene() {
 	xmlParser->parse(content);
 	//cout << "after parsing" << endl;
 
-	auto _node = xmlParser->getRoot();
+	auto _root = xmlParser->getRoot();
 	//wcout << _node->info();
-	if (_node->getChildrenCount() != 1) {
+	if (_root->getChildrenCount() != 1) {
 		quitWithError(__LINE__, __FILE__, L" 1 xml file only can have 1 root node");
 	}
-	auto nodeRoot = _node->getChild(0);
+	auto nodeRoot = _root->getChild(0);
 	root = Element::createElementByXml(nodeRoot);
-	auto scriptNodes = _node->getNodesByName(L"Script");
+	auto scriptNodes = _root->getNodesByName(L"Script");
 	if (scriptNodes.size() > 1) {
 		warning(L"For now, only can add one script node in a xml file");
 	}
 	if (scriptNodes.size() > 0) {
 		std::wstring scriptContent = scriptNodes[0]->getValue();
-		wcout << scriptContent << endl;
+		wcout <<"("<< scriptContent <<")"<< endl;
 		parser::SimpleParser parser(scriptContent);
 		auto closure = parser.element();
 		if (closure->getType() != expr::Expr::TYPE_CLOSURE) {
+			wcout << closure->toString() << endl;
 			quitWithError(__LINE__, __FILE__, L"script tag must contain a closure");
 		}
+
 		setRuntimeEnv(closure);
 		closure->getValue();
 	}

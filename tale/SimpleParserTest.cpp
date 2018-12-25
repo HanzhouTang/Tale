@@ -1017,7 +1017,16 @@ TEST_F(SimpleParserTest, MapFunctionTest1) {
 	EXPECT_THAT(output, testing::ContainsRegex("world"));
 }
 
-
+TEST_F(SimpleParserTest, NewLineTest) {
+	wstring content = L"\n{ def test(a,f){ f(a); };  test(10,def (x){x+10;});}\n";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.state();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	auto result = closure->getValue();
+	EXPECT_EQ(expr::Expr::TYPE_NUMBER, result->getType());
+	EXPECT_EQ(20, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
+}
 
 
 //need add support for return 

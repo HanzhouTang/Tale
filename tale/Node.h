@@ -3,7 +3,7 @@
 namespace xml {
 	struct Node : std::enable_shared_from_this<Node> {
 		std::wstring name;
-		std::wstring expressions;
+		std::wstring value;
 		std::shared_ptr<Node> parent;
 		std::vector<std::shared_ptr<Node>> children;
 		std::map<std::wstring, std::wstring> attributes;
@@ -11,14 +11,14 @@ namespace xml {
 		void setName(const std::wstring& n) { name = n; }
 		std::wstring getName() const { return name; }
 		int getChildrenCount() { return children.size(); }
-		std::wstring getValue() const { return expressions; }
+		std::wstring getValue() const { return value; }
 		std::wstring getAttribute(const std::wstring& key) const { if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second; }
 		std::vector<std::shared_ptr<Node>>& getChildren() { return children; }
 		std::shared_ptr<Node> getChild(int ith) { return children[ith]; }
 		void addChild(std::shared_ptr<Node> c) { children.push_back(c); }
-		void appendValue(const std::wstring& v) { expressions += (v + L" "); }
-		void setAttribute(const std::wstring& key, const std::wstring& expressions) {
-			attributes[key] = expressions;
+		void appendValue(const std::wstring& v) { value += v; }
+		void setAttribute(const std::wstring& key, const std::wstring& value) {
+			attributes[key] = value;
 		}
 		std::vector<std::shared_ptr<Node>> getNodesByName(const std::wstring& neededName) {
 			std::vector<std::shared_ptr<Node>> ret;
@@ -36,11 +36,11 @@ namespace xml {
 		std::shared_ptr<Node> getParent() const { return parent; }
 		std::wstring info(std::wstring parentStr = L"")const {
 			std::wstring ret;
-			if (expressions.empty()) {
+			if (value.empty()) {
 				ret += (name + L"\n");
 			}
 			else {
-				ret += (name + L" : " + expressions + L"\n");
+				ret += (name + L" : " + value + L"\n");
 			}
 			for (const auto& attr : attributes) {
 				ret += (name + L"[" + attr.first + L"]= " + attr.second + L"\n");

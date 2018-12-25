@@ -17,12 +17,14 @@ namespace xml {
 			State state;
 		};
 		Lexer lexer;
+		bool insideTag = false;
 		void parse(std::wstring str);
 		Token getNextToken();
 		void resetLexer() {
 			lexer.index0 = lexer.index1 = content.begin();
 			lexer.state = noString;
 		}
+		Token handleComment();
 		std::shared_ptr<Node> getRoot() { return root; }
 
 		static bool isDelimiter(wchar_t ch) {

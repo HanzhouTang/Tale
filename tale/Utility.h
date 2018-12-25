@@ -34,7 +34,7 @@ namespace Utility {
 	static const std::wstring INTERVAL_CH = L"间隔";
 	static const std::wstring ITEM_EN = L"Item";
 	static const std::wstring ITEM_CH = L"项";
-
+	std::wstring rtrim(std::wstring &s);
 	std::vector<float> wstr2floats(const std::wstring& str);
 	HRESULT LoadBitmapFromFile(
 		ID2D1DeviceContext *pD2dContext,

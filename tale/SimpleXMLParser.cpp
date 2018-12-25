@@ -4,12 +4,12 @@
 #include<cassert>
 namespace xml {
 	void SimpleXMLParser::parse(std::wstring str) {
+		using namespace std;
 		content = str;
 		resetLexer();
 		this->root = Node::createNode(L"_root", nullptr);
 		auto currentNode = this->root;
 		Token token = getNextToken();
-		bool insideTag = false;
 		std::stack<std::wstring> trace;
 		while (token != Token::END) {
 
@@ -39,7 +39,6 @@ namespace xml {
 
 						Utility::quitWithError(__LINE__, __FILE__, L" ending tag " + lexer.currentLexeme + L" doesn't match starting tag");
 					}
-					//wcout << "token " << lexer.currentLexeme << " is pop out" << endl;
 					trace.pop();
 					currentNode = currentNode->getHighLevel();
 					token = getNextToken();
@@ -67,11 +66,19 @@ namespace xml {
 					// temporarily not support signle attribute. Because it's not necessary now.
 					auto key = lexer.currentLexeme;
 					token = getNextToken();
+					if (token == COMMENTBEGIN) {
+						handleComment();
+						token = getNextToken();
+					}
 					if (token != ASSIGN) {
-						Utility::quitWithError(__LINE__, __FILE__, L"now we don't support signle attribute. it musht be a pair");
+						Utility::quitWithError(__LINE__, __FILE__, L"now we don't support single attribute. it musht be a pair");
 					}
 					else {
 						token = getNextToken();
+						if (token == COMMENTBEGIN) {
+							handleComment();
+							token = getNextToken();
+						}
 						if (token == Token::QUOTE) {
 							token = getNextToken();
 							currentNode->setAttribute(key, lexer.currentLexeme);
@@ -89,102 +96,134 @@ namespace xml {
 							}
 						}
 						else {
-							Utility::quitWithError(__LINE__, __FILE__, L"the one fllowing = must be covered by \' or \"");
+							Utility::quitWithError(__LINE__, __FILE__, L"value fllowed by = must be covered by \' or \"");
 						}
 					}
 
 				}
 				break;
 			case COMMENTBEGIN:
-				do {
-					token = getNextToken();
-				} while (token != COMENTEND && token != END);
-				if (token == END) {
-					Utility::quitWithError(__LINE__, __FILE__, L" the comment doesn't has a ending");
+				if (insideTag) {
+					handleComment();
+				}
+				else {
+					insideTag = true;
+					handleComment();
+					insideTag = false;
 				}
 				break;
 			}
-
 			token = getNextToken();
-			//wcout << getTokenName(token) << " : " << lexer.currentLexeme << endl;
 		}
-		//wcout << currentNode->info();
 	}
 
 	SimpleXMLParser::Token SimpleXMLParser::getNextToken() {
+		using namespace std;
 		lexer.index0 = lexer.index1;
-		Token token = STRING;
 		if (lexer.index0 == content.end()) return Token::END;
-		if (lexer.state == inString) {
-			std::wstring temp;
-			for (; lexer.index1 != content.end() && * (lexer.index1) != CQUOTE && *(lexer.index1) != CDQUOTE; lexer.index1++) {
-				if (*(lexer.index1) == L'\\') {
-					lexer.index1++;
+		if (insideTag) {
+			Token token = STRING;
+			if (lexer.state == inString) {
+				std::wstring temp;
+				for (; lexer.index1 != content.end() && * (lexer.index1) != CQUOTE && *(lexer.index1) != CDQUOTE; lexer.index1++) {
+					if (*(lexer.index1) == L'\\') {
+						lexer.index1++;
+					}
+					temp += *(lexer.index1);
 				}
-				temp += *(lexer.index1);
+				if (lexer.index1 == content.end()) {
+					return Token::INVALID;
+				}
+				else lexer.currentLexeme = temp;
+				lexer.state = endString;
+				return Token::STRING;
 			}
-			if (lexer.index1 == content.end()) {
-				return Token::INVALID;
-			}
-			else lexer.currentLexeme = temp;
-			lexer.state = endString;
-			return Token::STRING;
-		}
-		lexer.index0 = find_if(lexer.index0, content.end(), isNotWhiteSpace);
-		lexer.index1 = find_if(lexer.index0, content.end(), isDelimiter);
-		//cout << "index0(" <<*(lexer.index0)<<")"<<" index1("<<*(lexer.index1)<<")"<< endl;
-		if (lexer.index1 == content.end()) return Token::END;
-		if (lexer.index0 == lexer.index1) {
-			//cout << "point to the same character" << endl;
-			lexer.index1++;
-			switch (*(lexer.index0))
-			{
-			case CASSIGN:
-				token = Token::ASSIGN;
-				break;
-			case CDQUOTE:
-				token = Token::DQUOTE;
-				if (lexer.state == noString) {
-					lexer.state = inString;
+			lexer.index0 = find_if(lexer.index0, content.end(), isNotWhiteSpace);
+			lexer.index1 = find_if(lexer.index0, content.end(), isDelimiter);
+			if (lexer.index1 == content.end()) return Token::END;
+			if (lexer.index0 == lexer.index1) {
+				lexer.index1++;
+				switch (*(lexer.index0))
+				{
+				case CASSIGN:
+					token = Token::ASSIGN;
+					break;
+				case CDQUOTE:
+					token = Token::DQUOTE;
+					if (lexer.state == noString) {
+						lexer.state = inString;
+					}
+					else if (lexer.state == endString) {
+						lexer.state = noString;
+					}
+					break;
+				case CQUOTE:
+					token = Token::QUOTE;
+					if (lexer.state == noString) {
+						lexer.state = inString;
+					}
+					else if (lexer.state == endString) {
+						lexer.state = noString;
+					}
+					break;
+				case CMINUS:
+				{
+					auto tempIndex = lexer.index1;
+					if (*(lexer.index1) == CMINUS && *(++lexer.index1) == CCLOSE) {
+						token = Token::COMENTEND;
+						lexer.index1++;
+					}
+					else {
+						lexer.index1 = tempIndex;
+						token = Token::MIUNS;
+					}
+					break;
 				}
-				else if (lexer.state == endString) {
-					lexer.state = noString;
-				}
-				break;
-			case CQUOTE:
-				token = Token::QUOTE;
-				if (lexer.state == noString) {
-					lexer.state = inString;
-				}
-				else if (lexer.state == endString) {
-					lexer.state = noString;
-				}
-				break;
-			case CMINUS:
-			{
-				auto tempIndex = lexer.index1;
-				if (*(lexer.index1) == CMINUS && *(++lexer.index1) == CCLOSE) {
-					token = Token::COMENTEND;
-					lexer.index1++;
-				}
-				else {
-					lexer.index1 = tempIndex;
-					token = Token::MIUNS;
-				}
-				break;
-			}
-			case CSLASH: {
+				case CSLASH: {
 
-				if (*(lexer.index1) == CCLOSE) {
-					token = Token::TAGENDWITHSLASH;
-					lexer.index1++;
+					if (*(lexer.index1) == CCLOSE) {
+						token = Token::TAGENDWITHSLASH;
+						lexer.index1++;
+					}
+					else {
+						token = Token::SLASH;
+					}
 				}
-				else {
-					token = Token::SLASH;
+							 break;
+				case COPEN: {
+					auto tempIndex = lexer.index1;
+					if (*(lexer.index1) == CSLASH) {
+						token = Token::TAGBEGINWITHSLASH;
+						lexer.index1++;
+					}
+					else if (*(lexer.index1) == CEXCLAMATION && *(++lexer.index1) == CMINUS && *(++lexer.index1) == CMINUS) {
+						token = Token::COMMENTBEGIN;
+						lexer.index1++;
+					}
+					else {
+						token = Token::TAGBEGIN;
+						lexer.index1 = tempIndex;
+					}
+					break;
+				}
+				case CCLOSE:
+					token = Token::TAGEND;
+					break;
+				default:
+					break;
 				}
 			}
-						 break;
-			case COPEN: {
+			lexer.currentLexeme = std::wstring(lexer.index0, lexer.index1);
+			return token;
+		}
+		else {
+			Token token = STRING;
+			auto tempIndex = lexer.index0;
+			lexer.index0 = find_if(lexer.index0, content.end(), isNotWhiteSpace);
+			lexer.index1 = find_if(lexer.index0, content.end(), [](wchar_t ch) {return ch == COPEN; });
+			if (lexer.index1 == content.end()) return Token::END;
+			if (lexer.index0 == lexer.index1) {
+				lexer.index1++;
 				auto tempIndex = lexer.index1;
 				if (*(lexer.index1) == CSLASH) {
 					token = Token::TAGBEGINWITHSLASH;
@@ -198,16 +237,23 @@ namespace xml {
 					token = Token::TAGBEGIN;
 					lexer.index1 = tempIndex;
 				}
-				break;
 			}
-			case CCLOSE:
-				token = Token::TAGEND;
-				break;
-			default:
-				break;
-			}
+			lexer.currentLexeme = std::wstring(tempIndex, lexer.index1);
+			return token;
 		}
-		lexer.currentLexeme = std::wstring(lexer.index0, lexer.index1);
+		
+	}
+
+	SimpleXMLParser::Token SimpleXMLParser::handleComment()
+	{
+		Token token;
+		using namespace std;
+		do {
+			 token = getNextToken();
+		} while (token != COMENTEND && token != END);
+		if (token == END) {
+			Utility::quitWithError(__LINE__, __FILE__, L" the comment doesn't has a ending");
+		}
 		return token;
 	}
 

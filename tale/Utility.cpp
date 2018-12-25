@@ -1,6 +1,14 @@
 #include"Utility.h"
 #include<Shlwapi.h>
+#include<algorithm>
 namespace Utility {
+	std::wstring rtrim(std::wstring & s)
+	{
+		s.erase(std::find_if(s.rbegin(), s.rend(), [](wchar_t ch) {
+			return (ch != L' '&&ch != L'\t');
+		}).base(), s.end());
+		return s;
+	}
 	std::vector<float> wstr2floats(const std::wstring& str) {
 		std::wstringstream ss(str);
 		float temp;
