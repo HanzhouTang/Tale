@@ -34,8 +34,8 @@ namespace parser {
 		MemoMap callableMap;
 		MemoMap compareMap;
 		//std::shared_ptr<expr::Expr> parse();
-		SimpleParser(const std::wstring& content) : lexer(content) {}
-		SimpleParser(std::wstring&& content) :lexer(std::move(content)) {}
+		SimpleParser(const std::wstring& content);
+		SimpleParser(std::wstring&& content);
 		//SimpleLexer::LexerNode consume();
 		//===============for math expression =====================
 		std::shared_ptr<expr::Expr> expr();

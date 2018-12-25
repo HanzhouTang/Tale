@@ -1028,6 +1028,50 @@ TEST_F(SimpleParserTest, NewLineTest) {
 	EXPECT_EQ(20, std::dynamic_pointer_cast<expr::NumberExpr>(result)->getNumber());
 }
 
+TEST_F(SimpleParserTest, NewLineTest1) {
+	wstring content = L"\n\r{print(123+456);}\r\n";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.state();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	setRuntimeEnv(closure);
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("579"));
+}
+
+TEST_F(SimpleParserTest, NewLineTest2) {
+	wstring content = L"{print(123+456);}\n\r";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.state();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	setRuntimeEnv(closure);
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("579"));
+}
+
+TEST_F(SimpleParserTest, NewLineTest3) {
+	wstring content = L"\r{print(123+456);}";
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.state();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	setRuntimeEnv(closure);
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	EXPECT_THAT(output, testing::ContainsRegex("579"));
+}
+
+
+
 
 //need add support for return 
 // support number and string

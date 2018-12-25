@@ -8,7 +8,7 @@ namespace parser {
 	{L"[",Token::LBrace},{L"]",Token::RBrace},{L",",Token::Comma},{L"{",Token::LCurlyBrace},
 	{L"}",Token::RCurlyBrace},{L"*",Token::Times},{L"-",Token::Minus},{L"+",Token::Add},{L"/",Token::Div},
 	{L"(",Token::LParen},{L")",Token::RParen},{L"=",Token::Eql},{L"<",Token::Less},{L">",Token::Greater},
-	{L";",Token::Semicolon},{L"\"",Token::Quote},{L"\n",Token::Newline} , {L"and",Token::And},{L"or",Token::Or},
+	{L";",Token::Semicolon},{L"\"",Token::Quote},{L"\n",Token::Newline}, {L"\r",Token::Newline} , {L"and",Token::And},{L"or",Token::Or},
 	{L"if",Token::If},{L"else",Token::Else},{L":",Token::Colon},{L"def",Token::Def},{ L"true",Token::True }
 	,{ L"false",Token::False }	,{ L"not",Token::Not }
 	};
@@ -45,7 +45,6 @@ namespace parser {
 			index1++;
 		}
 		currentLexeme = std::wstring(index0, index1);
-
 		if (currentLexeme == L"\"") {
 			if (state == State::endString) {
 				state = State::noString;
@@ -72,6 +71,7 @@ namespace parser {
 		if (isValidVariable(currentLexeme)) {
 			return Token::Variable;
 		}
+		wcerr << "invalid token: " << currentLexeme << endl;
 		return Token::Invalid;
 	}
 
@@ -108,6 +108,7 @@ namespace parser {
 
 	void SimpleLexer::init()
 	{
+		using namespace std;
 		if (!content.empty()) {
 			index0 = index1 = content.begin();
 		}

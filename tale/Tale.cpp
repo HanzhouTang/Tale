@@ -245,16 +245,18 @@ bool Tale::initRootScene() {
 	}
 	if (scriptNodes.size() > 0) {
 		std::wstring scriptContent = scriptNodes[0]->getValue();
-		wcout <<"("<< scriptContent <<")"<< endl;
+		//wcout <<"("<< scriptContent <<")"<< endl;
 		parser::SimpleParser parser(scriptContent);
-		auto closure = parser.element();
+		parser.init();
+		auto closure = parser.state();
 		if (closure->getType() != expr::Expr::TYPE_CLOSURE) {
 			wcout << closure->toString() << endl;
 			quitWithError(__LINE__, __FILE__, L"script tag must contain a closure");
 		}
-
-		setRuntimeEnv(closure);
-		closure->getValue();
+		else {
+			setRuntimeEnv(closure);
+			closure->getValue();
+		}
 	}
 	return true;
 }

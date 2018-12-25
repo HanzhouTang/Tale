@@ -45,6 +45,15 @@ namespace parser {
 	}
 
 
+	SimpleParser::SimpleParser(const std::wstring & content)
+		: lexer(content) {
+		init();
+	}
+
+	SimpleParser::SimpleParser(std::wstring && content)
+		: lexer(std::move(content)) {
+		init();
+	}
 	//when is the best time to clear map?
 	std::shared_ptr<expr::Expr> SimpleParser::expr() {
 		using namespace std;
@@ -423,6 +432,12 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::state() {
 		using namespace std;
+		SimpleLexer::Token token;
+		token = lexer.lookAheadK(1)[0];
+		while (token == SimpleLexer::Token::Newline) {
+			match(SimpleLexer::Token::Newline);
+			token = lexer.lookAheadK(1)[0];
+		}
 		auto status = lexer.get();
 		if (status.endOfContent) {
 			return expr::NullExpr::createNullExpr();
