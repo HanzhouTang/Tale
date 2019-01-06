@@ -358,9 +358,7 @@ TEST_F(SimpleParserTest, StatesTest) {
 	wstring content = L"[\"hello\":[\"beautiful\":\"life\"],\"math\": 1+2+ 3 ]";
 	SimpleParser parser(content);
 	parser.init();
-	wcout << "before states" << endl;
 	auto map = parser.states()[0];
-	wcout << "after states" << endl;
 	EXPECT_EQ(Expr::ExprType::TYPE_MAP, map->getType());
 	auto MAP = std::dynamic_pointer_cast<MapExpr>(map);
 	auto x = MAP->get(L"math");
@@ -1070,6 +1068,22 @@ TEST_F(SimpleParserTest, NewLineTest3) {
 	EXPECT_THAT(output, testing::ContainsRegex("579"));
 }
 
+TEST_F(SimpleParserTest, PrintBooleanTest) {
+	wstring content = L"\r{print(123==1234);}";
+	auto test = expr::BooleanExpr::createBooleanExpr(false);
+	wcout <<L"test "<< test->toString() << endl;
+	SimpleParser parser(content);
+	parser.init();
+	auto closure = parser.state();
+	EXPECT_EQ(expr::Expr::TYPE_CLOSURE, closure->getType());
+	setRuntimeEnv(closure);
+	std::wstringstream buffer;
+	wcout_redirect redirect(buffer.rdbuf());
+	auto result = closure->getValue();
+	auto output = wstr2str(buffer.str());
+	cout << output;
+	EXPECT_THAT(output, testing::ContainsRegex("false"));
+}
 
 
 

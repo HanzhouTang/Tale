@@ -147,6 +147,7 @@
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="ArithmeticExpr.cpp" />
     <ClCompile Include="AssignExpr.cpp" />
+    <ClCompile Include="BooleanExpr.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CallExpr.cpp" />
     <ClCompile Include="ClosureExpr.cpp" />

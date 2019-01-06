@@ -234,7 +234,7 @@ namespace parser {
 	std::shared_ptr<expr::Expr> SimpleParser::element()
 	{
 		using namespace std;
-		auto fs = { &SimpleParser::expr ,&SimpleParser::boolean,
+		auto fs = { &SimpleParser::boolean,&SimpleParser::expr,
 			&SimpleParser::map,&SimpleParser::IF, &SimpleParser::closure,
 			&SimpleParser::callable,&SimpleParser::func };
 		for (auto f : fs) {
@@ -715,10 +715,19 @@ namespace parser {
 			return expr::NotExpr::createNotExpr(boolean());
 		}
 		else if (token == SimpleLexer::Token::LParen) {
+			lexer.save();
 			match(SimpleLexer::Token::LParen);
 			auto ret = boolean();
-			match(SimpleLexer::Token::RParen);
-			return ret;
+			if (ret->getType() != expr::Expr::TYPE_NULL) {
+				lexer.pop();
+				match(SimpleLexer::Token::RParen);
+				return ret;
+			}
+			else {
+				lexer.restore();
+				return  expr::NullExpr::createNullExpr();
+			}
+			
 		}
 		else if (token == SimpleLexer::Token::EndofContent) {
 			return expr::NullExpr::createNullExpr();
@@ -827,7 +836,7 @@ namespace parser {
 		auto Callobject = callobject();
 		if (Callobject->getType() != expr::Expr::TYPE_NULL) {
 			auto ParamLists = paramlists();
-				std::shared_ptr<expr::Expr> Call = Callobject;
+			std::shared_ptr<expr::Expr> Call = Callobject;
 			if (ParamLists.size() > 0) {
 				for (auto ParamList : ParamLists) {
 					auto Params = std::vector<std::shared_ptr<expr::Expr>>(ParamList.begin(), ParamList.end());
