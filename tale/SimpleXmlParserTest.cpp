@@ -146,3 +146,17 @@ TEST_F(SimpleXmlParserTest, ParseScript) {
 	std::wstring scriptContent = scriptNodes[0]->getValue(); 
 	EXPECT_EQ(L"{print(123+456);}", scriptContent);
 }
+
+//TEST_F(SimpleXmlParserTest, parseScriptLessThan) {
+//	using namespace Utility;
+//	wstring content = L"<Script>{print(123<456);}</Script>";
+//	unique_ptr<xml::SimpleXMLParser> xmlParser = make_unique<xml::SimpleXMLParser>();
+//	//cout << "before parsing" << endl;
+//	xmlParser->parse(content);
+//	//cout << "after parsing" << endl;
+//	auto _root = xmlParser->getRoot();
+//	auto scriptNodes = _root->getNodesByName(L"Script");
+//	EXPECT_EQ(1, scriptNodes.size());
+//	std::wstring scriptContent = scriptNodes[0]->getValue();
+//	EXPECT_EQ(L"{print(123<456);}", scriptContent);
+//}
