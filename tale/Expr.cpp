@@ -15,7 +15,6 @@ namespace expr {
 		L"TYPE_UNARY_OPERATOR",L"TYPE_ELEMENT_WRAPPER"
 	};
 
-
 	std::shared_ptr<Expr> Expr::getVariable(const std::shared_ptr<VariableExpr>& variable) {
 		if (getRunTime() == nullptr) {
 			quitWithError(__LINE__, __FILE__, L"the variable " + variable->getName() + L" doesn't exist ");

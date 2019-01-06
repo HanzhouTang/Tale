@@ -893,12 +893,17 @@ std::shared_ptr<expr::Expr> parser::SimpleParser::IF()
 		quitWithError(__LINE__, __FILE__, L"if statement without boolean condition");
 		return expr::NullExpr::createNullExpr();
 	}
+	token = lexer.lookAheadK(1)[0];
 	ifStatement = closure();
 	if (ifStatement->getType() == expr::Expr::TYPE_NULL) {
 		quitWithError(__LINE__, __FILE__, L"if statement without closure");
 		return expr::NullExpr::createNullExpr();
 	}
 	token = lexer.lookAheadK(1)[0];
+	while (token == SimpleLexer::Token::Newline) {
+		match(SimpleLexer::Token::Newline);
+		token = lexer.lookAheadK(1)[0];
+	}
 	if (token == SimpleLexer::Token::Else) {
 		match(SimpleLexer::Token::Else);
 		elseStatement = closure();

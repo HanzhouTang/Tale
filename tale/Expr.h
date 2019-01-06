@@ -19,7 +19,7 @@ namespace expr {
 		enum ExprType { TYPE_NULL = 0, TYPE_STRING, TYPE_NUMBER, TYPE_VARIABLE, TYPE_BOOLEAN, TYPE_CLOSURE, TYPE_FUNCTION, TYPE_BINARYOPERATION, TYPE_RETURN, TYPE_CONDITION, TYPE_CALL, TYPE_MAP, TYPE_UNARY_OPERATOR,TYPE_ELEMENT_WRAPPER };
 		ExprType type;
 		std::size_t maximumRecursionDepth() {
-			return 100;
+			return 1000;
 		}
 		std::shared_ptr<Expr> runtime;
 		static const std::vector<std::wstring> TypeList;
