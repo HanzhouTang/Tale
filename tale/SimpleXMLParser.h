@@ -15,11 +15,28 @@ namespace xml {
 			std::wstring currentLexeme;
 			Token token;
 			State state;
+			struct Status {
+				std::wstring::iterator index0, index1;
+				std::wstring currentLexeme;
+				Token token;
+				State state;
+				Status(const std::wstring::iterator& i0, const std::wstring::iterator& i1,
+					const std::wstring& c,Token t, State s);
+			};
+			std::deque<Status> statuses;
+			void save();
+			void restore();
+		};
+		struct TokenInfo {
+			Token token;
+			std::wstring lexeme;
+			TokenInfo(Token t, const std::wstring& s);
 		};
 		Lexer lexer;
 		bool insideTag = false;
 		void parse(std::wstring str);
 		Token getNextToken();
+		TokenInfo lookAheadK(int n);
 		void resetLexer() {
 			lexer.index0 = lexer.index1 = content.begin();
 			lexer.state = noString;

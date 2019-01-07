@@ -16,19 +16,32 @@ namespace xml {
 			switch (token)
 			{
 			case TAGBEGIN:
-				insideTag = true;
-				token = getNextToken();
-				if (token != STRING) {
-					Utility::quitWithError(__LINE__, __FILE__, L"tag must contain its' name");
+				if (insideTag) {
+					Utility::quitWithError(__LINE__, __FILE__, L"cannot contain a tag in another tag");
 				}
 				else {
-					auto node = Node::createNode(lexer.currentLexeme, currentNode);
-					trace.push(lexer.currentLexeme);
-					currentNode->addChild(node);
-					currentNode = node;
+					if (trace.size() > 1 && trace.top() == Utility::SCRIPT) {
+						currentNode->appendValue(lexer.currentLexeme);
+					}
+					else {
+						insideTag = true;
+						token = getNextToken();
+						if (token != STRING) {
+							Utility::quitWithError(__LINE__, __FILE__, L"tag must contain its' name");
+						}
+						else {
+							auto node = Node::createNode(lexer.currentLexeme, currentNode);
+							trace.push(lexer.currentLexeme);
+							currentNode->addChild(node);
+							currentNode = node;
+						}
+					}
 				}
 				break;
 			case TAGBEGINWITHSLASH:
+				if (insideTag) {
+					Utility::quitWithError(__LINE__, __FILE__, L"cannot contain a tag in another tag");
+				}
 				insideTag = true;
 				token = getNextToken();
 				if (token != STRING) {
@@ -244,6 +257,19 @@ namespace xml {
 		
 	}
 
+	SimpleXMLParser::TokenInfo SimpleXMLParser::lookAheadK(int n)
+	{
+		lexer.save();
+		Token token;
+		std::wstring lexeme;
+		for (int i = 0; i < n; i++) {
+			token = getNextToken();
+			lexeme = lexer.currentLexeme;
+		}
+		lexer.restore();
+		return TokenInfo(token, lexeme);
+	}
+
 	SimpleXMLParser::Token SimpleXMLParser::handleComment()
 	{
 		Token token;
@@ -292,6 +318,29 @@ namespace xml {
 			return L"DEFAULT";
 			break;
 		}
+	}
+	void SimpleXMLParser::Lexer::save()
+	{
+		Status status(index0, index1, currentLexeme, token, state);
+		statuses.emplace_back(status);
+	}
+	void SimpleXMLParser::Lexer::restore()
+	{
+		auto tmp = statuses.back();
+		statuses.pop_back();
+		currentLexeme = tmp.currentLexeme;
+		index0 = tmp.index0;
+		index1 = tmp.index1;
+		token = tmp.token;
+		state = tmp.state;
+	}
+	SimpleXMLParser::Lexer::Status::Status(const std::wstring::iterator & i0, const std::wstring::iterator & i1,const std::wstring& c, SimpleXMLParser::Token t, State s)
+		:index0(i0),index1(i1),token(t),state(s), currentLexeme(c)
+	{
+	}
+	SimpleXMLParser::TokenInfo::TokenInfo(Token t, const std::wstring & s)
+		:token(t),lexeme(s)
+	{
 	}
 }
 

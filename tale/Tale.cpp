@@ -239,7 +239,7 @@ bool Tale::initRootScene() {
 	}
 	auto nodeRoot = _root->getChild(0);
 	root = Element::createElementByXml(nodeRoot);
-	auto scriptNodes = _root->getNodesByName(L"Script");
+	auto scriptNodes = _root->getNodesByName(Utility::SCRIPT);
 	if (scriptNodes.size() > 1) {
 		warning(L"For now, only can add one script node in a xml file");
 	}
