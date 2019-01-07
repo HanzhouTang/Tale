@@ -65,6 +65,22 @@ void Element::onDraw(D2D1_RECT_F parentPosition, float dt) {
 
 }
 
+std::wstring Element::getAttribute(const std::wstring & key) const
+{
+	if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second;
+}
+
+void Element::setAttribute(const std::wstring & key, const std::wstring & value)
+{
+	attributes[key] = value;
+}
+
+std::map<std::wstring, std::wstring>& Element::getAttributes()
+{
+
+	return attributes;
+}
+
 void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition) {
 	auto realPosition = getRealPosition(parentPosition);
 	for (auto& x : children) {
@@ -145,7 +161,10 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 		warning(name + L" is not a valid XML Tag");
 		return nullptr;
 	}
-
+	auto attributes = root->getAttributes();
+	for (auto& item : attributes) {
+		ret->setAttribute(item.first, item.second);
+	}
 	auto position = Utility::wstr2floats(root->getAttribute(POSITION_EN));
 	if (position.empty()) {
 		position = Utility::wstr2floats(root->getAttribute(POSITION_CH));
@@ -181,3 +200,22 @@ Element::Brush Element::getBrushFromXml(const shared_ptr<xml::Node>& node) {
 	}
 	return Brush(BrushType::transparent, nullptr);
 }
+
+std::shared_ptr<Element> Element::getElementByID(const std::shared_ptr<Element>& root, const std::wstring & str)
+{
+	if (root == nullptr) {
+		return nullptr;
+	}
+	if (root->getAttribute(Utility::ID) == str) {
+		return root;
+	}
+	for (auto& child : root->getChildren()) {
+		auto ret = getElementByID(child, str);
+		if (ret != nullptr) {
+			return ret;
+		}
+	}
+	return nullptr;
+}
+
+

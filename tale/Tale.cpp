@@ -1,5 +1,4 @@
 ﻿#include"Tale.h"
-
 #include"NumberExpr.h"
 #include"StringExpr.h"
 #include"ClosureExpr.h"
@@ -255,6 +254,7 @@ bool Tale::initRootScene() {
 		}
 		else {
 			setRuntimeEnv(closure);
+			setRootElement(closure, root);
 			closure->getValue();
 		}
 	}

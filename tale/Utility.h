@@ -35,6 +35,8 @@ namespace Utility {
 	static const std::wstring ITEM_EN = L"Item";
 	static const std::wstring ITEM_CH = L"项";
 	static const std::wstring SCRIPT = L"Script";
+	static const std::wstring RootName = L"_root_";
+	static const std::wstring ID = L"id";
 	std::wstring rtrim(std::wstring &s);
 	std::vector<float> wstr2floats(const std::wstring& str);
 	HRESULT LoadBitmapFromFile(

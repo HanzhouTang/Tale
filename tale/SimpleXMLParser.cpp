@@ -2,6 +2,7 @@
 #include"Utility.h"
 #include<stack>
 #include<cassert>
+#include<set>
 namespace xml {
 	void SimpleXMLParser::parse(std::wstring str) {
 		using namespace std;
@@ -10,6 +11,7 @@ namespace xml {
 		this->root = Node::createNode(L"_root", nullptr);
 		auto currentNode = this->root;
 		Token token = getNextToken();
+		std::set<std::wstring> ids;
 		std::stack<std::wstring> trace;
 		while (token != Token::END) {
 
@@ -94,6 +96,12 @@ namespace xml {
 						}
 						if (token == Token::QUOTE) {
 							token = getNextToken();
+							if (key == Utility::ID) {
+								if (ids.count(lexer.currentLexeme)) {
+									Utility::warning(L"id " + lexer.currentLexeme + L" already existed");
+								}
+								ids.insert(lexer.currentLexeme);
+							}
 							currentNode->setAttribute(key, lexer.currentLexeme);
 							token = getNextToken();
 							if (token != QUOTE) {
@@ -102,6 +110,12 @@ namespace xml {
 						}
 						else if (token == Token::DQUOTE) {
 							token = getNextToken();
+							if (key == Utility::ID) {
+								if (ids.count(lexer.currentLexeme)) {
+									Utility::warning(L"id " + lexer.currentLexeme + L" already existed");
+								}
+								ids.insert(lexer.currentLexeme);
+							}
 							currentNode->setAttribute(key, lexer.currentLexeme);
 							token = getNextToken();
 							if (token != DQUOTE) {

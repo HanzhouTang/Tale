@@ -12,6 +12,7 @@ namespace xml {
 		std::wstring getName() const { return name; }
 		int getChildrenCount() { return children.size(); }
 		std::wstring getValue() const { return value; }
+		std::map<std::wstring, std::wstring>& getAttributes();
 		std::wstring getAttribute(const std::wstring& key) const { if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second; }
 		std::vector<std::shared_ptr<Node>>& getChildren() { return children; }
 		std::shared_ptr<Node> getChild(int ith) { return children[ith]; }

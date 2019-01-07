@@ -6,11 +6,15 @@
 #include<memory>
 using namespace std;
 using namespace Microsoft::WRL;
-struct Element {
+struct Element :std::enable_shared_from_this<Element> {
 public:
 	enum BrushType { solid, linear, radial, bitmap, transparent };
 	enum Event { LButtonDown, LButtonUp, RButtonDown, RButtonUp, MouseMove };
 	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL};
+	std::map<std::wstring, std::wstring> attributes;
+	std::wstring getAttribute(const std::wstring& key) const;
+	void setAttribute(const std::wstring& key, const std::wstring& value);
+	std::map<std::wstring, std::wstring>& getAttributes();
 	static const std::vector<std::wstring> TypeList;
 	ElementType _type;
 	inline ElementType getType() { return _type; }
@@ -37,10 +41,10 @@ public:
 			position = p;
 		}
 	};
-
 	virtual void update(MouseMessage, D2D1_RECT_F);
 	static const float MaximumRealtiveRatio;
 	vector<shared_ptr<Element>> children;
+	inline vector<shared_ptr<Element>>& getChildren() { return children; }
 	D2D1_RECT_F position;
 	static ComPtr<ID2D1DeviceContext> d2dContext ;
 	static ComPtr<IWICImagingFactory> imageFactory;
@@ -63,5 +67,6 @@ public:
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	static Brush getBrushFromXml(const shared_ptr<xml::Node>&);
+	static std::shared_ptr<Element> getElementByID(const std::shared_ptr<Element>& root, const std::wstring & str);
 	Element();
 };
