@@ -15,8 +15,11 @@ namespace expr {
 		virtual std::shared_ptr<Expr> clone() override {
 			return NONE;
 		}
-		virtual std::wstring toString() {
+		virtual std::wstring toString() override{
 			return L"TYPE_NULL";
+		}
+		virtual std::wstring repr() override {
+			return L"null";
 		}
 	};
 }

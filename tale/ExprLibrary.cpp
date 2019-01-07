@@ -14,10 +14,19 @@ namespace expr {
 	using namespace Utility;
 	std::shared_ptr<Expr> printExpr(const std::vector <std::shared_ptr<Expr>>& args)
 	{
-		for (auto& x : args) {
-			std::wcout << x->toString() << ",\t";
+		for (int i = 0; i < args.size()-1; i++) {
+			std::wcout << args[i]->repr() << ", ";
 		}
-		std::wcout << std::endl;
+		std::wcout << args.back()->repr() << endl;
+		return NullExpr::createNullExpr();
+	}
+
+	std::shared_ptr<Expr> debugExpr(const std::vector<std::shared_ptr<Expr>>& args)
+	{
+		for (int i = 0; i < args.size()-1; i++) {
+			std::wcout << args[i]->toString() << ", ";
+		}
+		std::wcout << args.back()->toString() << endl;
 		return NullExpr::createNullExpr();
 	}
 
@@ -92,6 +101,7 @@ namespace expr {
 	{
 		static std::map<std::wstring, std::shared_ptr<expr::ExternalFunctionExpr>> funcMap;
 		funcMap.emplace(L"print", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::printExpr));
+		funcMap.emplace(L"debug", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::debugExpr));
 		funcMap.emplace(L"get", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::get));
 		funcMap.emplace(L"set", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::set));
 		if (e->getType() != Expr::TYPE_CLOSURE) {

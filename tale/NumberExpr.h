@@ -25,7 +25,11 @@ namespace expr {
 		}
 
 		NumberType getNumber() { return value; }
-
+		virtual std::wstring repr() override {
+			std::wostringstream ret;
+			ret << value;
+			return ret.str();
+		}
 
 	};
 }

@@ -52,5 +52,6 @@ namespace expr {
 		std::shared_ptr<Expr> get(const KeyType& key);
 		virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& params) override;
 		virtual std::wstring toString() override;
+		virtual std::wstring repr() override;
 	};
 }

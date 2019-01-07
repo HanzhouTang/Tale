@@ -22,6 +22,10 @@ namespace expr {
 	{
 		return createBooleanExpr(getRunTime(), value);
 	}
+	std::wstring BooleanExpr::repr()
+	{
+		return  value ? L"true" : L"false";
+	}
 	bool BooleanExpr::getBoolValue()
 	{
 		return value;

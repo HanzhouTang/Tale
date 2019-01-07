@@ -38,6 +38,7 @@ namespace expr {
 		std::wstring getTypeString() {
 			return TypeList[getType()];
 		}
+		virtual std::wstring repr();
 		virtual std::shared_ptr<Expr> getValue(const std::vector<std::shared_ptr<Expr>>& args) { return shared_from_this(); }
 		virtual std::shared_ptr<Expr> getValue() { return shared_from_this(); }
 		virtual std::shared_ptr<Expr> getVariable(const std::shared_ptr<VariableExpr>& variable);

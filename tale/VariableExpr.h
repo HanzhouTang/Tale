@@ -30,6 +30,5 @@ namespace expr {
 			ret << "\tname : " << getName() << "\n";
 			return ret.str();
 		}
-		
 	};
 }

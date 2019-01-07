@@ -57,6 +57,17 @@ namespace expr {
 
 	}
 
+	std::wstring MapExpr::repr()
+	{
+		std::wostringstream buf;
+		buf << L"{ ";
+		for (auto& x : map) {
+			buf << x.first << L" : " << x.second->repr() << L", ";
+		}
+		buf << L" }";
+		return buf.str();
+	}
+
 	 std::shared_ptr<MapExpr> MapExpr::createMapExpr(const std::shared_ptr<Expr>& runtime, const std::unordered_map<KeyType, std::shared_ptr<Expr>>& map) {
 		auto ret =  std::make_shared<MapExpr>(runtime, map);
 		//=============initialize getter ==================

@@ -18,11 +18,14 @@ namespace expr {
 			return createStringExpr(getRunTime(), value);
 		}
 
-		virtual std::wstring toString() {
+		virtual std::wstring toString() override{
 			std::wostringstream ret;
 			ret << Expr::toString() << " : " << value;
 			return ret.str();
 		}
 		std::wstring getString() { return value; }
+		virtual std::wstring repr() override {
+			return value;
+		}
 	};
 }
