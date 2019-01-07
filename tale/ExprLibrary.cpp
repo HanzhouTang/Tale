@@ -18,7 +18,7 @@ namespace expr {
 	std::shared_ptr<Expr> printExpr(const std::vector <std::shared_ptr<Expr>>& args)
 	{
 		for (int i = 0; i < args.size() - 1; i++) {
-			std::wcout << args[i]->repr() << ", ";
+			std::wcout << args[i]->repr() << " ";
 		}
 		std::wcout << args.back()->repr() << endl;
 		return NullExpr::createNullExpr();
@@ -27,7 +27,7 @@ namespace expr {
 	std::shared_ptr<Expr> debugExpr(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		for (int i = 0; i < args.size() - 1; i++) {
-			std::wcout << args[i]->toString() << ", ";
+			std::wcout << args[i]->toString() << " ";
 		}
 		std::wcout << args.back()->toString() << endl;
 		return NullExpr::createNullExpr();
@@ -55,7 +55,8 @@ namespace expr {
 			return NullExpr::createNullExpr();
 		}
 		auto button = std::dynamic_pointer_cast<Button>(element);
-		auto call = CallExpr::createCallExpr(nullptr, second, {});
+		auto runtime = second->getRunTime();
+		auto call = CallExpr::createCallExpr(runtime, second, {});
 		button->setOnClickFunction(call);
 		return first;
 	}
@@ -128,7 +129,7 @@ namespace expr {
 			return e;
 		}
 		auto closure = std::dynamic_pointer_cast<expr::ClosureExpr>(e);
-		auto elementRoot = expr::ElementExpr::createElementExpr(root);
+		auto elementRoot = expr::ElementExpr::createElementExpr(e,root);
 		closure->addVarable(Utility::RootName, elementRoot);
 		return closure;
 	}
