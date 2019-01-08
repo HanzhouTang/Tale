@@ -11,6 +11,7 @@
 #include"ClosureExpr.h"
 #include"CallExpr.h"
 #include"ExternalFunctionExpr.h"
+#include"Utility.h"
 #include<map>
 
 namespace expr {
@@ -36,17 +37,17 @@ namespace expr {
 	std::shared_ptr<Expr> setOnClickEvent(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {
-			quitWithError(__LINE__, __FILE__, L"setOnClickEvent function must have two input args");
+			quitWithError(__LINE__, __FILE__, Utility::str2wstr(__func__) + L" function must have two input args");
 			return NullExpr::createNullExpr();
 		}
 		auto first = args[0];
 		auto second = args[1];
 		if (first->getType() != Expr::TYPE_ELEMENT_WRAPPER) {
-			quitWithError(__LINE__, __FILE__, L"the first parameter of setOnClickEvent function must be a element");
+			quitWithError(__LINE__, __FILE__, L"the first parameter of " + Utility::str2wstr(__func__) + L" function must be a element");
 			return NullExpr::createNullExpr();
 		}
 		else if (second->getType() != Expr::TYPE_FUNCTION) {
-			quitWithError(__LINE__, __FILE__, L"the second parameter of setOnClickEvent function must be a function");
+			quitWithError(__LINE__, __FILE__, L"the second parameter of " + Utility::str2wstr(__func__) + L" function must be a function");
 			return NullExpr::createNullExpr();
 		}
 		auto element = std::dynamic_pointer_cast<ElementExpr>(first)->getElement();
@@ -70,15 +71,15 @@ namespace expr {
 	std::shared_ptr<Expr> get(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {
-			quitWithError(__LINE__, __FILE__, L"the parameter size of get method is 2");
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" method is 2");
 		}
 		auto map = args[0];
 		auto key = args[1];
 		if (map->getType() != Expr::TYPE_MAP) {
-			quitWithError(__LINE__, __FILE__, L"the get method only works on map");
+			quitWithError(__LINE__, __FILE__, L"the " + Utility::str2wstr(__func__) + L" method only works on map");
 		}
 		if (key->getType() != Expr::TYPE_STRING) {
-			quitWithError(__LINE__, __FILE__, L"the key of get method must be string");
+			quitWithError(__LINE__, __FILE__, L"the key of " + Utility::str2wstr(__func__) + L" method must be string");
 		}
 
 		auto getter = std::dynamic_pointer_cast<expr::MapExpr>(map)->getGetter();
@@ -88,16 +89,16 @@ namespace expr {
 	std::shared_ptr<Expr> set(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 3) {
-			quitWithError(__LINE__, __FILE__, L"the parameter size of set method is 3");
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" method is 3");
 		}
 		auto map = args[0];
 		auto key = args[1];
 		auto value = args[2];
 		if (map->getType() != Expr::TYPE_MAP) {
-			quitWithError(__LINE__, __FILE__, L"the set method only works on map");
+			quitWithError(__LINE__, __FILE__, L"the " + Utility::str2wstr(__func__) + L" method only works on map");
 		}
 		if (key->getType() != Expr::TYPE_STRING) {
-			quitWithError(__LINE__, __FILE__, L"the key of set method must be string");
+			quitWithError(__LINE__, __FILE__, L"the key of " + Utility::str2wstr(__func__) + L" method must be string");
 		}
 		auto setter = std::dynamic_pointer_cast<expr::MapExpr>(map)->getSetter();
 		return setter->getValue({ key,value });
@@ -112,6 +113,7 @@ namespace expr {
 		funcMap.emplace(L"set", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::set));
 		funcMap.emplace(L"setOnClickEvent", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::setOnClickEvent));
 		funcMap.emplace(L"getElementByID", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::getElementByID));
+		funcMap.emplace(L"setElementAttribute", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::setElementAttribute));
 		if (e->getType() != Expr::TYPE_CLOSURE) {
 			quitWithError(__LINE__, __FILE__, L"only can set runtime env on closure");
 			return e;
@@ -129,24 +131,24 @@ namespace expr {
 			return e;
 		}
 		auto closure = std::dynamic_pointer_cast<expr::ClosureExpr>(e);
-		auto elementRoot = expr::ElementExpr::createElementExpr(e,root);
+		auto elementRoot = expr::ElementExpr::createElementExpr(e, root);
 		closure->addVarable(Utility::RootName, elementRoot);
 		return closure;
 	}
 	std::shared_ptr<Expr> getElementByID(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {
-			quitWithError(__LINE__, __FILE__, L"the parameter size of getElementByID must be 2");
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" must be 2");
 			return NullExpr::createNullExpr();
 		}
 		auto element = args[0];
 		auto id = args[1];
 		if (element->getType() != expr::Expr::TYPE_ELEMENT_WRAPPER) {
-			quitWithError(__LINE__, __FILE__, L"the first parameter of getElementByID must be a element");
+			quitWithError(__LINE__, __FILE__, L"the first parameter of " + Utility::str2wstr(__func__) + L" must be a element");
 			return NullExpr::createNullExpr();
 		}
 		else if (id->getType() != Expr::TYPE_STRING) {
-			quitWithError(__LINE__, __FILE__, L"the second parameter of getElementByID must be a string");
+			quitWithError(__LINE__, __FILE__, L"the second parameter of " + Utility::str2wstr(__func__) + L" must be a string");
 			return NullExpr::createNullExpr();
 		}
 		auto e = std::dynamic_pointer_cast<expr::ElementExpr>(element)->getElement();
@@ -156,5 +158,32 @@ namespace expr {
 			return NullExpr::createNullExpr();
 		}
 		return expr::ElementExpr::createElementExpr(ret);
+	}
+	std::shared_ptr<Expr> setElementAttribute(const std::vector<std::shared_ptr<Expr>>& args)
+	{
+		if (args.size() != 3) {
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" must be 3");
+			return NullExpr::createNullExpr();
+		}
+		auto element = args[0];
+		auto key = args[1];
+		auto value = args[2];
+		if (element->getType() != expr::Expr::TYPE_ELEMENT_WRAPPER) {
+			quitWithError(__LINE__, __FILE__, L"the first parameter of " + Utility::str2wstr(__func__) + L" must be a element");
+			return NullExpr::createNullExpr();
+		}
+		else if (key->getType() != Expr::TYPE_STRING) {
+			quitWithError(__LINE__, __FILE__, L"the second parameter of " + Utility::str2wstr(__func__) + L" must be a string");
+			return NullExpr::createNullExpr();
+		}
+		else if (value->getType() != Expr::TYPE_STRING) {
+			quitWithError(__LINE__, __FILE__, L"the third parameter of " + Utility::str2wstr(__func__) + L" must be a string");
+			return NullExpr::createNullExpr();
+		}
+		auto e = std::dynamic_pointer_cast<expr::ElementExpr>(element)->getElement();
+		auto KEY = std::dynamic_pointer_cast<expr::StringExpr>(key)->getString();
+		auto VALUE = std::dynamic_pointer_cast<expr::StringExpr>(value)->getString();
+		e->setAttribute(KEY, VALUE);
+		return element;
 	}
 }
