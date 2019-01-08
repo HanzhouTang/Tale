@@ -28,6 +28,8 @@ public:
 	inline void setTextBrush(const Element::Brush& b) { textBrush = b; }
 	virtual void update(MouseMessage, D2D1_RECT_F) override;
 	virtual void postDraw(D2D1_RECT_F, float) override;
+	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
+	static void setRenderingAttributeFromAttribute(const std::shared_ptr<Button>& button);
 	static ComPtr<ID2D1SolidColorBrush> defaultButtonColor;
 	static ComPtr<ID2D1SolidColorBrush> defaultTextColor;
 	static ComPtr<ID2D1SolidColorBrush> defaultMouseHoverColor;

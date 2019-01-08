@@ -73,6 +73,7 @@ std::wstring Element::getAttribute(const std::wstring & key) const
 void Element::setAttribute(const std::wstring & key, const std::wstring & value)
 {
 	attributes[key] = value;
+	setPositionFromAttribute(shared_from_this());
 }
 
 std::map<std::wstring, std::wstring>& Element::getAttributes()
@@ -220,5 +221,8 @@ std::shared_ptr<Element> Element::getElementByID(const std::shared_ptr<Element>&
 	}
 	return nullptr;
 }
+
+
+
 
 

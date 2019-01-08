@@ -124,6 +124,7 @@ namespace expr {
 		}
 		return closure;
 	}
+
 	std::shared_ptr<Expr> setRootElement(const std::shared_ptr<Expr>& e, const std::shared_ptr<Element>& root)
 	{
 		if (e->getType() != Expr::TYPE_CLOSURE) {

@@ -85,6 +85,28 @@ void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
 	}
 }
 
+void Button::setAttribute(const std::wstring & key, const std::wstring & value)
+{
+	Element::setAttribute(key, value);
+
+}
+
+void Button::setRenderingAttributeFromAttribute(const std::shared_ptr<Button>& ret)
+{
+	auto brush = getBrushFromXml(ret);
+	ret->setBrush(brush);
+	ret->setDefaultBrush(brush);
+
+	auto hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_EN);
+	if (hoverBrushUrl.empty())
+		hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_CH);
+	if (!hoverBrushUrl.empty()) {
+		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), hoverBrushUrl.c_str());
+		Brush mouseHoverBrush(BrushType::bitmap, bitmapBrush);
+		ret->setmouseHoverBrush(mouseHoverBrush);
+	}
+}
+
 
 shared_ptr<Button> Button::createButtonByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Button>();

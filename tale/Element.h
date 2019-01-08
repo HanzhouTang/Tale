@@ -13,7 +13,7 @@ public:
 	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL};
 	std::map<std::wstring, std::wstring> attributes;
 	std::wstring getAttribute(const std::wstring& key) const;
-	void setAttribute(const std::wstring& key, const std::wstring& value);
+	virtual void setAttribute(const std::wstring& key, const std::wstring& value);
 	std::map<std::wstring, std::wstring>& getAttributes();
 	static const std::vector<std::wstring> TypeList;
 	ElementType _type;
@@ -67,7 +67,7 @@ public:
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
 	static void setPositionFromAttribute(const shared_ptr<Element>& ret);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
-	static Brush getBrushFromXml(const shared_ptr<xml::Node>&);
+	static Brush getBrushFromAttribute(const shared_ptr<xml::Node>&);
 	static std::shared_ptr<Element> getElementByID(const std::shared_ptr<Element>& root, const std::wstring & str);
 	Element();
 };

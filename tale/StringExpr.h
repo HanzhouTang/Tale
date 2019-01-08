@@ -17,7 +17,6 @@ namespace expr {
 		virtual std::shared_ptr<Expr> clone() override {
 			return createStringExpr(getRunTime(), value);
 		}
-
 		virtual std::wstring toString() override{
 			std::wostringstream ret;
 			ret << Expr::toString() << " : " << value;
