@@ -165,20 +165,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 	for (auto& item : attributes) {
 		ret->setAttribute(item.first, item.second);
 	}
-	auto position = Utility::wstr2floats(root->getAttribute(POSITION_EN));
-	if (position.empty()) {
-		position = Utility::wstr2floats(root->getAttribute(POSITION_CH));
-	}
-
-	if (!position.empty()) {
-		if (position.size() != 4) {
-			quitWithError(__LINE__, __FILE__, L"the size of position must be 4");
-		}
-		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
-		//std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
-		ret->setPosition(positionRect);
-	}
-
+	setPositionFromAttribute(ret);
 	if (name == SPRITE_CH || name ==  SPRITE_EN) return ret;
 
 	for (const auto& nodeChild : root->getChildren()) {
@@ -188,6 +175,22 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 		}
 	}
 	return ret;
+}
+
+void Element::setPositionFromAttribute(const shared_ptr<Element>& ret)
+{
+	auto position = Utility::wstr2floats(ret->getAttribute(POSITION_EN));
+	if (position.empty()) {
+		position = Utility::wstr2floats(ret->getAttribute(POSITION_CH));
+	}
+	if (!position.empty()) {
+		if (position.size() != 4) {
+			quitWithError(__LINE__, __FILE__, L"the size of position must be 4");
+		}
+		auto positionRect = D2D1::RectF(position[0], position[1], position[2], position[3]);
+		//std::cout << "top: " << positionRect.top << " bottom: " << positionRect.bottom << " left: " << positionRect.left << " right: " << positionRect.right << std::endl;
+		ret->setPosition(positionRect);
+	}
 }
 
 Element::Brush Element::getBrushFromXml(const shared_ptr<xml::Node>& node) {

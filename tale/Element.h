@@ -65,6 +65,7 @@ public:
 	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
+	static void setPositionFromAttribute(const shared_ptr<Element>& ret);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
 	static Brush getBrushFromXml(const shared_ptr<xml::Node>&);
 	static std::shared_ptr<Element> getElementByID(const std::shared_ptr<Element>& root, const std::wstring & str);
