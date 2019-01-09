@@ -178,7 +178,7 @@ bool Tale::InitDirectX()
 		return false;
 	RECT rc;
 	::GetClientRect(GetMainWindow(), &rc);
-	screenSize = D2D1::RectF(
+	realScreenSize = logicScreenSize = D2D1::RectF(
 		0, 0,
 		rc.right - rc.left,
 		rc.bottom - rc.top
@@ -260,7 +260,7 @@ void Tale::OnDraw() {
 	m_pD2dContext->BeginDraw();
 	m_pD2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 	if (root) {
-		root->onDraw(screenSize,dt);
+		root->onDraw(logicScreenSize,dt);
 	}
 
 	D2D1_RECT_F rect = D2D1::RectF(
@@ -278,7 +278,7 @@ void Tale::OnMouseMove(WPARAM wParam, LPARAM lParam) {
 	position.X = GET_X_LPARAM(lParam);
 	position.Y = GET_Y_LPARAM(lParam);
 	if (root) {
-		root->update(Element::MouseMessage(Element::Event::MouseMove, position), screenSize);
+		root->update(Element::MouseMessage(Element::Event::MouseMove, position), realScreenSize);
 	}
 }
 
@@ -287,7 +287,7 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 	position.X = GET_X_LPARAM(lParam);
 	position.Y = GET_Y_LPARAM(lParam);
 	if (root) {
-		root->update(Element::MouseMessage(Element::Event::LButtonDown, position), screenSize);
+		root->update(Element::MouseMessage(Element::Event::LButtonDown, position), realScreenSize);
 	}
 }
 
@@ -295,6 +295,13 @@ void Tale::OnResize(int width, int height)
 {
 	using namespace std;
 	AppBase::OnResize(width, height);
+	RECT rc;
+	::GetClientRect(GetMainWindow(), &rc);
+	realScreenSize = D2D1::RectF(
+		0, 0,
+		rc.right - rc.left,
+		rc.bottom - rc.top
+	);
 }
 
 

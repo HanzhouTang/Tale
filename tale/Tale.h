@@ -21,7 +21,8 @@ public:
 protected:
 	std::wstring fps;
 	shared_ptr<Element> root;
-	D2D1_RECT_F screenSize;
+	D2D1_RECT_F logicScreenSize;
+	D2D1_RECT_F realScreenSize;
 	ComPtr<ID3D11Device> m_pD3dDevice;
 	ComPtr<ID3D11DeviceContext> m_pD3dContext;
 	ComPtr<ID2D1Device3> m_pD2dDevice;
