@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	RUN_ALL_TESTS();
 #endif // _DEBUG
 
-	Tale *app = new Tale(640, 1024, GetModuleHandle(NULL));
+	Tale *app = new Tale(1080, 1920, GetModuleHandle(NULL));
 	if (app->InitApp()) {
 		if (app->InitDirectX())
 		{

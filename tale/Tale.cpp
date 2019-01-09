@@ -221,12 +221,8 @@ bool Tale::initRootScene() {
 	Element::setTextFormat(m_pTextFormat);
 	wstring content = readFile(L"C:\\Users\\tangh\\source\\repos\\tale\\tale\\Resource\\xml\\initScene1.xml");
 	unique_ptr<xml::SimpleXMLParser> xmlParser = make_unique<xml::SimpleXMLParser>();
-	//cout << "before parsing" << endl;
 	xmlParser->parse(content);
-	//cout << "after parsing" << endl;
-
 	auto _root = xmlParser->getRoot();
-	//wcout << _node->info();
 	if (_root->getChildrenCount() != 1) {
 		quitWithError(__LINE__, __FILE__, L" 1 xml file only can have 1 root node");
 	}
