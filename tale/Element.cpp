@@ -119,6 +119,14 @@ std::shared_ptr<Element> Element::getIthChild(std::size_t i)
 	return std::shared_ptr<Element>();
 }
 
+bool Element::inside(const COORD &position, const D2D1_RECT_F &realPosition)
+{
+	if (position.X >= realPosition.left&& position.X <= realPosition.right
+		&&position.Y >= realPosition.top&&position.Y <= realPosition.bottom)
+		return true;
+	return false;
+}
+
 Element::~Element() {
 	for (auto& x : children) {
 		x.reset();

@@ -47,7 +47,6 @@ public:
 	static ComPtr<IWICImagingFactory> imageFactory;
 	static ComPtr<IDWriteTextFormat>  textFormat;
 	Brush brush;
-	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	virtual ~Element();
 	void onDraw(D2D1_RECT_F, float);
 	virtual void preDraw(D2D1_RECT_F, float);
@@ -56,12 +55,14 @@ public:
 	virtual void onMouseMoveOn();
 	void setPosition(D2D1_RECT_F);
 	void setBrush(Brush b);
+	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
 	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
 	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);
+	static bool inside(const COORD&, const D2D1_RECT_F&);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
 	static void setPositionFromAttribute(const shared_ptr<Element>& ret);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);

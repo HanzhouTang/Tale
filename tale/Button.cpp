@@ -46,12 +46,7 @@ shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, 
 	return ret;
 }
 
-bool Button::inside(const COORD& position, const D2D1_RECT_F& realPosition) {
-	if (position.X >= realPosition.left&& position.X <= realPosition.right
-		&&position.Y >= realPosition.top&&position.Y <= realPosition.bottom)
-		return true;
-	return false;
-}
+
 void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 {
 	auto realPosition = getRealPosition(parentPosition);
@@ -69,6 +64,7 @@ void Button::update(MouseMessage message, D2D1_RECT_F parentPosition)
 		x->update(message, realPosition);
 	}
 }
+
 Button::~Button() {
 	defaultButtonColor.Reset();
 	defaultBrush.m_brush.Reset();
