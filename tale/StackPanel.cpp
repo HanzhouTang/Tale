@@ -4,7 +4,6 @@ void StackPanel::setPadding(float p)
 {
 	padding = p;
 	rearrangement();
-
 }
 
 void StackPanel::setOrientation(Orientation o)
@@ -15,10 +14,8 @@ void StackPanel::setOrientation(Orientation o)
 
 void StackPanel::addChild(const shared_ptr<Element>& t)
 {
-
 	children.push_back(t);
 	rearrangement();
-
 }
 
 void StackPanel::setAttribute(const std::wstring & key, const std::wstring & value)

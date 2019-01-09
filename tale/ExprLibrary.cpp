@@ -136,6 +136,7 @@ namespace expr {
 		closure->addVarable(Utility::RootName, elementRoot);
 		return closure;
 	}
+
 	std::shared_ptr<Expr> getElementByID(const std::vector<std::shared_ptr<Expr>>& args)
 	{
 		if (args.size() != 2) {

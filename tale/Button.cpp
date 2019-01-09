@@ -78,7 +78,6 @@ Button::~Button() {
 }
 
 void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
-
 	if (textFormat != nullptr && textBrush.m_brush != nullptr) {
 		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
 	}
@@ -92,11 +91,9 @@ void Button::setAttribute(const std::wstring & key, const std::wstring & value)
 
 void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
 {
-	
 	auto brush = getBrushFromAttribute(ret);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
-
 	auto hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_EN);
 	if (hoverBrushUrl.empty())
 		hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_CH);
