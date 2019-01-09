@@ -44,7 +44,7 @@ bool AppBase::InitApp()
 	{
 		MessageBox(NULL,
 			_T("Call to RegisterClassEx failed!"),
-			_T("Win32 Guided Tour"),
+			_T("Tale"),
 			NULL);
 		return false;
 	}
@@ -52,8 +52,8 @@ bool AppBase::InitApp()
 	mainWindow = CreateWindow(
 		windowClassName.c_str(),
 		caption.c_str(),
-		//WS_OVERLAPPEDWINDOW,
-		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
+		WS_OVERLAPPEDWINDOW,
+		//WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		windowWidth, windowHeight,
 		NULL,
@@ -65,7 +65,7 @@ bool AppBase::InitApp()
 	{
 		MessageBox(NULL,
 			_T("Call to CreateWindow failed!"),
-			_T("Win32 Guided Tour"),
+			_T("Tale"),
 			NULL);
 		return false;
 	}
@@ -79,7 +79,7 @@ bool AppBase::ShowWindow(int nCmdShow)
 	{
 		MessageBox(NULL,
 			_T("Call to CreateWindow failed!"),
-			_T("Win32 Guided Tour"),
+			_T("Tale"),
 			NULL);
 		return false;
 	}

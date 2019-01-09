@@ -21,7 +21,6 @@ public:
 	inline void setCaption(wstring s) { caption = s; }
 	inline void setmouseHoverBrush(Brush b) { mouseHoverBrush = b; }
 	inline void setDefaultBrush(Brush b) { defaultBrush = b; }
-
 	inline void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
 	inline void setTextBrush(const Element::Brush& b) { textBrush = b; }
 	virtual void update(MouseMessage, D2D1_RECT_F) override;
