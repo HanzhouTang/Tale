@@ -13,8 +13,6 @@ public:
 	Brush mouseHoverBrush;
 	Brush textBrush;
 	typedef  std::shared_ptr<expr::Expr> CallbackFunction;
-	//typedef void(*CallbackFunction)(Button*);
-	//typedef function<void(Button*)> CallbackFunction;
 	CallbackFunction _clickAction;
 	virtual void onPressDown(const CallbackFunction& f);
 	static shared_ptr<Button> createButton(Element::Brush, D2D1_RECT_F, Element::Brush = Brush(), ComPtr<IDWriteTextFormat> = ComPtr<IDWriteTextFormat>(nullptr), CallbackFunction f = nullptr, wstring = L"");
@@ -29,12 +27,11 @@ public:
 	virtual void update(MouseMessage, D2D1_RECT_F) override;
 	virtual void postDraw(D2D1_RECT_F, float) override;
 	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
-	static void setRenderingAttributeFromAttribute(const std::shared_ptr<Button>& button);
+	static void setButtonRenderingAttribute(const std::shared_ptr<Button>& button);
 	static ComPtr<ID2D1SolidColorBrush> defaultButtonColor;
 	static ComPtr<ID2D1SolidColorBrush> defaultTextColor;
 	static ComPtr<ID2D1SolidColorBrush> defaultMouseHoverColor;
 	virtual ~Button();
 	Button();
-
 };
 //TODO bitmap brush

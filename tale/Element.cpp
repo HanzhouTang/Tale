@@ -65,22 +65,15 @@ void Element::onDraw(D2D1_RECT_F parentPosition, float dt) {
 
 }
 
-std::wstring Element::getAttribute(const std::wstring & key) const
-{
-	if (attributes.find(key) == attributes.cend()) return L""; else return attributes.find(key)->second;
-}
+
 
 void Element::setAttribute(const std::wstring & key, const std::wstring & value)
 {
-	attributes[key] = value;
+	Attribute::setAttribute(key, value);
 	setPositionFromAttribute(shared_from_this());
 }
 
-std::map<std::wstring, std::wstring>& Element::getAttributes()
-{
 
-	return attributes;
-}
 
 void Element::update(Element::MouseMessage message, D2D1_RECT_F parentPosition) {
 	auto realPosition = getRealPosition(parentPosition);
@@ -145,7 +138,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 	shared_ptr<Element> ret;
 	if (name == ELEMENT_EN || name == ELEMENT_CH) {
 		ret = make_shared<Element>();
-		auto brush = getBrushFromXml(root);
+		auto brush = getBrushFromAttribute(root);
 		ret->setBrush(brush);
 	}
 	else if (name == BUTTON_EN || name == BUTTON_CH) {
@@ -178,6 +171,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 	return ret;
 }
 
+
 void Element::setPositionFromAttribute(const shared_ptr<Element>& ret)
 {
 	auto position = Utility::wstr2floats(ret->getAttribute(POSITION_EN));
@@ -194,7 +188,7 @@ void Element::setPositionFromAttribute(const shared_ptr<Element>& ret)
 	}
 }
 
-Element::Brush Element::getBrushFromXml(const shared_ptr<xml::Node>& node) {
+Element::Brush Element::getBrushFromAttribute(const shared_ptr<Attribute>& node) {
 	auto url = node->getAttribute(BRUSH_EN);
 	if (url.empty())
 		url = node->getAttribute(BRUSH_CH);

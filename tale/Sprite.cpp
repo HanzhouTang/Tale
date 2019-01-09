@@ -1,5 +1,6 @@
 #include"Sprite.h"
 using namespace Utility;
+
 void Sprite::preDraw(D2D1_RECT_F, float t) {
 	dt += t;
 	if (dt > interval && brushes.size()!=0 ) {
@@ -7,6 +8,24 @@ void Sprite::preDraw(D2D1_RECT_F, float t) {
 		setBrush(brushes[index]);
 		dt = 0;
 	}
+}
+
+void Sprite::setAttribute(const std::wstring & key, const std::wstring & value)
+{
+	Element::setAttribute(key, value);
+	setSpriteRenderingAttribute(std::dynamic_pointer_cast<Sprite>(shared_from_this()));
+}
+
+
+void Sprite::setSpriteRenderingAttribute(const std::shared_ptr<Sprite>& ret)
+{
+	auto interval = Utility::wstr2floats(ret->getAttribute(INTERVAL_EN));
+	if (interval.empty())
+		interval = Utility::wstr2floats(ret->getAttribute(INTERVAL_CH));
+	if (interval.size() == 1) {
+		ret->setInterval(interval[0]);
+	}
+	ret->setBrush(ret->getFirstBrush());
 }
 
 Sprite::~Sprite() {
@@ -39,7 +58,7 @@ shared_ptr<Sprite> Sprite::createSpriteByXml(const shared_ptr<xml::Node>& node) 
 			warning(name+ L" is not a valid name inside Sprite");
 		}
 		else {
-			auto brush = getBrushFromXml(x);
+			auto brush = getBrushFromAttribute(x);
 			ret->addBrush(brush);
 		}
 	}

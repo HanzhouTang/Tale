@@ -29,7 +29,6 @@ Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wst
 }
 
 
-
 Tale::~Tale() {
 	root.reset();
 	m_pD3dDevice.Reset();
@@ -177,8 +176,6 @@ bool Tale::InitDirectX()
 	m_pD2dContext->SetTarget(m_pD2dBackBuffer.Get());
 	if (!CreateDependentRescource())
 		return false;
-
-
 	RECT rc;
 	::GetClientRect(GetMainWindow(), &rc);
 	screenSize = D2D1::RectF(
@@ -198,8 +195,6 @@ bool Tale::InitDirectX()
 
 bool Tale::CreateDependentRescource()
 {
-
-
 	if (FAILED(m_pDWriteFactory->CreateTextFormat(
 		L"Gabriola",                // Font family name.
 		NULL,                       // Font collection (NULL sets it to use the system font collection).
@@ -216,7 +211,6 @@ bool Tale::CreateDependentRescource()
 		D2D1::ColorF(D2D1::ColorF::Red),
 		&m_pTextBrush)))
 		return false;
-
 	return true;
 }
 

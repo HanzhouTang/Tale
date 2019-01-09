@@ -14,6 +14,8 @@ struct  Sprite: Element
 	void addBrush(const Element::Brush& b) { brushes.push_back(b); }
 	Brush getFirstBrush() { return brushes.size() > 0 ? brushes[0] : Brush(BrushType::transparent, nullptr); }
 	virtual void preDraw(D2D1_RECT_F, float) override; 
+	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
+	static void setSpriteRenderingAttribute(const std::shared_ptr<Sprite>& sprite);
 	static shared_ptr<Sprite> createSprite(D2D1_RECT_F position, float interval, const Element::Brush&);
 	static shared_ptr<Sprite> createSpriteByXml(const shared_ptr<xml::Node>& node);
 	Sprite() {

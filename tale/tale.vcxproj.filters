@@ -180,6 +180,9 @@
     <ClCompile Include="AppBase.cpp">
       <Filter>Source Files\XML</Filter>
     </ClCompile>
+    <ClCompile Include="Attribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppBase.h">
@@ -313,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="SimpleXmlParserTest.h">
       <Filter>Header Files\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Attribute.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

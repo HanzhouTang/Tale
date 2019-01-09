@@ -2,6 +2,7 @@
 #include"Element.h"
 #include<memory>
 #include<vector>
+
 struct StackPanel:Element
 {
 	enum Orientation{horizontal, vertical};
@@ -15,6 +16,8 @@ struct StackPanel:Element
 	void setOrientation(Orientation o); 
 	void rearrangement();
 	virtual void addChild(const shared_ptr<Element>&) override;
+	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
+	static void setStackPanelRenderingAttribute(const std::shared_ptr<StackPanel>& button);
 	static shared_ptr<StackPanel> createStackPanel(D2D1_RECT_F, Orientation = horizontal, float =1.0f);
 	static shared_ptr<StackPanel> createStackPanelByXml(const shared_ptr<xml::Node>& node);
 };

@@ -147,6 +147,7 @@
     <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="ArithmeticExpr.cpp" />
     <ClCompile Include="AssignExpr.cpp" />
+    <ClCompile Include="Attribute.cpp" />
     <ClCompile Include="BooleanExpr.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CallExpr.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="AppBase.h" />
     <ClInclude Include="ArithmeticExpr.h" />
     <ClInclude Include="AssignExpr.h" />
+    <ClInclude Include="Attribute.h" />
     <ClInclude Include="BinaryOperatorExpr.h" />
     <ClInclude Include="BooleanExpr.h" />
     <ClInclude Include="Button.h" />

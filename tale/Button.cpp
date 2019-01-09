@@ -1,6 +1,7 @@
 ﻿#include"Button.h"
 #include"Expr.h"
 using namespace Utility;
+
 Button::Button() {
 	setType(TYPE_BUTTON);
 	if (defaultButtonColor.Get() == nullptr) {
@@ -25,7 +26,6 @@ Button::Button() {
 	setDefaultBrush(bcolor);
 	setmouseHoverBrush(Brush(Element::BrushType::solid, defaultMouseHoverColor));
 	setTextFormat(Element::textFormat);
-
 }
 
 void Button::onPressDown(const Button::CallbackFunction& f) {
@@ -80,7 +80,6 @@ Button::~Button() {
 void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
 
 	if (textFormat != nullptr && textBrush.m_brush != nullptr) {
-
 		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
 	}
 }
@@ -88,18 +87,19 @@ void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
 void Button::setAttribute(const std::wstring & key, const std::wstring & value)
 {
 	Element::setAttribute(key, value);
-
+	setButtonRenderingAttribute(std::dynamic_pointer_cast<Button>(shared_from_this()));
 }
 
-void Button::setRenderingAttributeFromAttribute(const std::shared_ptr<Button>& ret)
+void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
 {
-	auto brush = getBrushFromXml(ret);
+	
+	auto brush = getBrushFromAttribute(ret);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
 
 	auto hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_EN);
 	if (hoverBrushUrl.empty())
-		hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_CH);
+		hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_CH);
 	if (!hoverBrushUrl.empty()) {
 		auto bitmapBrush = Utility::CreateBitmapBrushFromFile(Element::d2dContext.Get(), Element::imageFactory.Get(), hoverBrushUrl.c_str());
 		Brush mouseHoverBrush(BrushType::bitmap, bitmapBrush);
@@ -111,11 +111,9 @@ void Button::setRenderingAttributeFromAttribute(const std::shared_ptr<Button>& r
 shared_ptr<Button> Button::createButtonByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Button>();
 	ret->setCaption(node->getValue());
-
-	auto brush = getBrushFromXml(node);
+	auto brush = getBrushFromAttribute(node);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
-
 	auto hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_EN);
 	if (hoverBrushUrl.empty())
 		hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_CH);
