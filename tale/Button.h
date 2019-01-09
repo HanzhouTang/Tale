@@ -8,7 +8,7 @@ namespace expr {
 struct Button : public Element {
 public:
 	wstring caption;
-	ComPtr<IDWriteTextFormat> textFormat;
+	ComPtr<IDWriteTextFormat> textFormat=nullptr;
 	Brush defaultBrush;
 	Brush mouseHoverBrush;
 	Brush textBrush;

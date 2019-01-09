@@ -1,6 +1,7 @@
 ﻿#include"Element.h"
 #include"Button.h"
 #include"StackPanel.h"
+#include"TextBlock.h"
 #include"Sprite.h"
 using namespace Utility;
 Element::Element() {
@@ -98,7 +99,7 @@ void Element::setBrush(Brush b) {
 
 ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
 ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
-ComPtr<IDWriteTextFormat>  Element::textFormat = nullptr;
+ComPtr<IDWriteTextFormat>  Element::defaultTextFormat = nullptr;
 void Element::preDraw(D2D1_RECT_F, float) {}
 void Element::postDraw(D2D1_RECT_F, float) {}
 void Element::onMouseMoveOn() {}
@@ -141,6 +142,7 @@ shared_ptr<Element> Element::createElement(Brush b, D2D1_RECT_F position) {
 }
 
 shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& root) {
+	using namespace std;
 	if (root == nullptr) return shared_ptr<Element>(nullptr);
 	const wstring& name = root->getName();
 	shared_ptr<Element> ret;
@@ -158,7 +160,9 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 	else if (name == SPRITE_EN || name == SPRITE_CH) {
 		ret = Sprite::createSpriteByXml(root);
 	}
-
+	else if (name == TextBlock_EN || name == TextBlock_CH) {
+		ret = TextBlock::createTextblockByXml(root);
+	}
 	if (ret == nullptr) {
 		warning(name + L" is not a valid XML Tag");
 		return nullptr;

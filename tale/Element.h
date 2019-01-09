@@ -11,7 +11,7 @@ struct Element :std::enable_shared_from_this<Element>,Attribute {
 public:
 	enum BrushType { solid, linear, radial, bitmap, transparent };
 	enum Event { LButtonDown, LButtonUp, RButtonDown, RButtonUp, MouseMove };
-	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL};
+	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL,TYPE_TEXTBOOCK};
 	static const std::vector<std::wstring> TypeList;
 	ElementType _type;
 	inline ElementType getType() { return _type; }
@@ -20,15 +20,12 @@ public:
 	struct Brush {
 		BrushType brushType;
 		ComPtr<ID2D1Brush> m_brush;
-		Brush(const Brush& b) {
-			brushType = b.brushType;
-			m_brush = b.m_brush;
-		}
-		Brush(BrushType type, const ComPtr<ID2D1Brush>& b) {
-			brushType = type;
-			m_brush = b;
-		}
-		Brush() {}
+		Brush(const Brush& b):
+			brushType(b.brushType), m_brush(b.m_brush){ }
+		Brush(BrushType type, const ComPtr<ID2D1Brush>& b) :
+			brushType(type), m_brush(b){ }
+		Brush():
+			brushType(transparent), m_brush(nullptr){ }
 	};
 	struct MouseMessage {
 		Event event;
@@ -45,7 +42,7 @@ public:
 	D2D1_RECT_F position;
 	static ComPtr<ID2D1DeviceContext> d2dContext ;
 	static ComPtr<IWICImagingFactory> imageFactory;
-	static ComPtr<IDWriteTextFormat>  textFormat;
+	static ComPtr<IDWriteTextFormat>  defaultTextFormat;
 	Brush brush;
 	virtual ~Element();
 	void onDraw(D2D1_RECT_F, float);
@@ -58,7 +55,7 @@ public:
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
-	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { textFormat = format; }
+	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { defaultTextFormat = format; }
 	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
 	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);

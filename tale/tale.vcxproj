@@ -181,7 +181,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Tale.cpp" />
-    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VariableExpr.cpp" />
     <ClCompile Include="SimpleXmlParserTest.cpp" />
@@ -229,7 +229,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Tale.h" />
-    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="TextBlock.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="VariableExpr.h" />
     <ClInclude Include="SimpleXmlParserTest.h" />

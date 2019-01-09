@@ -25,7 +25,7 @@ Button::Button() {
 	setBrush(bcolor);
 	setDefaultBrush(bcolor);
 	setmouseHoverBrush(Brush(Element::BrushType::solid, defaultMouseHoverColor));
-	setTextFormat(Element::textFormat);
+	setTextFormat(Element::defaultTextFormat);
 }
 
 void Button::onPressDown(const Button::CallbackFunction& f) {
