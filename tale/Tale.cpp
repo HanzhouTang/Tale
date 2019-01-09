@@ -291,6 +291,12 @@ void Tale::OnLButtonDown(WPARAM wParam, LPARAM lParam) {
 	}
 }
 
+void Tale::OnResize(int width, int height)
+{
+	using namespace std;
+	AppBase::OnResize(width, height);
+}
+
 
 wstring Tale::readFile(wstring filename) {
 	std::wifstream read(filename, std::ios::binary);
