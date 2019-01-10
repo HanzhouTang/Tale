@@ -58,7 +58,7 @@ shared_ptr<Sprite> Sprite::createSpriteByXml(const shared_ptr<xml::Node>& node) 
 			warning(name+ L" is not a valid name inside Sprite");
 		}
 		else {
-			auto brush = getBrushFromAttribute(x);
+			auto brush = createBrushFromAttribute(x);
 			ret->addBrush(brush);
 		}
 	}

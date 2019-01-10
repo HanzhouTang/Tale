@@ -5,13 +5,14 @@
 #include"Attribute.h"
 #include<vector>
 #include<memory>
+#include<set>
 using namespace std;
 using namespace Microsoft::WRL;
-struct Element :std::enable_shared_from_this<Element>,Attribute {
+struct Element :std::enable_shared_from_this<Element>, Attribute {
 public:
 	enum BrushType { solid, linear, radial, bitmap, transparent };
 	enum Event { LButtonDown, LButtonUp, RButtonDown, RButtonUp, MouseMove };
-	enum ElementType{TYPE_ELEMENT=0,TYPE_BUTTON,TYPE_SPRITE,TYPE_STACKPANEL,TYPE_TEXTBOOCK};
+	enum ElementType { TYPE_ELEMENT = 0, TYPE_BUTTON, TYPE_SPRITE, TYPE_STACKPANEL, TYPE_TEXTBOOCK };
 	static const std::vector<std::wstring> TypeList;
 	ElementType _type;
 	inline ElementType getType() { return _type; }
@@ -20,12 +21,12 @@ public:
 	struct Brush {
 		BrushType brushType;
 		ComPtr<ID2D1Brush> m_brush;
-		Brush(const Brush& b):
-			brushType(b.brushType), m_brush(b.m_brush){ }
+		Brush(const Brush& b) :
+			brushType(b.brushType), m_brush(b.m_brush) { }
 		Brush(BrushType type, const ComPtr<ID2D1Brush>& b) :
-			brushType(type), m_brush(b){ }
-		Brush():
-			brushType(transparent), m_brush(nullptr){ }
+			brushType(type), m_brush(b) { }
+		Brush() :
+			brushType(transparent), m_brush(nullptr) { }
 	};
 	struct MouseMessage {
 		Event event;
@@ -40,7 +41,7 @@ public:
 	vector<shared_ptr<Element>> children;
 	inline vector<shared_ptr<Element>>& getChildren() { return children; }
 	D2D1_RECT_F position;
-	static ComPtr<ID2D1DeviceContext> d2dContext ;
+	static ComPtr<ID2D1DeviceContext> d2dContext;
 	static ComPtr<IWICImagingFactory> imageFactory;
 	static ComPtr<IDWriteTextFormat>  defaultTextFormat;
 	Brush brush;
@@ -63,7 +64,7 @@ public:
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);
 	static void setPositionFromAttribute(const shared_ptr<Element>& ret);
 	static shared_ptr<Element> createElement(Brush, D2D1_RECT_F);
-	static Brush getBrushFromAttribute(const shared_ptr<Attribute>&);
+	static Brush createBrushFromAttribute(const shared_ptr<Attribute>&);
 	static std::shared_ptr<Element> getElementByID(const std::shared_ptr<Element>& root, const std::wstring & str);
 	Element();
 };

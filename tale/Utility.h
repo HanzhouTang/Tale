@@ -39,6 +39,11 @@ namespace Utility {
 	static const std::wstring ID = L"id";
 	static const std::wstring TextBlock_EN = L"TextBlock";
 	static const std::wstring TextBlock_CH = L"文字块";
+	static const std::wstring Font_EN = L"font";
+	static const std::wstring Font_CH = L"字体";
+	static const std::wstring FontSize_EN = L"fontSize";
+	static const std::wstring FontSize_CH = L"字体大小";
+
 	std::wstring rtrim(std::wstring &s);
 	std::vector<float> wstr2floats(const std::wstring& str);
 	HRESULT LoadBitmapFromFile(

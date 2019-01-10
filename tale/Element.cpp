@@ -120,6 +120,8 @@ std::shared_ptr<Element> Element::getIthChild(std::size_t i)
 	return std::shared_ptr<Element>();
 }
 
+
+
 bool Element::inside(const COORD &position, const D2D1_RECT_F &realPosition)
 {
 	if (position.X >= realPosition.left&& position.X <= realPosition.right
@@ -148,7 +150,7 @@ shared_ptr<Element> Element::createElementByXml(const shared_ptr<xml::Node>& roo
 	shared_ptr<Element> ret;
 	if (name == ELEMENT_EN || name == ELEMENT_CH) {
 		ret = make_shared<Element>();
-		auto brush = getBrushFromAttribute(root);
+		auto brush = createBrushFromAttribute(root);
 		ret->setBrush(brush);
 	}
 	else if (name == BUTTON_EN || name == BUTTON_CH) {
@@ -200,7 +202,7 @@ void Element::setPositionFromAttribute(const shared_ptr<Element>& ret)
 	}
 }
 
-Element::Brush Element::getBrushFromAttribute(const shared_ptr<Attribute>& node) {
+Element::Brush Element::createBrushFromAttribute(const shared_ptr<Attribute>& node) {
 	auto url = node->getAttribute(BRUSH_EN);
 	if (url.empty())
 		url = node->getAttribute(BRUSH_CH);

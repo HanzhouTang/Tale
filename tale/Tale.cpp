@@ -19,6 +19,7 @@
 #include"ExternalFunctionExpr.h"
 #include"ExprLibrary.h"
 #include"SimpleParser.h"
+#include"TextBlock.h"
 #include<windowsx.h>
 using namespace Utility;
 Tale::Tale(int height, int width, HINSTANCE hinstance, bool fullScreen, std::wstring caption)
@@ -153,10 +154,10 @@ bool Tale::InitDirectX()
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.BufferCount = 2;
-	swapChainDesc.Scaling =  DXGI_SCALING_STRETCH;
+	swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
-	if (FAILED(m_pDxgiFactory->CreateSwapChainForHwnd(m_pD3dDevice.Get(),AppBase::GetMainWindow(),
+	if (FAILED(m_pDxgiFactory->CreateSwapChainForHwnd(m_pD3dDevice.Get(), AppBase::GetMainWindow(),
 		&swapChainDesc, nullptr, nullptr, &m_pSwapChain)))
 	{
 		return false;
@@ -195,6 +196,7 @@ bool Tale::InitDirectX()
 
 bool Tale::CreateDependentRescource()
 {
+	
 	if (FAILED(m_pDWriteFactory->CreateTextFormat(
 		L"Gabriola",                // Font family name.
 		NULL,                       // Font collection (NULL sets it to use the system font collection).
@@ -202,7 +204,7 @@ bool Tale::CreateDependentRescource()
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_MEDIUM,
 		21.0f,
-		L"en-us",
+		L"zh-cn",
 		&m_pTextFormat)))
 		return false;
 	m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
@@ -256,7 +258,7 @@ void Tale::OnDraw() {
 	m_pD2dContext->BeginDraw();
 	m_pD2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 	if (root) {
-		root->onDraw(logicScreenSize,dt);
+		root->onDraw(logicScreenSize, dt);
 	}
 
 	D2D1_RECT_F rect = D2D1::RectF(

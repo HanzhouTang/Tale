@@ -32,7 +32,7 @@ void StackPanel::setStackPanelRenderingAttribute(const std::shared_ptr<StackPane
 	if (padding.size() == 1) {
 		ret->setPadding(padding[0]);
 	}
-	auto brush = getBrushFromAttribute(ret);
+	auto brush = createBrushFromAttribute(ret);
 	ret->setBrush(brush);
 	auto orientation = ret->getAttribute(ORIENTATION_EN);
 	if (orientation.empty())
@@ -81,7 +81,7 @@ shared_ptr<StackPanel> StackPanel::createStackPanelByXml(const shared_ptr<xml::N
 		ret->setPadding(padding[0]);
 	}
 
-	auto brush = getBrushFromAttribute(node);
+	auto brush = createBrushFromAttribute(node);
 	ret->setBrush(brush);
 
 	auto orientation = node->getAttribute(ORIENTATION_EN);

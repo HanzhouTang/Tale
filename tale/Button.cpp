@@ -87,7 +87,7 @@ void Button::setAttribute(const std::wstring & key, const std::wstring & value)
 
 void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
 {
-	auto brush = getBrushFromAttribute(ret);
+	auto brush = createBrushFromAttribute(ret);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
 	auto hoverBrushUrl = ret->getAttribute(MOUSEHOVERBRUSH_EN);
@@ -104,7 +104,7 @@ void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
 shared_ptr<Button> Button::createButtonByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Button>();
 	ret->setCaption(node->getValue());
-	auto brush = getBrushFromAttribute(node);
+	auto brush = createBrushFromAttribute(node);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
 	auto hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_EN);
