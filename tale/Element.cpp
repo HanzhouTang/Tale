@@ -9,7 +9,7 @@ Element::Element() {
 	position = D2D1::RectF(0, 0, 100, 100);
 	setType(TYPE_ELEMENT);
 }
-const std::vector<std::wstring> Element::TypeList = { L"TYPE_ELEMENT",L"TYPE_BUTTON",L"TYPE_SPRITE",L"TYPE_STACKPANEL" };
+const std::vector<std::wstring> Element::TypeList = { L"TYPE_ELEMENT",L"TYPE_BUTTON",L"TYPE_SPRITE",L"TYPE_STACKPANEL" ,L"TYPE_TEXTBLOCK"};
 void Element::setPosition(D2D1_RECT_F p) {
 	assert(p.left >= 0 && p.top >= 0);
 	assert(p.top <= MaximumRealtiveRatio && p.bottom <= MaximumRealtiveRatio);
