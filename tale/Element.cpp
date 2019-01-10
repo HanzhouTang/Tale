@@ -99,7 +99,7 @@ void Element::setBrush(Brush b) {
 
 ComPtr<ID2D1DeviceContext> Element::d2dContext = nullptr;
 ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
-ComPtr<IDWriteTextFormat>  Element::defaultTextFormat = nullptr;
+//ComPtr<IDWriteTextFormat>  Element::defaultTextFormat = nullptr;
 void Element::preDraw(D2D1_RECT_F, float) {}
 void Element::postDraw(D2D1_RECT_F, float) {}
 void Element::onMouseMoveOn() {}

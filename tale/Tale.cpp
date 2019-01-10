@@ -207,8 +207,6 @@ bool Tale::CreateDependentRescource()
 		L"zh-cn",
 		&m_pTextFormat)))
 		return false;
-	m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	if (FAILED(m_pD2dContext->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red),
 		&m_pTextBrush)))
@@ -220,7 +218,7 @@ bool Tale::initRootScene() {
 	using namespace expr;
 	Element::setD2dContext(m_pD2dContext);
 	Element::setImageFactory(m_pImageFactory);
-	Element::setTextFormat(m_pTextFormat);
+	//Element::setTextFormat(m_pTextFormat);
 	wstring content = readFile(L"C:\\Users\\tangh\\source\\repos\\tale\\tale\\Resource\\xml\\initScene1.xml");
 	unique_ptr<xml::SimpleXMLParser> xmlParser = make_unique<xml::SimpleXMLParser>();
 	xmlParser->parse(content);

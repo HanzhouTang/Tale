@@ -44,7 +44,7 @@ TextBlock::TextBlock()
 	Element::Brush btext(Element::BrushType::solid, defaultTextColor);
 	setTextBrush(btext);
 	setBrush(Element::Brush(Element::BrushType::transparent, nullptr));
-	setTextFormat(Element::defaultTextFormat);
+	//setTextFormat(Element::defaultTextFormat);
 }
 
 TextBlock::~TextBlock()
@@ -59,6 +59,8 @@ void TextBlock::setTextBlockRenderingAttribute(const std::shared_ptr<TextBlock>&
 {
 	auto brush = createBrushFromAttribute(ret);
 	ret->setBrush(brush);
+	auto format = createTextFormatFromAttribute(ret);
+	ret->setTextFormat(format);
 }
 
 void TextBlock::setFontCollection(const std::set<std::wstring>& collection)
@@ -109,7 +111,7 @@ ComPtr<IDWriteTextFormat> TextBlock::createTextFormatFromAttribute(const shared_
 		tmp[0],
 		L"zh-cn",
 		&pTextFormat))) {
-		Element::defaultTextFormat;
+		return nullptr;
 		// need change later
 	}
 	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);

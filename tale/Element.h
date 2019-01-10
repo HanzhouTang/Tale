@@ -43,7 +43,7 @@ public:
 	D2D1_RECT_F position;
 	static ComPtr<ID2D1DeviceContext> d2dContext;
 	static ComPtr<IWICImagingFactory> imageFactory;
-	static ComPtr<IDWriteTextFormat>  defaultTextFormat;
+	//static ComPtr<IDWriteTextFormat>  defaultTextFormat;
 	Brush brush;
 	virtual ~Element();
 	void onDraw(D2D1_RECT_F, float);
@@ -56,7 +56,7 @@ public:
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
-	static void setTextFormat(ComPtr<IDWriteTextFormat> format) { defaultTextFormat = format; }
+	//static void setTextFormat(ComPtr<IDWriteTextFormat> format) { defaultTextFormat = format; }
 	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
 	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);

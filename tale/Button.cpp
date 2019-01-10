@@ -25,7 +25,7 @@ Button::Button() {
 	setBrush(bcolor);
 	setDefaultBrush(bcolor);
 	setmouseHoverBrush(Brush(Element::BrushType::solid, defaultMouseHoverColor));
-	setTextFormat(Element::defaultTextFormat);
+	//setTextFormat(Element::defaultTextFormat);
 }
 
 void Button::onPressDown(const Button::CallbackFunction& f) {
@@ -40,7 +40,7 @@ shared_ptr<Button> Button::createButton(Element::Brush b, D2D1_RECT_F position, 
 	ret->setPosition(position);
 	ret->setTextFormat(foramt);
 	ret->setOnClickFunction(f);
-	ret->setCaption(c);
+	ret->setText(c);
 	ret->setDefaultBrush(b);
 	ret->setmouseHoverBrush(b);
 	return ret;
@@ -70,19 +70,22 @@ Button::~Button() {
 	defaultBrush.m_brush.Reset();
 	mouseHoverBrush.m_brush.Reset();
 	textBrush.m_brush.Reset();
-	textFormat.Reset();
+	//textFormat.Reset();
 }
 
 void Button::postDraw(D2D1_RECT_F realPosition, float dt) {
-	if (textFormat != nullptr && textBrush.m_brush != nullptr) {
-		d2dContext->DrawText(caption.c_str(), caption.length(), textFormat.Get(), realPosition, textBrush.m_brush.Get());
-	}
+	TextBlock::postDraw(realPosition, dt);
 }
 
 void Button::setAttribute(const std::wstring & key, const std::wstring & value)
 {
 	Element::setAttribute(key, value);
 	setButtonRenderingAttribute(std::dynamic_pointer_cast<Button>(shared_from_this()));
+	setTextBlockRenderingAttribute(std::dynamic_pointer_cast<TextBlock>(shared_from_this()));
+	if (textFormat) {
+		textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	}
 }
 
 void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
@@ -100,13 +103,26 @@ void Button::setButtonRenderingAttribute(const std::shared_ptr<Button>& ret)
 	}
 }
 
+ComPtr<IDWriteTextFormat> Button::createButtonTextFormatFromAttribute(const shared_ptr<Attribute>& att)
+{
+	auto format = createTextFormatFromAttribute(att);
+	if (format) {
+		format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	}
+	return format;
+	
+}
+
 
 shared_ptr<Button> Button::createButtonByXml(const shared_ptr<xml::Node>& node) {
 	auto ret = make_shared<Button>();
-	ret->setCaption(node->getValue());
+	ret->setText(node->getValue());
 	auto brush = createBrushFromAttribute(node);
 	ret->setBrush(brush);
 	ret->setDefaultBrush(brush);
+	auto format = createButtonTextFormatFromAttribute(node);
+	ret->setTextFormat(format);
 	auto hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_EN);
 	if (hoverBrushUrl.empty())
 		hoverBrushUrl = node->getAttribute(MOUSEHOVERBRUSH_CH);
