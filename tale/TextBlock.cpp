@@ -170,6 +170,11 @@ void TextBlock::setAttribute(const std::wstring & key, const std::wstring & valu
 	setTextBlockRenderingAttribute(std::dynamic_pointer_cast<TextBlock>(shared_from_this()));
 }
 
+void TextBlock::setValue(std::wstring value)
+{
+	setText(value);
+}
+
 shared_ptr<TextBlock> TextBlock::createTextblockByXml(const shared_ptr<xml::Node>& node)
 {
 	auto ret = make_shared<TextBlock>();

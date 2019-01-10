@@ -114,6 +114,8 @@ namespace expr {
 		funcMap.emplace(L"setOnClickEvent", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::setOnClickEvent));
 		funcMap.emplace(L"getElementByID", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::getElementByID));
 		funcMap.emplace(L"setElementAttribute", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::setElementAttribute));
+		funcMap.emplace(L"setElementValue", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::setElementValue));
+		funcMap.emplace(L"str", expr::ExternalFunctionExpr::createExternalFunctionExpr(expr::str));
 		if (e->getType() != Expr::TYPE_CLOSURE) {
 			quitWithError(__LINE__, __FILE__, L"only can set runtime env on closure");
 			return e;
@@ -187,5 +189,36 @@ namespace expr {
 		auto VALUE = std::dynamic_pointer_cast<expr::StringExpr>(value)->getString();
 		e->setAttribute(KEY, VALUE);
 		return element;
+	}
+	std::shared_ptr<Expr> setElementValue(const std::vector<std::shared_ptr<Expr>>& args)
+	{
+		if (args.size() != 2) {
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" must be 3");
+			return NullExpr::createNullExpr();
+		}
+		auto element = args[0];
+		auto value = args[1];
+		if (element->getType() != expr::Expr::TYPE_ELEMENT_WRAPPER) {
+			quitWithError(__LINE__, __FILE__, L"the first parameter of " + Utility::str2wstr(__func__) + L" must be a element");
+			return NullExpr::createNullExpr();
+		}
+		else if (value->getType() != Expr::TYPE_STRING) {
+			quitWithError(__LINE__, __FILE__, L"the third parameter of " + Utility::str2wstr(__func__) + L" must be a string");
+			return NullExpr::createNullExpr();
+		}
+		auto e = std::dynamic_pointer_cast<expr::ElementExpr>(element)->getElement();
+		auto VALUE = std::dynamic_pointer_cast<expr::StringExpr>(value)->getString();
+		e->setValue(VALUE);
+		return element;
+	}
+	std::shared_ptr<Expr> str(const std::vector<std::shared_ptr<Expr>>& args)
+	{
+		if (args.size() != 1) {
+			quitWithError(__LINE__, __FILE__, L"the parameter size of " + Utility::str2wstr(__func__) + L" must be 3");
+			return NullExpr::createNullExpr();
+		}
+		auto tmp = args[0];
+		auto str = tmp->repr();
+		return expr::StringExpr::createStringExpr(str);
 	}
 }

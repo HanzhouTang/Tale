@@ -51,14 +51,14 @@ public:
 	virtual void postDraw(D2D1_RECT_F, float);
 	virtual void onPressLeftButton();
 	virtual void onMouseMoveOn();
+	virtual void setValue(std::wstring value);
+	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
+	virtual void addChild(const shared_ptr<Element>&);
 	void setPosition(D2D1_RECT_F);
 	void setBrush(Brush b);
 	D2D1_RECT_F getRealPosition(D2D1_RECT_F);
 	static void setD2dContext(ComPtr<ID2D1DeviceContext>);
 	static void setImageFactory(ComPtr<IWICImagingFactory>);
-	//static void setTextFormat(ComPtr<IDWriteTextFormat> format) { defaultTextFormat = format; }
-	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
-	virtual void addChild(const shared_ptr<Element>&);
 	std::shared_ptr<Element> getIthChild(std::size_t i);
 	static bool inside(const COORD&, const D2D1_RECT_F&);
 	static shared_ptr<Element> createElementByXml(const shared_ptr<xml::Node>&);

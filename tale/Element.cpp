@@ -103,6 +103,7 @@ ComPtr<IWICImagingFactory> Element::imageFactory = nullptr;
 void Element::preDraw(D2D1_RECT_F, float) {}
 void Element::postDraw(D2D1_RECT_F, float) {}
 void Element::onMouseMoveOn() {}
+void Element::setValue(std::wstring value){}
 void Element::onPressLeftButton() {}
 void Element::addChild(const shared_ptr<Element>& t) {
 	children.push_back(t);

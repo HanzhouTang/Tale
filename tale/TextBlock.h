@@ -20,6 +20,7 @@ struct TextBlock : Element {
 	static ComPtr<IDWriteTextFormat> createTextFormatFromAttribute(const shared_ptr<Attribute>&);
 	static std::set<std::wstring> getSystemFontCollection();
 	virtual void setAttribute(const std::wstring& key, const std::wstring& value) override;
+	virtual void setValue(std::wstring value) override;
 	static ComPtr<IDWriteFactory> pDWriteFactory;
 	static shared_ptr<TextBlock> createTextblockByXml(const shared_ptr<xml::Node>& node);
 	std::shared_ptr<TextBlock> createTextBlock(std::wstring, Element::Brush b, D2D1_RECT_F position, Element::Brush bText, ComPtr<IDWriteTextFormat> foramt);
