@@ -4,7 +4,7 @@ namespace parser {
 	{
 		L"[",L"]",L",",L"{",L"}",L"*",L"-",L"+",L"/",L"(",L")",L"=",L"<",L">",L";",L"\"",L"\n",L"\"",L" ",L":"
 	};
-	const std::map<std::wstring, SimpleLexer::Token> SimpleLexer::lexeme2token = {
+	const std::map<std::wstring, int> SimpleLexer::lexeme2token = {
 	{L"[",Token::LBrace},{L"]",Token::RBrace},{L",",Token::Comma},{L"{",Token::LCurlyBrace},
 	{L"}",Token::RCurlyBrace},{L"*",Token::Times},{L"-",Token::Minus},{L"+",Token::Add},{L"/",Token::Div},
 	{L"(",Token::LParen},{L")",Token::RParen},{L"=",Token::Eql},{L"<",Token::Less},{L">",Token::Greater},
@@ -20,7 +20,7 @@ namespace parser {
 		L"String",L"Colon",L"Def",L"EqlEql",L"True",L"False",L"Not"
 	};
 
-	SimpleLexer::Token SimpleLexer::getNextToken() {
+	int SimpleLexer::getNextToken() {
 		using namespace std;
 		auto last = content.end();
 		if (index1 == last) return Token::EndofContent;
@@ -40,7 +40,7 @@ namespace parser {
 		index1 = find_if(index1, last, [&](wchar_t ch) {return !isWhiteSpace(ch); });
 		if (index1 == last) return Token::EndofContent;
 		index0 = index1;
-		index1 = find_if(index0, last, isDelimiter);
+		index1 = find_if(index0, last, [&](const wchar_t& ch) {return isDelimiter(ch); });
 		if (index0 == index1) {
 			index1++;
 		}
@@ -167,14 +167,14 @@ namespace parser {
 		return *(index1);
 	}
 
-	std::wstring SimpleLexer::getTokenName(Token t)
+	std::wstring SimpleLexer::getTokenName(int t)
 	{
 		return TokenNames[t];
 	}
 
-	std::vector<SimpleLexer::Token> SimpleLexer::lookAheadK(int k) {
+	std::vector<int> SimpleLexer::lookAheadK(int k) {
 		save();
-		std::vector<Token> tokens;
+		std::vector<int> tokens;
 		for (int i = 0; i < k; i++) {
 			auto t = getNextToken();
 			tokens.push_back(t);
@@ -187,10 +187,10 @@ namespace parser {
 	}
 
 
-	SimpleLexer::LexerNode::LexerNode(const std::wstring & lex, Token t) : lexeme(lex), token(t) {}
+	SimpleLexer::LexerNode::LexerNode(const std::wstring & lex, int t) : lexeme(lex), token(t) {}
 
 	SimpleLexer::Status::Status(std::wstring::iterator i0,
-		std::wstring::iterator i1, std::wstring l, Token t, State s, bool isEnded) :
+		std::wstring::iterator i1, std::wstring l, int t, State s, bool isEnded) :
 		index0(i0), index1(i1), currentLexeme(l), token(t), state(s), endOfContent(isEnded) {}
 
 	bool SimpleLexer::Status::operator==(const Status & other) const

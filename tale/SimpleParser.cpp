@@ -33,14 +33,14 @@ namespace parser {
 		return false;
 	}
 
-	void SimpleParser::throwNotMatchError(const std::vector<parser::SimpleLexer::Token>& expectedToken, parser::SimpleLexer::Token realToken, int lineNumber) {
+	void SimpleParser::throwNotMatchError(const std::vector<int>& expectedToken, int realToken, int lineNumber) {
 		std::wostringstream buffer;
 		buffer << L"Expected Token type < ";
 		for (auto x : expectedToken) {
-			buffer << SimpleLexer::getTokenName(x) << " ";
+			buffer << lexer.getTokenName(x) << " ";
 		}
 		buffer << L"> however, we got the token < " <<
-			SimpleLexer::getTokenName(realToken) << L" >" << std::endl;
+			lexer.getTokenName(realToken) << L" >" << std::endl;
 		quitWithError(lineNumber, __FILE__, buffer.str());
 	}
 
@@ -432,7 +432,7 @@ namespace parser {
 
 	std::shared_ptr<expr::Expr> SimpleParser::state() {
 		using namespace std;
-		SimpleLexer::Token token;
+		int token;
 		token = lexer.lookAheadK(1)[0];
 		while (token == SimpleLexer::Token::Newline) {
 			match(SimpleLexer::Token::Newline);
@@ -641,7 +641,7 @@ namespace parser {
 			}
 			lexer.restore();
 		}
-		SimpleLexer::Token token;
+		int token;
 		if (!left || left->getType() == expr::Expr::TYPE_NULL) {
 			left = expr::NullExpr::createNullExpr();
 			MemoResult result(left, lexer.get());
@@ -727,7 +727,7 @@ namespace parser {
 				lexer.restore();
 				return  expr::NullExpr::createNullExpr();
 			}
-			
+
 		}
 		else if (token == SimpleLexer::Token::EndofContent) {
 			return expr::NullExpr::createNullExpr();
@@ -769,7 +769,7 @@ namespace parser {
 			return expr::NullExpr::createNullExpr();
 		}
 		if (first->getType() == expr::Expr::TYPE_NULL) {
-			quitWithError(__LINE__, __FILE__, L"need bool type after " + SimpleLexer::getTokenName(token));
+			quitWithError(__LINE__, __FILE__, L"need bool type after " + lexer.getTokenName(token));
 		}
 		second = morebooleanterms();
 		if (second->getType() == expr::Expr::TYPE_BINARYOPERATION) {

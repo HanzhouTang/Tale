@@ -215,6 +215,7 @@
     <ClInclude Include="NotExpr.h" />
     <ClInclude Include="NullExpr.h" />
     <ClInclude Include="OrExpr.h" />
+    <ClInclude Include="DialogLexer.h" />
     <ClInclude Include="ReturnExpr.h" />
     <ClInclude Include="ReverseExpr.h" />
     <ClInclude Include="SimpleLexerTest.h" />

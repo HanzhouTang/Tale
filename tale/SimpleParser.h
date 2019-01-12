@@ -90,7 +90,7 @@ namespace parser {
 
 
 		void init();
-		static void throwNotMatchError(const std::vector<SimpleLexer::Token>& expectedToken, SimpleLexer::Token realToken, int lineNumber = __LINE__);
+		void throwNotMatchError(const std::vector<int>& expectedToken, int realToken, int lineNumber = __LINE__);
 		bool match(SimpleLexer::Token t);
 	};
 }

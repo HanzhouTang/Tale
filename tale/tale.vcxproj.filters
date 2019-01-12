@@ -49,6 +49,9 @@
     <Filter Include="Source Files\Test">
       <UniqueIdentifier>{479a64c6-7b2f-401b-b89c-44fb7a883eed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DialogParser">
+      <UniqueIdentifier>{a71dcc27-2ca8-41fb-8da8-bf2930d7f95e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -325,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="TextBlock.h">
       <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogLexer.h">
+      <Filter>Header Files\DialogParser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
