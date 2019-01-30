@@ -153,6 +153,8 @@
     <ClCompile Include="CallExpr.cpp" />
     <ClCompile Include="ClosureExpr.cpp" />
     <ClCompile Include="ConditionExpr.cpp" />
+    <ClCompile Include="DialogLexer.cpp" />
+    <ClCompile Include="DialogLexerTest.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementExpr.cpp" />
     <ClCompile Include="EqualExpr.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConditionExpr.h" />
     <ClInclude Include="d2dutil.h" />
+    <ClInclude Include="DialogLexerTest.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementExpr.h" />
     <ClInclude Include="EqualExpr.h" />

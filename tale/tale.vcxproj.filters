@@ -52,6 +52,9 @@
     <Filter Include="Header Files\DialogParser">
       <UniqueIdentifier>{a71dcc27-2ca8-41fb-8da8-bf2930d7f95e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DialogParser">
+      <UniqueIdentifier>{5899cd01-ca9f-4ed9-bdbc-4411ec962ef8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -188,6 +191,12 @@
     </ClCompile>
     <ClCompile Include="TextBlock.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogLexer.cpp">
+      <Filter>Source Files\DialogParser</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogLexerTest.cpp">
+      <Filter>Source Files\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="DialogLexer.h">
       <Filter>Header Files\DialogParser</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogLexerTest.h">
+      <Filter>Header Files\Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
